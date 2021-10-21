@@ -1,0 +1,47 @@
+{
+  "name": "eth",
+  "version": "1.0.0",
+  "description": "valhalla prize planet contracts",
+  "main": "index.js",
+  "license": "MIT",
+  "engines": {
+    "node": "^16"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@openzeppelin/contracts-upgradeable": "^4.1.0",
+    "@openzeppelin/hardhat-upgrades": "^1.8.2",
+    "@types/chai": "^4.2.18",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^15.6.1",
+    "chai": "^4.3.4",
+    "dotenv": "^10.0.0",
+    "eslint": "^7.27.0",
+    "ethereum-waffle": "^3.3.0",
+    "ethers": "^5.2.0",
+    "hardhat": "^2.3.0",
+    "hardhat-contract-sizer": "^2.0.3",
+    "hardhat-typechain": "^0.3.5",
+    "mocha": "^8.4.0",
+    "prettier": "^2.3.0",
+    "resolve-package-path": "^4.0.0",
+    "solhint": "^3.3.5",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.2"
+  },
+  "scripts": {
+    "prepare": "yarn run compile",
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "hardhat:node": "hardhat node --hostname 0.0.0.0",
+    "hardhat:dev": "hardhat --network localhost",
+    "hardhat:xdai": "hardhat --network xdai",
+    "hardhat:mainnet": "hardhat --network mainnet"
+  },
+  "dependencies": {
+    "typechain": "^5.0.0"
+  }
+}

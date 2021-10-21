@@ -1,0 +1,14 @@
+node_modules/*
+build/*
+yarn-error.log
+.gitkeep
+*.env
+
+.openzeppelin/unknown-*.json
+!.openzeppelin/unknown-100.json
+.openzeppelin/.session
+
+#Hardhat files
+cache
+artifacts
+typechain

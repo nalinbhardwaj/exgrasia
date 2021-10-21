@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "juanblanco.solidity",
+    "esbenp.prettier-vscode",
+    "hbenl.vscode-mocha-test-adapter",
+    "jpoissonnier.vscode-styled-components",
+    "iden3.circom",
+    "bungcip.better-toml"
+  ]
+}

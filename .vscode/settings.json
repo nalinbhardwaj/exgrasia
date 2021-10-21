@@ -1,0 +1,13 @@
+{
+  "eslint.workingDirectories": ["./client"],
+  "solidity.compileUsingRemoteVersion": "v0.8.4+commit.c7e474f2",
+  "solidity.solhintRules": {},
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "mochaExplorer.files": ["eth/test/**/*.{j,t}s"],
+  "mochaExplorer.cwd": "eth",
+  "editor.formatOnSave": true,
+  "prettier.requireConfig": true,
+  "solidity.formatter": "none",
+  "files.insertFinalNewline": true,
+  "rewrap.autoWrap.enabled": true
+}

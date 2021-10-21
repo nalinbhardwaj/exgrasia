@@ -1,0 +1,16 @@
+node_modules/*
+build/*
+.idea/*
+
+.DS_Store
+
+node_modules
+*.env
+
+# Yarn stuff
+/.yarn/*
+!/.yarn/releases
+!/.yarn/plugins
+!/.yarn/sdks
+!/.yarn/versions
+/.pnp.*
