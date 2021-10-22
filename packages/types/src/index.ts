@@ -13,7 +13,7 @@ export enum TileType {
   UNKNOWN,
   WATER,
   LAND,
-  MAX = LAND,
+  MAX = LAND, // NOTE: This MAX is hardcoded as 'divisor' in fake_perlin.circom!
 }
 
 export type WorldCoords = {

@@ -9,6 +9,18 @@ By providing configuration containing your Phase 1 Powers of Tau and circuits, t
 3. Output your `wasm` and `zkey` files
 4. Generate and output a `Verifier.sol`
 
+```
+cd packages/zk && yarn circom:dev
+yarn circom:cp
+```
+
+Using fake Perlin:
+
+```
+cd packages/zk && yarn circom:dev:fake
+yarn circom:cp:fake
+```
+
 ## Documentation
 
 See the source projects for full documentation and configuration
