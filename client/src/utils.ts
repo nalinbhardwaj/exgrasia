@@ -7,5 +7,5 @@ export const tileTypeToColor = {
 };
 
 export const perlinToTileType = (perlin: number) => {
-  return perlin > 15 ? TileType.WATER : TileType.LAND;
+  return perlin > 15 ? TileType.LAND : TileType.WATER;
 };
