@@ -14,8 +14,16 @@ describe('TinyWorld', function () {
     expect(deployerAddress).to.equal(adminAddress);
   });
 
-  it('should set seed', async function () {
-    const seed = await world.contracts.core.seed();
-    console.log(seed.toNumber());
+  it('should cache claimed tile', async function () {
+    await world.contracts.core.proveTile(
+      [0, 0],
+      [
+        [0, 0],
+        [0, 0],
+      ],
+      [0, 0],
+      [5, 10, 243, 1]
+    );
+    expect(await world.contracts.core.getCachedTile(5, 10)).to.equal(1);
   });
 });

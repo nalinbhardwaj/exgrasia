@@ -21,11 +21,20 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface TinyWorldStorageInterface extends ethers.utils.Interface {
   functions: {
+    "getCachedTile(uint256,uint256)": FunctionFragment;
     "seed()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "getCachedTile",
+    values: [BigNumberish, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "seed", values?: undefined): string;
 
+  decodeFunctionResult(
+    functionFragment: "getCachedTile",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "seed", data: BytesLike): Result;
 
   events: {};
@@ -45,6 +54,22 @@ export class TinyWorldStorage extends Contract {
   interface: TinyWorldStorageInterface;
 
   functions: {
+    getCachedTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: number;
+    }>;
+
+    "getCachedTile(uint256,uint256)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: number;
+    }>;
+
     seed(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
@@ -54,11 +79,35 @@ export class TinyWorldStorage extends Contract {
     }>;
   };
 
+  getCachedTile(
+    x: BigNumberish,
+    y: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<number>;
+
+  "getCachedTile(uint256,uint256)"(
+    x: BigNumberish,
+    y: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<number>;
+
   seed(overrides?: CallOverrides): Promise<BigNumber>;
 
   "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
+    getCachedTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<number>;
+
+    "getCachedTile(uint256,uint256)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<number>;
+
     seed(overrides?: CallOverrides): Promise<BigNumber>;
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -67,12 +116,36 @@ export class TinyWorldStorage extends Contract {
   filters: {};
 
   estimateGas: {
+    getCachedTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getCachedTile(uint256,uint256)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     seed(overrides?: CallOverrides): Promise<BigNumber>;
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    getCachedTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getCachedTile(uint256,uint256)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     seed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "seed()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;

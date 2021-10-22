@@ -22,18 +22,33 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface TinyWorldInterface extends ethers.utils.Interface {
   functions: {
+    "getCachedTile(uint256,uint256)": FunctionFragment;
     "initialize(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[4])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "seed()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
+    functionFragment: "getCachedTile",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "initialize",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "proveTile",
+    values: [
+      [BigNumberish, BigNumberish],
+      [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
+      [BigNumberish, BigNumberish],
+      [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+    ]
+  ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
@@ -44,8 +59,13 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "getCachedTile",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "proveTile", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -77,6 +97,22 @@ export class TinyWorld extends Contract {
   interface: TinyWorldInterface;
 
   functions: {
+    getCachedTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: number;
+    }>;
+
+    "getCachedTile(uint256,uint256)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: number;
+    }>;
+
     initialize(
       _seed: BigNumberish,
       overrides?: Overrides
@@ -94,6 +130,22 @@ export class TinyWorld extends Contract {
     "owner()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
+
+    proveTile(
+      a: [BigNumberish, BigNumberish],
+      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
+      c: [BigNumberish, BigNumberish],
+      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[4])"(
+      a: [BigNumberish, BigNumberish],
+      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
+      c: [BigNumberish, BigNumberish],
+      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -118,6 +170,18 @@ export class TinyWorld extends Contract {
     ): Promise<ContractTransaction>;
   };
 
+  getCachedTile(
+    x: BigNumberish,
+    y: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<number>;
+
+  "getCachedTile(uint256,uint256)"(
+    x: BigNumberish,
+    y: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<number>;
+
   initialize(
     _seed: BigNumberish,
     overrides?: Overrides
@@ -131,6 +195,22 @@ export class TinyWorld extends Contract {
   owner(overrides?: CallOverrides): Promise<string>;
 
   "owner()"(overrides?: CallOverrides): Promise<string>;
+
+  proveTile(
+    a: [BigNumberish, BigNumberish],
+    b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
+    c: [BigNumberish, BigNumberish],
+    publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[4])"(
+    a: [BigNumberish, BigNumberish],
+    b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
+    c: [BigNumberish, BigNumberish],
+    publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -151,6 +231,18 @@ export class TinyWorld extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    getCachedTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<number>;
+
+    "getCachedTile(uint256,uint256)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<number>;
+
     initialize(_seed: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     "initialize(uint256)"(
@@ -161,6 +253,22 @@ export class TinyWorld extends Contract {
     owner(overrides?: CallOverrides): Promise<string>;
 
     "owner()"(overrides?: CallOverrides): Promise<string>;
+
+    proveTile(
+      a: [BigNumberish, BigNumberish],
+      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
+      c: [BigNumberish, BigNumberish],
+      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[4])"(
+      a: [BigNumberish, BigNumberish],
+      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
+      c: [BigNumberish, BigNumberish],
+      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -189,6 +297,18 @@ export class TinyWorld extends Contract {
   };
 
   estimateGas: {
+    getCachedTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getCachedTile(uint256,uint256)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     initialize(_seed: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
     "initialize(uint256)"(
@@ -199,6 +319,22 @@ export class TinyWorld extends Contract {
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    proveTile(
+      a: [BigNumberish, BigNumberish],
+      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
+      c: [BigNumberish, BigNumberish],
+      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[4])"(
+      a: [BigNumberish, BigNumberish],
+      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
+      c: [BigNumberish, BigNumberish],
+      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     renounceOwnership(overrides?: Overrides): Promise<BigNumber>;
 
@@ -220,6 +356,18 @@ export class TinyWorld extends Contract {
   };
 
   populateTransaction: {
+    getCachedTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getCachedTile(uint256,uint256)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     initialize(
       _seed: BigNumberish,
       overrides?: Overrides
@@ -233,6 +381,22 @@ export class TinyWorld extends Contract {
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    proveTile(
+      a: [BigNumberish, BigNumberish],
+      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
+      c: [BigNumberish, BigNumberish],
+      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[4])"(
+      a: [BigNumberish, BigNumberish],
+      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
+      c: [BigNumberish, BigNumberish],
+      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
     renounceOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
 
