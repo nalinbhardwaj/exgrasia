@@ -13,6 +13,7 @@ export enum TileType {
   UNKNOWN,
   WATER,
   LAND,
+  MAX = LAND,
 }
 
 export type WorldCoords = {
@@ -80,5 +81,5 @@ export const DEV_TEST_PRIVATE_KEY =
   '0x044C7963E9A89D4F8B64AB23E02E97B2E00DD57FCB60F316AC69B77135003AEF';
 
 export function fakePerlin(x: number, y: number, seed: number): TileType {
-  return 1 + ((x + y + seed) % 2);
+  return 1 + ((x + y + seed) % TileType.MAX);
 }
