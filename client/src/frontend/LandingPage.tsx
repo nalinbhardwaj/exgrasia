@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { CORE_CONTRACT_ADDRESS } from 'common-contracts';
 import GameManager from '../backend/GameManager';
 import { EthConnection } from '@darkforest_eth/network';
-import { perlin } from '@darkforest_eth/hashing';
 import { getEthConnection } from '../backend/Blockchain';
 import { DEV_TEST_PRIVATE_KEY, TileType, WorldCoords } from 'common-types';
 import { tileTypeToColor } from '../utils';
@@ -30,6 +29,7 @@ export default function LandingPage() {
         setEthConnection(ethConnection);
         setStep(LoadingStep.LOADED_ETH_CONNECTION);
         const gm = await GameManager.create(ethConnection);
+        window.gm = gm;
         setGameManager(gm);
         setStep(LoadingStep.LOADED_GAME_MANAGER);
       })

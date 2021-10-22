@@ -1,4 +1,4 @@
-import { SnarkJSProofAndSignals, Tile, SnarkInput } from 'common-types';
+import { SnarkJSProofAndSignals, Tile, SnarkInput, ProveTileContractCallArgs } from 'common-types';
 import FastQueue from 'fastq';
 
 type ZKPTask = {
@@ -119,6 +119,27 @@ class SnarkArgsHelper {
     } catch (e) {
       throw e;
     }
+  }
+
+  async getFakeProof(tile: Tile): Promise<ProveTileContractCallArgs> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve([
+          ['0', '0'],
+          [
+            ['0', '0'],
+            ['0', '0'],
+          ],
+          ['0', '0'],
+          [
+            tile.coords.x.toString(),
+            tile.coords.y.toString(),
+            this.seed.toString(),
+            tile.tileType.toString(),
+          ],
+        ]);
+      }, 2000);
+    });
   }
 }
 

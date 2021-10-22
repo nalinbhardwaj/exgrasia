@@ -1,10 +1,17 @@
 import { EthConnection } from '@darkforest_eth/network';
 import { perlin, PerlinConfig } from '@darkforest_eth/hashing';
-import { EthAddress, fakePerlin, Tile, TileType, WorldCoords } from 'common-types';
+import { EthAddress, Tile, TileType, WorldCoords } from 'common-types';
 import { EventEmitter } from 'events';
 import { ContractsAPI, makeContractsAPI } from './ContractsAPI';
 import SnarkHelper from './SnarkHelper';
-import { perlinToTileType } from '../utils';
+import { getRandomActionId, perlinToTileType } from '../utils';
+import {
+  ContractMethodName,
+  ContractsAPIEvent,
+  isUnconfirmedProveTile,
+  SubmittedTx,
+  TxIntent,
+} from '../_types/ContractAPITypes';
 
 class GameManager extends EventEmitter {
   /**
@@ -108,9 +115,71 @@ class GameManager extends EventEmitter {
     // are happening now, which makes no sense.
     contractsAPI.setupEventListeners();
 
-    // TODO setup gameManager listeners
+    // set up listeners: whenever ContractsAPI reports some game state update,
+    // do some logic
+    // also, handle state updates for locally-initialized txIntents
+    gameManager.contractsAPI
+      .on(ContractsAPIEvent.TileProved, async (_tile: Tile) => {
+        // todo: update in memory data store
+        // todo: emit event to UI
+      })
+      .on(ContractsAPIEvent.TxSubmitted, (unconfirmedTx: SubmittedTx) => {
+        // todo: save the tx to localstorage
+        gameManager.onTxSubmit(unconfirmedTx);
+      })
+      .on(ContractsAPIEvent.TxConfirmed, async (unconfirmedTx: SubmittedTx) => {
+        // todo: remove the tx from localstorage
+        if (isUnconfirmedProveTile(unconfirmedTx)) {
+          // todo: update in memory data store
+        }
+        gameManager.onTxConfirmed(unconfirmedTx);
+      })
+      .on(ContractsAPIEvent.TxReverted, async (unconfirmedTx: SubmittedTx) => {
+        // todo: removethe tx from localStorage
+        gameManager.onTxReverted(unconfirmedTx);
+      });
 
     return gameManager;
+  }
+
+  private onTxIntent(txIntent: TxIntent): void {
+    // hook to be called on txIntent initialization
+    // pop up a little notification, save txIntent to memory
+    // if you want to display it to UI
+    console.log('txIntent initialized:');
+    console.log(txIntent);
+  }
+
+  private onTxSubmit(unminedTx: SubmittedTx): void {
+    // hook to be called on successful tx submission to mempool
+    // pop up a little notification or log something to console
+    console.log('submitted tx:');
+    console.log(unminedTx);
+  }
+
+  private onTxIntentFail(txIntent: TxIntent, e: Error): void {
+    // hook to be called when tx fails to submit (SNARK proof fails,
+    // or rejected from mempool for whatever reason
+    // pop up a little notification, clear the txIntent from memory
+    // if it was being displayed in UI
+    console.log(`txIntent failed with error ${e.message}`);
+    console.log(txIntent);
+  }
+
+  private onTxConfirmed(tx: SubmittedTx) {
+    // hook to be called when tx is mined successfully
+    // pop up a little notification or log block explorer link
+    // clear txIntent from memory if it was being displayed in UI
+    console.log('confirmed tx:');
+    console.log(tx);
+  }
+
+  private onTxReverted(tx: SubmittedTx) {
+    // hook to be called if tx reverts
+    // pop up a little notification or log block explorer link
+    // clear txIntent from memory if it was being displayed in UI
+    console.log('reverted tx:');
+    console.log(tx);
   }
 
   getWorldSeed(): number {
@@ -138,7 +207,7 @@ class GameManager extends EventEmitter {
     return res === 0 ? this.getOriginalTile(coords) : res;
   }
 
-  async checkProof(tile: Tile): Promise<Boolean> {
+  async checkProof(tile: Tile): Promise<boolean> {
     return this.snarkHelper
       .getBasicProof(tile)
       .then((snarkArgs) => {
@@ -149,6 +218,31 @@ class GameManager extends EventEmitter {
         console.error(err);
         return false;
       });
+  }
+
+  public proveTile(tile: Tile): GameManager {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+
+    const actionId = getRandomActionId();
+    const txIntent = {
+      actionId,
+      methodName: ContractMethodName.PROVE_TILE,
+      tile,
+    };
+    this.onTxIntent(txIntent);
+
+    this.snarkHelper
+      .getFakeProof(tile)
+      .then((callArgs) => {
+        return this.contractsAPI.proveTile(callArgs, txIntent);
+      })
+      .catch((err) => {
+        this.onTxIntentFail(txIntent, err);
+      });
+
+    return this;
   }
 }
 

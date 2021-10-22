@@ -86,6 +86,13 @@ export type ProofArgs = {
   input: SnarkInput;
 };
 
+export type ProveTileContractCallArgs = [
+  [string, string],
+  [[string, string], [string, string]],
+  [string, string],
+  [string, string, string, string]
+];
+
 /**
  * Corresponds to local dev deployer account 0x1c0f0Af3262A7213E59Be7f1440282279D788335
  */
