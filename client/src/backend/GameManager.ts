@@ -122,6 +122,19 @@ class GameManager extends EventEmitter {
   async getCachedTile(coords: WorldCoords): Promise<TileType> {
     return this.contractsAPI.getCachedTile(coords);
   }
+
+  async checkProof(tile: Tile): Promise<Boolean> {
+    return this.snarkHelper
+      .getBasicProof(tile)
+      .then((snarkArgs) => {
+        console.log('got snark args: ', JSON.stringify(snarkArgs));
+        return true;
+      })
+      .catch((err) => {
+        console.error(err);
+        return false;
+      });
+  }
 }
 
 export default GameManager;

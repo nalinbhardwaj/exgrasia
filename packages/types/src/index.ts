@@ -60,19 +60,31 @@ export function address(str: string): EthAddress {
   return `0x${ret}` as EthAddress;
 }
 
+export interface SnarkJSProof {
+  pi_a: [string, string, string];
+  pi_b: [[string, string], [string, string], [string, string]];
+  pi_c: [string, string, string];
+}
+
+export interface SnarkJSProofAndSignals {
+  proof: SnarkJSProof;
+  publicSignals: string[];
+}
+
+export interface SnarkInput {
+  x: string;
+  y: string;
+  seed: string;
+  tileType: string;
+}
+
 /**
  * Shape of the args for `revealLocation` DarkForestCore contract call
  */
-export type ProofArgs = [
-  [string, string], // proofA
-  [
-    // proofB
-    [string, string],
-    [string, string]
-  ],
-  [string, string], // proofC
-  [string, string, string, string] // x, y, seed, tileType
-];
+export type ProofArgs = {
+  proof: SnarkJSProof;
+  input: SnarkInput;
+};
 
 /**
  * Corresponds to local dev deployer account 0x1c0f0Af3262A7213E59Be7f1440282279D788335

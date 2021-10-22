@@ -49,6 +49,19 @@ export default function LandingPage() {
     }
   };
 
+  const testProof = (i: number, j: number) => async () => {
+    if (gameManager && !queryingBlockchain) {
+      console.log('testProof', i, j);
+      const coords = { x: i, y: j };
+      setQueryingBlockchain(true);
+      const tileType = await gameManager.getCachedTile(coords);
+      setQueryingBlockchain(false);
+      const tile = { coords, tileType };
+      const check = await gameManager.checkProof(tile);
+      console.log('checked', check);
+    }
+  };
+
   return (
     <>
       <Page>
@@ -73,6 +86,24 @@ export default function LandingPage() {
                       <GridSquare
                         key={100 * i + j}
                         onClick={onGridClick(i, j)}
+                        style={{ backgroundColor: tileTypeToColor[tile.tileType] }}
+                      />
+                    );
+                  })}
+                </GridRow>
+              );
+            })
+          : null}
+        <p>yo</p>
+        {gameManager
+          ? gameManager.getOriginalTiles().map((coordRow, i) => {
+              return (
+                <GridRow key={i}>
+                  {coordRow.map((tile, j) => {
+                    return (
+                      <GridSquare
+                        key={100 * i + j}
+                        onClick={testProof(i, j)}
                         style={{ backgroundColor: tileTypeToColor[tile.tileType] }}
                       />
                     );
