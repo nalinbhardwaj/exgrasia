@@ -1,9 +1,9 @@
 // @ts-ignore because they don't exist before first compile
-import type { Valhalla, ValhallaGetters } from 'common-contracts/typechain';
+import type { TinyWorld, TinyWorldGetters } from 'common-contracts/typechain';
 
-export { Valhalla, ValhallaGetters };
+export { TinyWorld, TinyWorldGetters };
 
-export interface ValhallaCoreReturn {
+export interface TinyWorldCoreReturn {
   blockNumber: number;
-  contract: Valhalla;
+  contract: TinyWorld;
 }

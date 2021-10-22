@@ -20,11 +20,11 @@ async function copyAbi(
 
   // save the contract ABIs to client
   const coreAbi = prettier.format(
-    JSON.stringify((await hre.artifacts.readArtifact('Valhalla')).abi),
+    JSON.stringify((await hre.artifacts.readArtifact('TinyWorld')).abi),
     { semi: false, parser: 'json' }
   );
   const gettersAbi = prettier.format(
-    JSON.stringify((await hre.artifacts.readArtifact('ValhallaGetters')).abi),
+    JSON.stringify((await hre.artifacts.readArtifact('TinyWorldGetters')).abi),
     { semi: false, parser: 'json' }
   );
 
@@ -33,8 +33,8 @@ async function copyAbi(
   await fs.mkdir(abisDir, { recursive: true });
 
   // Save contract ABIs to client
-  await fs.writeFile(path.join(abisDir, 'Valhalla.json'), coreAbi);
-  await fs.writeFile(path.join(abisDir, 'ValhallaGetters.json'), gettersAbi);
+  await fs.writeFile(path.join(abisDir, 'TinyWorld.json'), coreAbi);
+  await fs.writeFile(path.join(abisDir, 'TinyWorldGetters.json'), gettersAbi);
 }
 
 // todo upstream export of task name

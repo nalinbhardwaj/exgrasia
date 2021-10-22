@@ -4,9 +4,9 @@ import { DeployOptions } from '@openzeppelin/hardhat-upgrades/dist/deploy-proxy'
 import { Signer, Contract } from 'ethers';
 import { TransactionMinedTimeout } from '@openzeppelin/upgrades-core';
 
-import type { Valhalla, ValhallaGetters } from '../task-types';
+import type { TinyWorld, TinyWorldGetters } from '../task-types';
 
-task('upgrade:core', 'upgrade Valhalla contract (only)').setAction(upgradeCore);
+task('upgrade:core', 'upgrade TinyWorld contract (only)').setAction(upgradeCore);
 
 async function upgradeCore({}, hre: HardhatRuntimeEnvironment) {
   await hre.run('utils:assertChainId');
@@ -16,8 +16,8 @@ async function upgradeCore({}, hre: HardhatRuntimeEnvironment) {
 
   const { CORE_CONTRACT_ADDRESS } = hre.contracts;
 
-  await upgradeProxyWithRetry<Valhalla>({
-    contractName: 'Valhalla',
+  await upgradeProxyWithRetry<TinyWorld>({
+    contractName: 'TinyWorld',
     contractAddress: CORE_CONTRACT_ADDRESS,
     signerOrOptions: {},
     deployOptions: {},
@@ -26,7 +26,7 @@ async function upgradeCore({}, hre: HardhatRuntimeEnvironment) {
   });
 }
 
-task('upgrade:getters', 'upgrade ValhallaGetters contract (only)').setAction(upgradeGetters);
+task('upgrade:getters', 'upgrade TinyWorldGetters contract (only)').setAction(upgradeGetters);
 
 async function upgradeGetters({}, hre: HardhatRuntimeEnvironment) {
   await hre.run('utils:assertChainId');
@@ -36,8 +36,8 @@ async function upgradeGetters({}, hre: HardhatRuntimeEnvironment) {
 
   const { GETTERS_CONTRACT_ADDRESS } = hre.contracts;
 
-  await upgradeProxyWithRetry<ValhallaGetters>({
-    contractName: 'ValhallaGetters',
+  await upgradeProxyWithRetry<TinyWorldGetters>({
+    contractName: 'TinyWorldGetters',
     contractAddress: GETTERS_CONTRACT_ADDRESS,
     signerOrOptions: {},
     deployOptions: {},

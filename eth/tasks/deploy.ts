@@ -2,7 +2,7 @@ import { subtask, task, types } from 'hardhat/config';
 import { FactoryOptions, HardhatRuntimeEnvironment } from 'hardhat/types';
 import * as fs from 'fs';
 import * as path from 'path';
-import type { Valhalla, ValhallaGetters, ValhallaCoreReturn } from '../task-types';
+import type { TinyWorld, TinyWorldGetters, TinyWorldCoreReturn } from '../task-types';
 import * as prettier from 'prettier';
 import { Signer, Contract } from 'ethers';
 import { DeployOptions } from '@openzeppelin/hardhat-upgrades/dist/deploy-proxy';
@@ -14,39 +14,30 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
   // need to force a compile for tasks
   await hre.run('compile');
 
-  // Were only using one account, getSigners()[0], the deployer. Becomes the ProxyAdmin
-  const [deployer] = await hre.ethers.getSigners();
-  // give contract administration over to an admin adress if was provided, or use deployer
-  const controllerWalletAddress =
-    hre.ADMIN_PUBLIC_ADDRESS !== undefined ? hre.ADMIN_PUBLIC_ADDRESS : deployer.address;
-
   // deploy the core contract
-  const valhallaCoreReturn: ValhallaCoreReturn = await hre.run('deploy:core', {
-    controllerWalletAddress,
-  });
+  const tinyWorldCoreReturn: TinyWorldCoreReturn = await hre.run('deploy:core', {});
 
-  const coreAddress = valhallaCoreReturn.contract.address;
-  console.log('ValhallaCore deployed to:', coreAddress);
+  const coreAddress = tinyWorldCoreReturn.contract.address;
+  console.log('TinyWorldCore deployed to:', coreAddress);
 
-  const valhallaGetters: ValhallaGetters = await hre.run('deploy:getters', {
-    controllerWalletAddress,
+  const tinyWorldGetters: TinyWorldGetters = await hre.run('deploy:getters', {
     coreAddress,
   });
 
-  const gettersAddress = valhallaGetters.address;
+  const gettersAddress = tinyWorldGetters.address;
 
   await hre.run('deploy:save', {
-    coreBlockNumber: valhallaCoreReturn.blockNumber,
+    coreBlockNumber: tinyWorldCoreReturn.blockNumber,
     coreAddress,
     gettersAddress,
   });
 
-  // give all contract administration over to an admin adress if was provided
+  // give all contract administration over to an admin address if was provided
   if (hre.ADMIN_PUBLIC_ADDRESS) {
     await hre.upgrades.admin.transferProxyAdminOwnership(hre.ADMIN_PUBLIC_ADDRESS);
-
-    console.log('Deployed successfully. Godspeed cadet.');
   }
+
+  console.log('Deployed successfully. Godspeed cadet.');
 }
 
 subtask('deploy:save').setAction(deploySave);
@@ -70,7 +61,7 @@ async function deploySave(
     `
   /**
    * This package contains deployed contract addresses, ABIs, and Typechain types
-   * for the Valhalla prize universe.
+   * for TinyWorld.
    *
    * ## Installation
    * 
@@ -97,15 +88,15 @@ async function deploySave(
    */
   export const NETWORK_ID = ${hre.network.config.chainId};
   /**
-   * The block in which the Valhalla contract was deployed.
+   * The block in which the TinyWorld contract was deployed.
    */
   export const START_BLOCK = ${isDev ? 0 : args.coreBlockNumber};
   /**
-   * The address for the Valhalla contract.
+   * The address for the TinyWorld contract.
    */
   export const CORE_CONTRACT_ADDRESS = '${args.coreAddress}';
   /**
-   * The address for the ValhallaGetters contract.
+   * The address for the TinyWorldGetters contract.
    */
   export const GETTERS_CONTRACT_ADDRESS = '${args.gettersAddress}';
   `,
@@ -115,52 +106,43 @@ async function deploySave(
   fs.writeFileSync(contractsFile, addrFileContents);
 }
 
-subtask('deploy:core', 'deploy and return tokens contract')
-  .addParam('controllerWalletAddress', '', undefined, types.string)
-  .setAction(deployCore);
+subtask('deploy:core', 'deploy and return tokens contract').setAction(deployCore);
 
-async function deployCore(
-  args: {
-    controllerWalletAddress: string;
-  },
-  hre: HardhatRuntimeEnvironment
-): Promise<ValhallaCoreReturn> {
-  const valhallaCore = await deployProxyWithRetry<Valhalla>({
-    contractName: 'Valhalla',
+async function deployCore(_args: {}, hre: HardhatRuntimeEnvironment): Promise<TinyWorldCoreReturn> {
+  const tinyWorldCore = await deployProxyWithRetry<TinyWorld>({
+    contractName: 'TinyWorld',
     signerOrOptions: {},
-    contractArgs: [args.controllerWalletAddress],
+    contractArgs: [hre.initializers.SEED_1],
     deployOptions: {},
     retries: 5,
     hre,
   });
 
-  const blockNumber = await (await valhallaCore.deployTransaction.wait()).blockNumber;
+  const blockNumber = await (await tinyWorldCore.deployTransaction.wait()).blockNumber;
+
+  console.log((await tinyWorldCore.seed()).toNumber());
 
   return {
     // should be impossible to not exist since we waited on it in deployProxyWithRetry
     blockNumber,
-    contract: valhallaCore,
+    contract: tinyWorldCore,
   };
 }
 
 subtask('deploy:getters', 'deploy and return getters')
-  .addParam('controllerWalletAddress', '', undefined, types.string)
   .addParam('coreAddress', '', undefined, types.string)
   .setAction(deployGetters);
 
 async function deployGetters(
   args: {
-    controllerWalletAddress: string;
     coreAddress: string;
-    tokensAddress: string;
-    utilsAddress: string;
   },
   hre: HardhatRuntimeEnvironment
-): Promise<ValhallaGetters> {
-  return deployProxyWithRetry<ValhallaGetters>({
-    contractName: 'ValhallaGetters',
+): Promise<TinyWorldGetters> {
+  return deployProxyWithRetry<TinyWorldGetters>({
+    contractName: 'TinyWorldGetters',
     signerOrOptions: {},
-    contractArgs: [args.controllerWalletAddress, args.coreAddress],
+    contractArgs: [args.coreAddress],
     deployOptions: {},
     retries: 5,
     hre,

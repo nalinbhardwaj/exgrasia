@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { HardhatUserConfig, extendEnvironment } from 'hardhat/config';
+import { lazyObject } from 'hardhat/plugins';
 import '@nomiclabs/hardhat-ethers';
 import '@openzeppelin/hardhat-upgrades';
 import 'hardhat-typechain';
@@ -28,7 +29,15 @@ extendEnvironment((env: HardhatRuntimeEnvironment) => {
 
   env.packageDirs = packageDirs;
 
-  env.contracts = require(`common-contracts`);
+  env.contracts = lazyObject(() => {
+    const contracts = require('common-contracts');
+    return settings.parse(settings.Contracts, contracts);
+  });
+
+  env.initializers = lazyObject(() => {
+    const { initializers = {} } = settings.load(env.network.name);
+    return settings.parse(settings.Initializers, initializers);
+  });
 });
 
 // The xdai config, but it isn't added to networks unless we have a DEPLOYER_MNEMONIC

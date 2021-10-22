@@ -1,4 +1,4 @@
-import { Valhalla, ValhallaGetters } from '../task-types';
+import { TinyWorld, TinyWorldGetters } from '../task-types';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { subtask } from 'hardhat/config';
 
@@ -16,23 +16,23 @@ async function assertChainId({}, hre: HardhatRuntimeEnvironment) {
 
 subtask('utils:getCore', 'get the current core contract').setAction(getCore);
 
-async function getCore({}, hre: HardhatRuntimeEnvironment): Promise<Valhalla> {
+async function getCore({}, hre: HardhatRuntimeEnvironment): Promise<TinyWorld> {
   const { CORE_CONTRACT_ADDRESS } = hre.contracts;
 
   const [deployer] = await hre.ethers.getSigners();
-  const ValhallFactory = await hre.ethers.getContractFactory('Valhalla', {});
+  const TinyWorldFactory = await hre.ethers.getContractFactory('TinyWorld', {});
 
-  const valhalla = ValhallFactory.attach(CORE_CONTRACT_ADDRESS);
-  return valhalla.connect(deployer) as Valhalla;
+  const tinyWorld = TinyWorldFactory.attach(CORE_CONTRACT_ADDRESS);
+  return tinyWorld.connect(deployer) as TinyWorld;
 }
 
 subtask('utils:getGetters', 'get the current getters contract').setAction(getGetters);
 
-async function getGetters({}, hre: HardhatRuntimeEnvironment): Promise<ValhallaGetters> {
+async function getGetters({}, hre: HardhatRuntimeEnvironment): Promise<TinyWorldGetters> {
   const { GETTERS_CONTRACT_ADDRESS } = hre.contracts;
 
   const [deployer] = await hre.ethers.getSigners();
-  const GettersFactory = await hre.ethers.getContractFactory('ValhallaGetters');
+  const GettersFactory = await hre.ethers.getContractFactory('TinyWorldGetters');
   const getters = GettersFactory.attach(GETTERS_CONTRACT_ADDRESS);
-  return getters.connect(deployer) as ValhallaGetters;
+  return getters.connect(deployer) as TinyWorldGetters;
 }

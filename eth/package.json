@@ -1,13 +1,14 @@
 {
   "name": "eth",
   "version": "1.0.0",
-  "description": "valhalla prize planet contracts",
+  "description": "tiny world contracts",
   "main": "index.js",
   "license": "MIT",
   "engines": {
     "node": "^16"
   },
   "devDependencies": {
+    "@iarna/toml": "^2.2.5",
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@openzeppelin/contracts-upgradeable": "^4.1.0",
@@ -16,6 +17,7 @@
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.6.1",
     "chai": "^4.3.4",
+    "cosmiconfig": "^7.0.1",
     "dotenv": "^10.0.0",
     "eslint": "^7.27.0",
     "ethereum-waffle": "^3.3.0",
@@ -27,8 +29,11 @@
     "prettier": "^2.3.0",
     "resolve-package-path": "^4.0.0",
     "solhint": "^3.3.5",
+    "ts-dedent": "^2.2.0",
     "ts-node": "^10.0.0",
-    "typescript": "^4.3.2"
+    "typechain": "^5.2.0",
+    "typescript": "^4.3.2",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "prepare": "yarn run compile",
@@ -40,8 +45,5 @@
     "hardhat:dev": "hardhat --network localhost",
     "hardhat:xdai": "hardhat --network xdai",
     "hardhat:mainnet": "hardhat --network mainnet"
-  },
-  "dependencies": {
-    "typechain": "^5.0.0"
   }
 }

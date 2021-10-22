@@ -1,6 +1,6 @@
 /**
  * This package contains deployed contract addresses, ABIs, and Typechain types
- * for the Valhalla prize universe.
+ * for TinyWorld.
  *
  * ## Installation
  *
@@ -27,14 +27,14 @@ export const NETWORK = 'localhost';
  */
 export const NETWORK_ID = 31337;
 /**
- * The block in which the Valhalla contract was deployed.
+ * The block in which the TinyWorld contract was deployed.
  */
 export const START_BLOCK = 0;
 /**
- * The address for the Valhalla contract.
+ * The address for the TinyWorld contract.
  */
 export const CORE_CONTRACT_ADDRESS = '0x1d8d73c2b578dd2ac32c79753dD8Ff34ad4c2FbF';
 /**
- * The address for the ValhallaGetters contract.
+ * The address for the TinyWorldGetters contract.
  */
 export const GETTERS_CONTRACT_ADDRESS = '0x627a72bbE16416Ae722BA05876C5cB2dcb0Dc6BB';
