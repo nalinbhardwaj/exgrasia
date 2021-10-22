@@ -96,12 +96,15 @@ class SnarkArgsHelper {
     try {
       const start = Date.now();
       console.log('INIT: calculating witness and proof');
+      console.log(`tile basic proof ${tile.tileType}`);
       const input: SnarkInput = {
         x: tile.coords.x.toString(),
         y: tile.coords.y.toString(),
         seed: this.seed.toString(),
         tileType: tile.tileType.toString(),
       };
+
+      console.log(`input: ${tile.tileType}`);
 
       const { proof, publicSignals } = await this.snarkProverQueue.doProof(
         input,

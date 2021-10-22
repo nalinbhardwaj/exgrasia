@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { CORE_CONTRACT_ADDRESS } from 'common-contracts';
 import GameManager from '../backend/GameManager';
 import { EthConnection } from '@darkforest_eth/network';
+import { perlin } from '@darkforest_eth/hashing';
 import { getEthConnection } from '../backend/Blockchain';
 import { DEV_TEST_PRIVATE_KEY, TileType, WorldCoords } from 'common-types';
 import { tileTypeToColor } from '../utils';
@@ -56,6 +57,7 @@ export default function LandingPage() {
       setQueryingBlockchain(true);
       const tileType = await gameManager.getCachedTile(coords);
       setQueryingBlockchain(false);
+      console.log(`tiletype: ${tileType}`);
       const tile = { coords, tileType };
       const check = await gameManager.checkProof(tile);
       console.log('checked', check);

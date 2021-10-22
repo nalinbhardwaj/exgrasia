@@ -2,11 +2,23 @@ include "perlin/perlin.circom"
 include "../../../node_modules/circomlib/circuits/comparators.circom"
 include "../../../node_modules/circomlib/circuits/gates.circom"
 
-template Main() {
+template PerlinToTileType(BITS) {
+    signal input value;
+    signal input lower;
+    signal output out;
+
+    component lowerBound = GreaterThan(BITS);
+    lowerBound.in[0] <== value;
+    lowerBound.in[1] <== lower;
+
+    out <== lowerBound.out;
+}
+
+template Main(BITS) {
 	signal input x;
 	signal input y;
 	signal input seed;
-	signal input tileType;
+	signal output tileType;
 
     component perlin = MultiScalePerlin();
     perlin.p[0] <== x;
@@ -17,8 +29,12 @@ template Main() {
     perlin.KEY <== seed;
     log(17070509);
     log(perlin.out);
-    log(tileType);
-    perlin.out === tileType;
+
+    component type = PerlinToTileType(BITS);
+    type.value <== perlin.out;
+    type.lower <== 15;
+    log(type.out + 1);
+    tileType <== type.out + 1;
 }
 
-component main = Main();
+component main = Main(10);

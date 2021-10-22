@@ -1,8 +1,10 @@
 import { EthConnection } from '@darkforest_eth/network';
+import { perlin, PerlinConfig } from '@darkforest_eth/hashing';
 import { EthAddress, fakePerlin, Tile, TileType, WorldCoords } from 'common-types';
 import { EventEmitter } from 'events';
 import { ContractsAPI, makeContractsAPI } from './ContractsAPI';
 import SnarkHelper from './SnarkHelper';
+import { perlinToTileType } from '../utils';
 
 class GameManager extends EventEmitter {
   /**
@@ -45,6 +47,8 @@ class GameManager extends EventEmitter {
 
   private readonly originalTiles: Tile[][];
 
+  private readonly perlinConfig: PerlinConfig;
+
   private constructor(
     account: EthAddress | undefined,
     ethConnection: EthConnection,
@@ -62,13 +66,15 @@ class GameManager extends EventEmitter {
     this.worldWidth = worldWidth;
     this.snarkHelper = snarkHelper;
     this.originalTiles = [];
+    this.perlinConfig = { key: worldSeed, scale: 4, mirrorX: false, mirrorY: false, floor: true };
 
     for (let i = 0; i < worldWidth; i++) {
       this.originalTiles.push([]);
       for (let j = 0; j < worldWidth; j++) {
+        const coords = { x: i, y: j };
         this.originalTiles[i].push({
-          coords: { x: i, y: j },
-          tileType: fakePerlin(i, j, this.worldSeed),
+          coords: coords,
+          tileType: perlinToTileType(perlin(coords, this.perlinConfig)),
         });
       }
     }
@@ -119,8 +125,17 @@ class GameManager extends EventEmitter {
     return this.originalTiles;
   }
 
+  getOriginalTile(coords: WorldCoords): TileType {
+    console.log(
+      `originalTiles, ${JSON.stringify(this.originalTiles[coords.x][coords.y].tileType)}`
+    );
+    return this.originalTiles[coords.x][coords.y].tileType;
+  }
+
   async getCachedTile(coords: WorldCoords): Promise<TileType> {
-    return this.contractsAPI.getCachedTile(coords);
+    const res = await this.contractsAPI.getCachedTile(coords);
+    console.log(`coords-> res: ${coords}, ${res}`);
+    return res === 0 ? this.getOriginalTile(coords) : res;
   }
 
   async checkProof(tile: Tile): Promise<Boolean> {

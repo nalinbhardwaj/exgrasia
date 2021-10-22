@@ -207,6 +207,13 @@
   resolved "https://registry.yarnpkg.com/@darkforest_eth/events/-/events-6.6.6.tgz#85acecec6f4fe45280e0401f0e05e7fd4c14b038"
   integrity sha512-XCUOb/6IdZtOIgk4nLJg+t8YqKn4dmhO52zoI5HQ5pUl8wXbtB7eaPaFduC6wwn14pTyiYGMXEcr2w7BkMuu0A==
 
+"@darkforest_eth/hashing@^6.6.6":
+  version "6.6.6"
+  resolved "https://registry.yarnpkg.com/@darkforest_eth/hashing/-/hashing-6.6.6.tgz#36b81ee3e1e1cc70d802e970810c0bf220db37a1"
+  integrity sha512-p6WoeKFA4+o5vWmLsbkFOa42jRMufYSEa9rAggBrRoQ1uI2Rmw2NeIUCXrF6y0663m3boqeOzkGEW2z2XCPzhw==
+  dependencies:
+    big-integer "^1.6.48"
+
 "@darkforest_eth/hexgen@6.6.6":
   version "6.6.6"
   resolved "https://registry.yarnpkg.com/@darkforest_eth/hexgen/-/hexgen-6.6.6.tgz#4ed3dc52a8df1590d18756047a1e584a76444cc2"
