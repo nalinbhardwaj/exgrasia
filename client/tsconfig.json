@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "es2019",
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react", // use typescript to transpile jsx to js
+    "allowJs": true, // allow a partial TypeScript and JavaScript codebase
+    "moduleResolution": "Node",
+    "lib": ["es2019", "dom"],
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*", "embedded_plugins/*", "plugins/*"],
+  "exclude": ["./node_modules", "./dist", "./declarations"],
+  "typedocOptions": {
+    "entryPoints": ["src"],
+    "out": "docs",
+    "hideBreadcrumbs": true,
+    "readme": "none",
+    "disableSources": true,
+    "disableOutputCheck": true,
+    "excludeExternals": true,
+    "listInvalidSymbolLinks": true
+  }
+}

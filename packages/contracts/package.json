@@ -1,8 +1,6 @@
 {
   "name": "common-contracts",
   "version": "1.0.0",
-  "license": "MIT",
-  "author": "Clown Town Labs Inc. <brian@clowntown.dev>",
   "engines": {
     "node": "^16"
   },

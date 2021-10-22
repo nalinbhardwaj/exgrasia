@@ -3,3 +3,4 @@
 
 [initializers]
 SEED_1=42
+WORLD_WIDTH=20

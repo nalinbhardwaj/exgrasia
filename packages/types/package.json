@@ -1,0 +1,30 @@
+{
+  "name": "common-types",
+  "version": "1.0.0",
+  "engines": {
+    "node": "^16"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "prepublishOnly": "npm run docs",
+    "prepare": "tsc -p .",
+    "test": "exit 0",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "docs": "typedoc && npm run format"
+  },
+  "dependencies": {
+    "typedoc": "^0.20.36",
+    "typedoc-plugin-markdown": "^3.8.2"
+  },
+  "devDependencies": {
+    "del-cli": "^3.0.1",
+    "eslint": "^7.27.0",
+    "prettier": "^2.3.0",
+    "typescript": "^4.3.2"
+  }
+}

@@ -19,10 +19,8 @@ export interface World {
 }
 
 export async function initializeContracts(): Promise<TestContracts> {
-  const [deployer] = await ethers.getSigners();
-
   const CoreFactory = await ethers.getContractFactory('TinyWorld');
-  const core = (await upgrades.deployProxy(CoreFactory, [243])) as TinyWorld;
+  const core = (await upgrades.deployProxy(CoreFactory, [243, 20])) as TinyWorld;
 
   const GettersFactory = await ethers.getContractFactory('TinyWorldGetters');
   const getters = (await upgrades.deployProxy(GettersFactory, [core.address])) as TinyWorldGetters;

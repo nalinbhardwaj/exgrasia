@@ -42,7 +42,8 @@ export const Contracts = yup
 
 export const Initializers = yup
   .object({
-    SEED_1: yup.number().default(55),
+    SEED_1: yup.number().default(0),
+    WORLD_WIDTH: yup.number().default(20),
   })
   .defined();
 
@@ -51,7 +52,7 @@ export function parse<S extends yup.BaseSchema>(schema: S, data: unknown): yup.A
   try {
     return schema.validateSync(data, { abortEarly: false });
   } catch (err) {
-    printValidationErrors(err);
+    printValidationErrors(err as yup.ValidationError);
     process.exit(1);
   }
 }
@@ -118,7 +119,7 @@ function tomlLoader(filename: string, content: string) {
     return toml.parse(content);
   } catch (err) {
     console.error(chalk.red(`Error parsing ${path.basename(filename)}`));
-    console.error(chalk.yellow(err.message));
+    console.error(chalk.yellow((err as Error).message));
     process.exit(1);
   }
 }
