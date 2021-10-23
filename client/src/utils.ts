@@ -17,13 +17,9 @@ export const getRandomTree = (coords: WorldCoords, width: number) => {
   return trees[random];
 };
 
-export const isRare = (coords: WorldCoords, width: number) => {
-  return rand(4)(coords.x * width + coords.y) < 1;
-};
-
 export const getRaritySeed = (coords: WorldCoords, seed: number, scale: number) => {
   const hash = mimcWithRounds(4, seed)(coords.x, coords.y, scale).toString(2);
-  const extracted = parseInt(hash.slice(-3), 2);
+  const extracted = parseInt(hash.slice(-4), 2);
   return extracted;
 };
 

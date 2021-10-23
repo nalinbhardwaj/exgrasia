@@ -47,6 +47,7 @@ template Main(BITS) {
     rand.in[2] <== scale;
     rand.KEY <== seed;
     raritySeed <== rand.out;
+    log(raritySeed);
 }
 
 component main = Main(20);
