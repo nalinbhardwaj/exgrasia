@@ -8,6 +8,7 @@ contract TinyWorldStorage {
     uint256 public worldWidth;
     mapping(uint256 => mapping(uint256 => Tile)) cachedTiles;
     Tile[] public touchedTiles;
+    uint256 public worldScale;
 
     function getCachedTile(uint256 x, uint256 y) public view returns (Tile memory) {
         return cachedTiles[x][y];

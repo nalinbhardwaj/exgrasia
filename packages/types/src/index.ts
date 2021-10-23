@@ -14,6 +14,9 @@ import type { Any } from 'ts-toolbelt';
 export enum TileType {
   UNKNOWN,
   WATER,
+  BEACH,
+  TREE,
+  CHEST,
   LAND,
   MAX = LAND, // NOTE: This MAX is hardcoded as 'divisor' in fake_perlin.circom!
 }
@@ -27,6 +30,7 @@ export type Tile = {
   coords: WorldCoords;
   originalTileType: TileType;
   currentTileType: TileType;
+  perl: number;
 };
 
 /**
@@ -82,7 +86,10 @@ export interface SnarkInput {
   x: string;
   y: string;
   seed: string;
-  tileType: string;
+  width: string;
+  scale: string;
+  perlinBase: string;
+  isRare: string;
 }
 
 /**

@@ -25,6 +25,7 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     "getTouchedTiles()": FunctionFragment;
     "seed()": FunctionFragment;
     "touchedTiles(uint256)": FunctionFragment;
+    "worldScale()": FunctionFragment;
     "worldWidth()": FunctionFragment;
   };
 
@@ -40,6 +41,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "touchedTiles",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "worldScale",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "worldWidth",
@@ -59,6 +64,7 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     functionFragment: "touchedTiles",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "worldScale", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "worldWidth", data: BytesLike): Result;
 
   events: {};
@@ -174,6 +180,14 @@ export class TinyWorldStorage extends Contract {
       3: number;
     }>;
 
+    worldScale(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "worldScale()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
     worldWidth(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
@@ -275,6 +289,10 @@ export class TinyWorldStorage extends Contract {
     3: number;
   }>;
 
+  worldScale(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "worldScale()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   worldWidth(overrides?: CallOverrides): Promise<BigNumber>;
 
   "worldWidth()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -372,6 +390,10 @@ export class TinyWorldStorage extends Contract {
       3: number;
     }>;
 
+    worldScale(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "worldScale()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     worldWidth(overrides?: CallOverrides): Promise<BigNumber>;
 
     "worldWidth()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -410,6 +432,10 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    worldScale(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "worldScale()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     worldWidth(overrides?: CallOverrides): Promise<BigNumber>;
 
     "worldWidth()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -447,6 +473,10 @@ export class TinyWorldStorage extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    worldScale(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "worldScale()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     worldWidth(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

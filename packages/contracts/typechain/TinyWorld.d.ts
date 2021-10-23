@@ -24,13 +24,14 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   functions: {
     "getCachedTile(uint256,uint256)": FunctionFragment;
     "getTouchedTiles()": FunctionFragment;
-    "initialize(uint256,uint256)": FunctionFragment;
+    "initialize(uint256,uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[4])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "seed()": FunctionFragment;
     "touchedTiles(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "worldScale()": FunctionFragment;
     "worldWidth()": FunctionFragment;
   };
 
@@ -44,7 +45,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [BigNumberish, BigNumberish]
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -68,6 +69,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "worldScale",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "worldWidth",
@@ -98,6 +103,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "worldScale", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "worldWidth", data: BytesLike): Result;
 
   events: {
@@ -186,12 +192,14 @@ export class TinyWorld extends Contract {
     initialize(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
+      _worldScale: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(uint256,uint256)"(
+    "initialize(uint256,uint256,uint256)"(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
+      _worldScale: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -269,6 +277,14 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    worldScale(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "worldScale()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
     worldWidth(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
@@ -341,12 +357,14 @@ export class TinyWorld extends Contract {
   initialize(
     _seed: BigNumberish,
     _worldWidth: BigNumberish,
+    _worldScale: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(uint256,uint256)"(
+  "initialize(uint256,uint256,uint256)"(
     _seed: BigNumberish,
     _worldWidth: BigNumberish,
+    _worldScale: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -416,6 +434,10 @@ export class TinyWorld extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  worldScale(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "worldScale()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   worldWidth(overrides?: CallOverrides): Promise<BigNumber>;
 
   "worldWidth()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -484,12 +506,14 @@ export class TinyWorld extends Contract {
     initialize(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
+      _worldScale: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(uint256,uint256)"(
+    "initialize(uint256,uint256,uint256)"(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
+      _worldScale: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -559,6 +583,10 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    worldScale(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "worldScale()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     worldWidth(overrides?: CallOverrides): Promise<BigNumber>;
 
     "worldWidth()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -593,12 +621,14 @@ export class TinyWorld extends Contract {
     initialize(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
+      _worldScale: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(uint256,uint256)"(
+    "initialize(uint256,uint256,uint256)"(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
+      _worldScale: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -650,6 +680,10 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    worldScale(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "worldScale()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     worldWidth(overrides?: CallOverrides): Promise<BigNumber>;
 
     "worldWidth()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -677,12 +711,14 @@ export class TinyWorld extends Contract {
     initialize(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
+      _worldScale: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(uint256,uint256)"(
+    "initialize(uint256,uint256,uint256)"(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
+      _worldScale: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -733,6 +769,10 @@ export class TinyWorld extends Contract {
       newOwner: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    worldScale(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "worldScale()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     worldWidth(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

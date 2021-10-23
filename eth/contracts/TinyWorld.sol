@@ -9,10 +9,15 @@ import "hardhat/console.sol";
 contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     event TileUpdated(uint256 x, uint256 y, TileType tileType);
 
-    function initialize(uint256 _seed, uint256 _worldWidth) public initializer {
+    function initialize(
+        uint256 _seed,
+        uint256 _worldWidth,
+        uint256 _worldScale
+    ) public initializer {
         __Ownable_init();
         seed = _seed;
         worldWidth = _worldWidth;
+        worldScale = _worldScale;
     }
 
     function proveTile(

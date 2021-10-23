@@ -34,6 +34,7 @@ export function decodeTile(rawTile: RawTile): Tile {
     },
     originalTileType: rawTile.originalTileType,
     currentTileType: rawTile.currentTileType,
+    perl: 0,
   };
 }
 
@@ -119,6 +120,10 @@ export class ContractsAPI extends EventEmitter {
 
   public async getSeed(): Promise<number> {
     return (await this.makeCall<EthersBN>(this.coreContract.seed)).toNumber();
+  }
+
+  public async getWorldScale(): Promise<number> {
+    return (await this.makeCall<EthersBN>(this.coreContract.worldScale)).toNumber();
   }
 
   public async getWorldWidth(): Promise<number> {

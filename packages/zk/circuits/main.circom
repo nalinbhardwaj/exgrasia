@@ -18,12 +18,13 @@ template Main(BITS) {
 	signal input x;
 	signal input y;
 	signal input seed;
+    signal input scale;
 	signal output tileType;
 
     component perlin = MultiScalePerlin();
     perlin.p[0] <== x;
     perlin.p[1] <== y;
-    perlin.SCALE <== 4;
+    perlin.SCALE <== scale;
     perlin.xMirror <== 0;
     perlin.yMirror <== 0;
     perlin.KEY <== seed;

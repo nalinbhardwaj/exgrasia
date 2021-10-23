@@ -51,6 +51,7 @@ class GameManager extends EventEmitter {
 
   private readonly worldSeed: number;
   private readonly worldWidth: number;
+  private readonly worldScale: number;
 
   private readonly tiles: Tile[][];
 
@@ -63,6 +64,7 @@ class GameManager extends EventEmitter {
     worldSeed: number,
     worldWidth: number,
     touchedTiles: Tile[],
+    worldScale: number,
     snarkHelper: SnarkHelper
   ) {
     super();
@@ -72,22 +74,32 @@ class GameManager extends EventEmitter {
     this.contractsAPI = contractsAPI;
     this.worldSeed = worldSeed;
     this.worldWidth = worldWidth;
+    this.worldScale = worldScale;
     this.snarkHelper = snarkHelper;
     this.tiles = [];
-    this.perlinConfig = { key: worldSeed, scale: 4, mirrorX: false, mirrorY: false, floor: true };
+    this.perlinConfig = {
+      key: worldSeed,
+      scale: worldScale,
+      mirrorX: false,
+      mirrorY: false,
+      floor: true,
+    };
 
     for (let i = 0; i < worldWidth; i++) {
       this.tiles.push([]);
       for (let j = 0; j < worldWidth; j++) {
         const coords = { x: i, y: j };
-        const originalTileType = perlinToTileType(perlin(coords, this.perlinConfig));
+        const perl = perlin(coords, this.perlinConfig);
+        const originalTileType = perlinToTileType(coords, perl, this.worldWidth);
         this.tiles[i].push({
           coords: coords,
           originalTileType,
           currentTileType: originalTileType,
+          perl,
         });
       }
     }
+
     for (const touchedTile of touchedTiles) {
       this.tiles[touchedTile.coords.x][touchedTile.coords.y] = touchedTile;
       console.log('loaded touched tile from contract:');
@@ -106,8 +118,9 @@ class GameManager extends EventEmitter {
     const worldSeed = await contractsAPI.getSeed();
     const worldWidth = await contractsAPI.getWorldWidth();
     const touchedTiles = await contractsAPI.getTouchedTiles();
+    const worldScale = await contractsAPI.getWorldScale();
 
-    const snarkHelper = new SnarkHelper(worldSeed);
+    const snarkHelper = new SnarkHelper(worldSeed, worldWidth, worldScale);
 
     const gameManager = new GameManager(
       account,
@@ -116,6 +129,7 @@ class GameManager extends EventEmitter {
       worldSeed,
       worldWidth,
       touchedTiles,
+      worldScale,
       snarkHelper
     );
 
@@ -203,17 +217,12 @@ class GameManager extends EventEmitter {
     return this.tiles;
   }
 
-  getOriginalTile(coords: WorldCoords): TileType {
-    console.log(
-      `originalTiles, ${JSON.stringify(this.tiles[coords.x][coords.y].originalTileType)}`
-    );
-    return this.tiles[coords.x][coords.y].originalTileType;
+  getOriginalTile(coords: WorldCoords): Tile {
+    return this.tiles[coords.x][coords.y];
   }
 
-  async getTileTypeOfCoords(coords: WorldCoords): Promise<TileType> {
-    const res = await this.contractsAPI.getCachedTile(coords);
-    console.log(`coords-> res: ${coords}, ${res}`);
-    return res.currentTileType === 0 ? this.getOriginalTile(coords) : res.currentTileType;
+  async getCachedTileType(coords: WorldCoords): Promise<TileType> {
+    return (await this.contractsAPI.getCachedTile(coords)).currentTileType;
   }
 
   async checkProof(tile: Tile): Promise<boolean> {
