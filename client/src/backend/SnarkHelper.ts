@@ -1,5 +1,6 @@
-import { SnarkJSProofAndSignals, Tile, SnarkInput } from 'common-types';
+import { SnarkJSProofAndSignals, Tile, SnarkInput, ProveTileContractCallArgs } from 'common-types';
 import FastQueue from 'fastq';
+import { isRare } from '../utils';
 
 type ZKPTask = {
   taskId: number;
@@ -85,10 +86,14 @@ class SnarkProverQueue {
 
 class SnarkArgsHelper {
   private readonly seed: number;
+  private readonly width: number;
+  private readonly scale: number;
   private readonly snarkProverQueue: SnarkProverQueue;
 
-  constructor(seed: number) {
+  constructor(seed: number, width: number, scale: number) {
     this.seed = seed;
+    this.scale = scale;
+    this.width = width;
     this.snarkProverQueue = new SnarkProverQueue();
   }
 
@@ -101,7 +106,10 @@ class SnarkArgsHelper {
         x: tile.coords.x.toString(),
         y: tile.coords.y.toString(),
         seed: this.seed.toString(),
-        tileType: tile.tileType.toString(),
+        width: this.width.toString(),
+        scale: this.scale.toString(),
+        perlinBase: tile.perl.toString(),
+        isRare: isRare(tile.coords, this.width) ? '1' : '0',
       };
 
       console.log(`input: ${tile.tileType}`);
@@ -119,6 +127,27 @@ class SnarkArgsHelper {
     } catch (e) {
       throw e;
     }
+  }
+
+  async getFakeProof(tile: Tile): Promise<ProveTileContractCallArgs> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve([
+          ['0', '0'],
+          [
+            ['0', '0'],
+            ['0', '0'],
+          ],
+          ['0', '0'],
+          [
+            tile.coords.x.toString(),
+            tile.coords.y.toString(),
+            this.seed.toString(),
+            tile.tileType.toString(),
+          ],
+        ]);
+      }, 2000);
+    });
   }
 }
 

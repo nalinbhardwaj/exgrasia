@@ -112,7 +112,11 @@ async function deployCore(_args: {}, hre: HardhatRuntimeEnvironment): Promise<Ti
   const tinyWorldCore = await deployProxyWithRetry<TinyWorld>({
     contractName: 'TinyWorld',
     signerOrOptions: {},
-    contractArgs: [hre.initializers.SEED_1, hre.initializers.WORLD_WIDTH],
+    contractArgs: [
+      hre.initializers.SEED_1,
+      hre.initializers.WORLD_WIDTH,
+      hre.initializers.WORLD_SCALE,
+    ],
     deployOptions: {},
     retries: 5,
     hre,

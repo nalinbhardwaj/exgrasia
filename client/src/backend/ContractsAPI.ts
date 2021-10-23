@@ -1,5 +1,5 @@
 import { CORE_CONTRACT_ADDRESS, GETTERS_CONTRACT_ADDRESS } from 'common-contracts';
-import { TileType, WorldCoords } from 'common-types';
+import { ProveTileContractCallArgs, TileType, WorldCoords } from 'common-types';
 import type { TinyWorld, TinyWorldGetters } from 'common-contracts/typechain';
 import {
   ContractCaller,
@@ -9,8 +9,19 @@ import {
   TxExecutor,
 } from '@darkforest_eth/network';
 import { EventEmitter } from 'events';
-import { BigNumber as EthersBN, ContractFunction /*, ethers, Event, providers*/ } from 'ethers';
-import { ContractEvent, ContractsAPIEvent } from '../_types/ContractAPITypes';
+import {
+  BigNumber as EthersBN,
+  ContractFunction /*, ethers, Event, providers*/,
+  providers,
+} from 'ethers';
+import {
+  ContractEvent,
+  ContractMethodName,
+  ContractsAPIEvent,
+  SubmittedProveTile,
+  SubmittedTx,
+  UnconfirmedProveTile,
+} from '../_types/ContractAPITypes';
 import { loadCoreContract, loadGettersContract } from './Blockchain';
 
 /**
@@ -80,7 +91,7 @@ export class ContractsAPI extends EventEmitter {
 
     const eventHandlers = {
       [ContractEvent.TileProved]: (x: EthersBN, y: EthersBN, tileType: TileType) => {
-        this.emit(ContractsAPIEvent.TileProved, x.toNumber(), y.toNumber(), tileType);
+        this.emit(ContractsAPIEvent.TileProved, { x: x.toNumber(), y: y.toNumber(), tileType });
       },
     };
 
@@ -97,6 +108,10 @@ export class ContractsAPI extends EventEmitter {
     return (await this.makeCall<EthersBN>(this.coreContract.seed)).toNumber();
   }
 
+  public async getWorldScale(): Promise<number> {
+    return (await this.makeCall<EthersBN>(this.coreContract.worldScale)).toNumber();
+  }
+
   public async getWorldWidth(): Promise<number> {
     return (await this.makeCall<EthersBN>(this.coreContract.worldWidth)).toNumber();
   }
@@ -107,6 +122,47 @@ export class ContractsAPI extends EventEmitter {
       coords.y,
     ]);
     return tileType;
+  }
+
+  /**
+   * Given an unconfirmed (but submitted) transaction, emits the appropriate
+   * [[ContractsAPIEvent]].
+   */
+  public waitFor(submitted: SubmittedTx, receiptPromise: Promise<providers.TransactionReceipt>) {
+    this.emit(ContractsAPIEvent.TxSubmitted, submitted);
+
+    return receiptPromise
+      .then((receipt) => {
+        this.emit(ContractsAPIEvent.TxConfirmed, submitted);
+        return receipt;
+      })
+      .catch((e) => {
+        this.emit(ContractsAPIEvent.TxReverted, submitted);
+        throw e;
+      });
+  }
+
+  async proveTile(
+    args: ProveTileContractCallArgs,
+    action: UnconfirmedProveTile
+  ): Promise<providers.TransactionReceipt> {
+    if (!this.txExecutor) {
+      throw new Error('no signer, cannot execute tx');
+    }
+
+    const tx = this.txExecutor.queueTransaction(
+      action.actionId,
+      this.coreContract,
+      ContractMethodName.PROVE_TILE,
+      args
+    );
+    const unminedProveTileTx: SubmittedProveTile = {
+      ...action,
+      txHash: (await tx.submitted).hash,
+      sentAtTimestamp: Math.floor(Date.now() / 1000),
+    };
+
+    return this.waitFor(unminedProveTileTx, tx.confirmed);
   }
 }
 

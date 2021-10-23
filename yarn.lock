@@ -251,11 +251,6 @@
     big-integer "^1.6.48"
     ethers "^5.0.7"
 
-"@darkforest_eth/snarks@^6.6.6":
-  version "6.6.6"
-  resolved "https://registry.yarnpkg.com/@darkforest_eth/snarks/-/snarks-6.6.6.tgz#e25b45ae30cbaeb85600b8d054dc8d592f138a11"
-  integrity sha512-stX2nWZw7Jf/KtYEMfAsNTIrefaxSOZqDqBFgtA/+yrYRvOWMLxUCQK1z1I71OLxKZR6k3nExH9lM2AG6TmurQ==
-
 "@darkforest_eth/types@6.6.6":
   version "6.6.6"
   resolved "https://registry.yarnpkg.com/@darkforest_eth/types/-/types-6.6.6.tgz#a98bc60307cd8d6997ed5d40d507aaa35bbbf096"

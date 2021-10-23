@@ -12,6 +12,9 @@
 export enum TileType {
   UNKNOWN,
   WATER,
+  BEACH,
+  TREE,
+  CHEST,
   LAND,
   MAX = LAND, // NOTE: This MAX is hardcoded as 'divisor' in fake_perlin.circom!
 }
@@ -24,6 +27,7 @@ export type WorldCoords = {
 export type Tile = {
   coords: WorldCoords;
   tileType: TileType;
+  perl: number;
 };
 import type { Any } from 'ts-toolbelt';
 
@@ -75,7 +79,10 @@ export interface SnarkInput {
   x: string;
   y: string;
   seed: string;
-  tileType: string;
+  width: string;
+  scale: string;
+  perlinBase: string;
+  isRare: string;
 }
 
 /**
@@ -85,6 +92,13 @@ export type ProofArgs = {
   proof: SnarkJSProof;
   input: SnarkInput;
 };
+
+export type ProveTileContractCallArgs = [
+  [string, string],
+  [[string, string], [string, string]],
+  [string, string],
+  [string, string, string, string]
+];
 
 /**
  * Corresponds to local dev deployer account 0x1c0f0Af3262A7213E59Be7f1440282279D788335
