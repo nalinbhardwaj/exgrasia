@@ -87,8 +87,6 @@ export interface SnarkInput {
   y: string;
   seed: string;
   scale: string;
-  width: string;
-  rarityThreshold: string;
 }
 
 /**

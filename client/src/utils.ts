@@ -1,4 +1,5 @@
 import { rand } from '@darkforest_eth/hashing';
+import { mimcWithRounds } from '@darkforest_eth/hashing/dist/mimc';
 import { TileType, WorldCoords, Tile } from 'common-types';
 
 export const tileTypeToColor = {
@@ -20,11 +21,16 @@ export const isRare = (coords: WorldCoords, width: number) => {
   return rand(4)(coords.x * width + coords.y) < 1;
 };
 
-export const perlinToTileType = (coords: WorldCoords, perlin: number, width: number): number => {
-  if (perlin > 15) {
-    if (perlin > 18 && isRare(coords, width)) {
-      return TileType.TREE;
-    }
+export const getRaritySeed = (coords: WorldCoords, seed: number, scale: number) => {
+  const hash = mimcWithRounds(4, seed)(coords.x, coords.y, scale).toString(2);
+  const extracted = parseInt(hash.slice(-3), 2);
+  return extracted;
+};
+
+export const seedToTileType = (perlin: number, raritySeed: number): number => {
+  if (perlin > 18 && raritySeed < 1) {
+    return TileType.TREE;
+  } else if (perlin > 15) {
     return TileType.LAND;
   } else if (perlin > 13) return TileType.BEACH;
   return TileType.WATER;

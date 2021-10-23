@@ -4,7 +4,7 @@ import { EthAddress, Tile, TileType, WorldCoords } from 'common-types';
 import { EventEmitter } from 'events';
 import { ContractsAPI, makeContractsAPI } from './ContractsAPI';
 import SnarkHelper from './SnarkHelper';
-import { getRandomActionId, perlinToTileType } from '../utils';
+import { getRandomActionId, getRaritySeed, seedToTileType } from '../utils';
 import {
   ContractMethodName,
   ContractsAPIEvent,
@@ -90,7 +90,10 @@ class GameManager extends EventEmitter {
       for (let j = 0; j < worldWidth; j++) {
         const coords = { x: i, y: j };
         const perl = perlin(coords, this.perlinConfig);
-        const originalTileType = perlinToTileType(coords, perl, this.worldWidth);
+        const originalTileType = seedToTileType(
+          perl,
+          getRaritySeed(coords, this.worldSeed, this.worldScale)
+        );
         this.tiles[i].push({
           coords: coords,
           originalTileType,

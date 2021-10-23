@@ -117,9 +117,7 @@ class SnarkArgsHelper {
         x: tile.coords.x.toString(),
         y: tile.coords.y.toString(),
         seed: this.seed.toString(),
-        width: this.width.toString(),
         scale: this.scale.toString(),
-        rarityThreshold: '1',
       };
 
       const { proof, publicSignals } = await this.snarkProverQueue.doProof(

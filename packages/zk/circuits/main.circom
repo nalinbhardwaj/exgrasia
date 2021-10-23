@@ -3,23 +3,6 @@ include "../../../node_modules/circomlib/circuits/comparators.circom"
 include "../../../node_modules/circomlib/circuits/gates.circom"
 include "../../../node_modules/circomlib/circuits/mimcsponge.circom"
 
-template PerlinInRange(BITS) {
-    signal input value;
-    // signal input lower;
-    signal input upper;
-    signal output out;
-
-    // component lowerBound = GreaterEqThan(BITS);
-    // lowerBound.in[0] <== value;
-    // lowerBound.in[1] <== lower;
-
-    component upperBound = LessThan(BITS);
-    upperBound.in[0] <== value;
-    upperBound.in[1] <== upper;
-
-    out <== upperBound.out; // lowerBound.out *
-}
-
 // input: three field elements: x, y, scale (all absolute value < 2^32)
 // output: pseudorandom integer in [0, 15]
 template Random() {
@@ -36,7 +19,7 @@ template Random() {
 
     component num2Bits = Num2Bits(254);
     num2Bits.in <== mimc.outs[0];
-    out <== num2Bits.out[1] * 2 + num2Bits.out[0]; // num2Bits.out[3] * 8 + num2Bits.out[2] * 4 +
+    out <== num2Bits.out[3] * 8 + num2Bits.out[2] * 4 + num2Bits.out[1] * 2 + num2Bits.out[0];
 }
 
 template Main(BITS) {
@@ -44,10 +27,8 @@ template Main(BITS) {
 	signal input y;
 	signal input seed;
 	signal input scale;
-    signal input width; // maxX and maxY game board
-    signal input rarityThreshold; // 1/rarityThreshold items will be rare
     signal output perlinBase;
-    signal output isRare;
+    signal output raritySeed;
 
     component perlin = MultiScalePerlin();
 
@@ -63,16 +44,9 @@ template Main(BITS) {
     component rand = Random();
     rand.in[0] <== x;
     rand.in[1] <== y;
-    rand.in[2] <== seed;
+    rand.in[2] <== scale;
     rand.KEY <== seed;
-    signal raritySeed <== rand.out;
-    log(raritySeed);
-
-    component rangeCheck = PerlinInRange(BITS);
-    rangeCheck.value <== raritySeed;
-    rangeCheck.upper <== 1;
-    isRare <== rangeCheck.out;
-    log(rangeCheck.out);
+    raritySeed <== rand.out;
 }
 
 component main = Main(20);
