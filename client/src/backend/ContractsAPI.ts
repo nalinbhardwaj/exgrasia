@@ -26,7 +26,7 @@ import { loadCoreContract, loadGettersContract } from './Blockchain';
 
 type RawTile = Awaited<ReturnType<TinyWorld['getCachedTile']>>;
 
-export function decodeTile(rawTile: RawTile): Tile {
+export function decodeTileWithoutPerl(rawTile: RawTile): Tile {
   return {
     coords: {
       x: rawTile.x.toNumber(),
@@ -135,12 +135,12 @@ export class ContractsAPI extends EventEmitter {
       coords.x,
       coords.y,
     ]);
-    return decodeTile(rawTile);
+    return decodeTileWithoutPerl(rawTile);
   }
 
-  public async getTouchedTiles(): Promise<Tile[]> {
+  public async getTouchedTilesWithoutPerl(): Promise<Tile[]> {
     const rawTiles = await this.makeCall<RawTile[]>(this.coreContract.getTouchedTiles, []);
-    return rawTiles.map(decodeTile);
+    return rawTiles.map(decodeTileWithoutPerl);
   }
 
   /**

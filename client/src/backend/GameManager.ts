@@ -63,7 +63,7 @@ class GameManager extends EventEmitter {
     contractsAPI: ContractsAPI,
     worldSeed: number,
     worldWidth: number,
-    touchedTiles: Tile[],
+    touchedTilesWithoutPerl: Tile[],
     worldScale: number,
     snarkHelper: SnarkHelper
   ) {
@@ -100,7 +100,8 @@ class GameManager extends EventEmitter {
       }
     }
 
-    for (const touchedTile of touchedTiles) {
+    for (const touchedTile of touchedTilesWithoutPerl) {
+      touchedTile.perl = perlin(touchedTile.coords, this.perlinConfig);
       this.tiles[touchedTile.coords.x][touchedTile.coords.y] = touchedTile;
       console.log('loaded touched tile from contract:');
       console.log(touchedTile);
@@ -117,7 +118,7 @@ class GameManager extends EventEmitter {
     const contractsAPI = await makeContractsAPI(ethConnection);
     const worldSeed = await contractsAPI.getSeed();
     const worldWidth = await contractsAPI.getWorldWidth();
-    const touchedTiles = await contractsAPI.getTouchedTiles();
+    const touchedTilesWithoutPerl = await contractsAPI.getTouchedTilesWithoutPerl();
     const worldScale = await contractsAPI.getWorldScale();
 
     const snarkHelper = new SnarkHelper(worldSeed, worldWidth, worldScale);
@@ -128,7 +129,7 @@ class GameManager extends EventEmitter {
       contractsAPI,
       worldSeed,
       worldWidth,
-      touchedTiles,
+      touchedTilesWithoutPerl,
       worldScale,
       snarkHelper
     );
@@ -213,11 +214,11 @@ class GameManager extends EventEmitter {
     return this.worldWidth;
   }
 
-  getOriginalTiles(): Tile[][] {
+  getTiles(): Tile[][] {
     return this.tiles;
   }
 
-  getOriginalTile(coords: WorldCoords): Tile {
+  getTile(coords: WorldCoords): Tile {
     return this.tiles[coords.x][coords.y];
   }
 

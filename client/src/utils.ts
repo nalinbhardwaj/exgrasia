@@ -17,7 +17,7 @@ export const getRandomTree = (coords: WorldCoords, width: number) => {
 };
 
 export const isRare = (coords: WorldCoords, width: number) => {
-  return rand(4)(coords.x * width + coords.y) > 12;
+  return rand(4)(coords.x * width + coords.y) < 1;
 };
 
 export const perlinToTileType = (coords: WorldCoords, perlin: number, width: number): number => {

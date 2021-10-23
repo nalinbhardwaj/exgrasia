@@ -86,10 +86,9 @@ export interface SnarkInput {
   x: string;
   y: string;
   seed: string;
-  width: string;
   scale: string;
-  perlinBase: string;
-  isRare: string;
+  width: string;
+  rarityThreshold: string;
 }
 
 /**

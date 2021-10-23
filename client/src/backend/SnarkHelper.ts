@@ -1,6 +1,5 @@
 import { SnarkJSProofAndSignals, Tile, SnarkInput, ProveTileContractCallArgs } from 'common-types';
 import FastQueue from 'fastq';
-import { isRare } from '../utils';
 
 type ZKPTask = {
   taskId: number;
@@ -48,18 +47,22 @@ class SnarkProverQueue {
     });
   }
 
-  private getVerificationKey = async (vkey: string) => {
+  private async getVerificationKey(vkey: string) {
     return await fetch(vkey).then(function (res) {
       return res.json();
     });
-  };
+  }
 
-  private checkProof = async function (proof: string, publicSignals: string[], vkey_path: string) {
+  private async checkProof(
+    proof: string,
+    publicSignals: string[],
+    vkey_path: string
+  ): Promise<boolean> {
     const vKey = await this.getVerificationKey(vkey_path);
 
     const res = await window.snarkjs.groth16.verify(vKey, publicSignals, proof);
     return res;
-  };
+  }
 
   private async execute(
     task: ZKPTask,
@@ -100,19 +103,18 @@ class SnarkArgsHelper {
   async getBasicProof(tile: Tile): Promise<SnarkJSProofAndSignals> {
     try {
       const start = Date.now();
-      console.log('INIT: calculating witness and proof');
-      console.log(`tile basic proof ${tile.originalTileType}`);
+      console.log('PROVE: calculating witness and proof');
+      console.log(
+        `proving tile (${tile.coords.x}, ${tile.coords.y}) is of type: ${tile.originalTileType}`
+      );
       const input: SnarkInput = {
         x: tile.coords.x.toString(),
         y: tile.coords.y.toString(),
         seed: this.seed.toString(),
         width: this.width.toString(),
         scale: this.scale.toString(),
-        perlinBase: tile.perl.toString(),
-        isRare: isRare(tile.coords, this.width) ? '1' : '0',
+        rarityThreshold: '1',
       };
-
-      console.log(`input: ${tile.originalTileType}`);
 
       const { proof, publicSignals } = await this.snarkProverQueue.doProof(
         input,
@@ -121,7 +123,7 @@ class SnarkArgsHelper {
         'public/circuits/verification_key.json'
       );
       const end = Date.now();
-      console.log(`INIT: calculated witness and proof in ${end - start}ms`);
+      console.log(`PROVE: calculated witness and proof in ${end - start}ms`);
 
       return { proof, publicSignals };
     } catch (e) {
