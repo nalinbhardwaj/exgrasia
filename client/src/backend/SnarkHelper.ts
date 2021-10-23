@@ -1,5 +1,6 @@
 import { SnarkJSProofAndSignals, Tile, SnarkInput, ProveTileContractCallArgs } from 'common-types';
 import FastQueue from 'fastq';
+import { isRare } from '../utils';
 
 type ZKPTask = {
   taskId: number;
@@ -107,7 +108,8 @@ class SnarkArgsHelper {
         seed: this.seed.toString(),
         width: this.width.toString(),
         scale: this.scale.toString(),
-        tileType: tile.tileType.toString(),
+        perlinBase: tile.perl.toString(),
+        isRare: isRare(tile.coords, this.width) ? '1' : '0',
       };
 
       console.log(`input: ${tile.tileType}`);

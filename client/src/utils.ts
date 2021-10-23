@@ -1,5 +1,5 @@
 import { rand } from '@darkforest_eth/hashing';
-import { TileType, WorldCoords } from 'common-types';
+import { TileType, WorldCoords, Tile } from 'common-types';
 
 export const tileTypeToColor = {
   [TileType.UNKNOWN]: 'grey',
@@ -16,9 +16,13 @@ export const getRandomTree = (coords: WorldCoords, width: number) => {
   return trees[random];
 };
 
+export const isRare = (coords: WorldCoords, width: number) => {
+  return rand(4)(coords.x * width + coords.y) > 12;
+};
+
 export const perlinToTileType = (coords: WorldCoords, perlin: number, width: number): number => {
   if (perlin > 15) {
-    if (perlin > 18 && rand(4)(coords.x * width + coords.y) > 12) {
+    if (perlin > 18 && isRare(coords, width)) {
       return TileType.TREE;
     }
     return TileType.LAND;

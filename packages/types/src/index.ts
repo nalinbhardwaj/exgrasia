@@ -27,6 +27,7 @@ export type WorldCoords = {
 export type Tile = {
   coords: WorldCoords;
   tileType: TileType;
+  perl: number;
 };
 import type { Any } from 'ts-toolbelt';
 
@@ -78,7 +79,10 @@ export interface SnarkInput {
   x: string;
   y: string;
   seed: string;
-  tileType: string;
+  width: string;
+  scale: string;
+  perlinBase: string;
+  isRare: string;
 }
 
 /**

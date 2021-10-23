@@ -88,9 +88,11 @@ class GameManager extends EventEmitter {
       this.originalTiles.push([]);
       for (let j = 0; j < worldWidth; j++) {
         const coords = { x: i, y: j };
+        const perl = perlin(coords, this.perlinConfig);
         this.originalTiles[i].push({
           coords: coords,
-          tileType: perlinToTileType(coords, perlin(coords, this.perlinConfig), this.worldWidth),
+          tileType: perlinToTileType(coords, perl, this.worldWidth),
+          perl: perl,
         });
       }
     }
@@ -204,13 +206,12 @@ class GameManager extends EventEmitter {
     return this.originalTiles;
   }
 
-  getOriginalTile(coords: WorldCoords): TileType {
-    return this.originalTiles[coords.x][coords.y].tileType;
+  getOriginalTile(coords: WorldCoords): Tile {
+    return this.originalTiles[coords.x][coords.y];
   }
 
   async getCachedTile(coords: WorldCoords): Promise<TileType> {
-    const res = await this.contractsAPI.getCachedTile(coords);
-    return res === 0 ? this.getOriginalTile(coords) : res;
+    return this.contractsAPI.getCachedTile(coords);
   }
 
   async checkProof(tile: Tile): Promise<boolean> {
