@@ -52,7 +52,7 @@ class GameManager extends EventEmitter {
   private readonly worldSeed: number;
   private readonly worldWidth: number;
 
-  private readonly originalTiles: Tile[][];
+  private readonly tiles: Tile[][];
 
   private readonly perlinConfig: PerlinConfig;
 
@@ -62,6 +62,7 @@ class GameManager extends EventEmitter {
     contractsAPI: ContractsAPI,
     worldSeed: number,
     worldWidth: number,
+    touchedTiles: Tile[],
     snarkHelper: SnarkHelper
   ) {
     super();
@@ -72,20 +73,26 @@ class GameManager extends EventEmitter {
     this.worldSeed = worldSeed;
     this.worldWidth = worldWidth;
     this.snarkHelper = snarkHelper;
-    this.originalTiles = [];
+    this.tiles = [];
     this.perlinConfig = { key: worldSeed, scale: 4, mirrorX: false, mirrorY: false, floor: true };
 
     for (let i = 0; i < worldWidth; i++) {
-      this.originalTiles.push([]);
+      this.tiles.push([]);
       for (let j = 0; j < worldWidth; j++) {
         const coords = { x: i, y: j };
-        this.originalTiles[i].push({
+        const originalTileType = perlinToTileType(perlin(coords, this.perlinConfig));
+        this.tiles[i].push({
           coords: coords,
-          tileType: perlinToTileType(perlin(coords, this.perlinConfig)),
+          originalTileType,
+          currentTileType: originalTileType,
         });
       }
     }
-    console.log(this.originalTiles);
+    for (const touchedTile of touchedTiles) {
+      this.tiles[touchedTile.coords.x][touchedTile.coords.y] = touchedTile;
+      console.log('loaded touched tile from contract:');
+      console.log(touchedTile);
+    }
   }
 
   static async create(ethConnection: EthConnection) {
@@ -98,6 +105,7 @@ class GameManager extends EventEmitter {
     const contractsAPI = await makeContractsAPI(ethConnection);
     const worldSeed = await contractsAPI.getSeed();
     const worldWidth = await contractsAPI.getWorldWidth();
+    const touchedTiles = await contractsAPI.getTouchedTiles();
 
     const snarkHelper = new SnarkHelper(worldSeed);
 
@@ -107,6 +115,7 @@ class GameManager extends EventEmitter {
       contractsAPI,
       worldSeed,
       worldWidth,
+      touchedTiles,
       snarkHelper
     );
 
@@ -119,7 +128,7 @@ class GameManager extends EventEmitter {
     // do some logic
     // also, handle state updates for locally-initialized txIntents
     gameManager.contractsAPI
-      .on(ContractsAPIEvent.TileProved, async (_tile: Tile) => {
+      .on(ContractsAPIEvent.TileUpdated, async (_tile: Tile) => {
         // todo: update in memory data store
         // todo: emit event to UI
       })
@@ -191,20 +200,20 @@ class GameManager extends EventEmitter {
   }
 
   getOriginalTiles(): Tile[][] {
-    return this.originalTiles;
+    return this.tiles;
   }
 
   getOriginalTile(coords: WorldCoords): TileType {
     console.log(
-      `originalTiles, ${JSON.stringify(this.originalTiles[coords.x][coords.y].tileType)}`
+      `originalTiles, ${JSON.stringify(this.tiles[coords.x][coords.y].originalTileType)}`
     );
-    return this.originalTiles[coords.x][coords.y].tileType;
+    return this.tiles[coords.x][coords.y].originalTileType;
   }
 
-  async getCachedTile(coords: WorldCoords): Promise<TileType> {
+  async getTileTypeOfCoords(coords: WorldCoords): Promise<TileType> {
     const res = await this.contractsAPI.getCachedTile(coords);
     console.log(`coords-> res: ${coords}, ${res}`);
-    return res === 0 ? this.getOriginalTile(coords) : res;
+    return res.currentTileType === 0 ? this.getOriginalTile(coords) : res.currentTileType;
   }
 
   async checkProof(tile: Tile): Promise<boolean> {

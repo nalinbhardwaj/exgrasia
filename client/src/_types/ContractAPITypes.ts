@@ -1,7 +1,7 @@
 import { Tile } from 'common-types';
 
 export const enum ContractEvent {
-  TileProved = 'TileProved',
+  TileUpdated = 'TileUpdated',
 }
 
 export enum ContractMethodName {
@@ -9,7 +9,7 @@ export enum ContractMethodName {
 }
 
 export const enum ContractsAPIEvent {
-  TileProved = 'TileProved',
+  TileUpdated = 'TileUpdated',
 
   TxInitFailed = 'TxInitFailed',
   TxSubmitted = 'TxSubmitted',

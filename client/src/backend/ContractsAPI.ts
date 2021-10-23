@@ -1,5 +1,5 @@
 import { CORE_CONTRACT_ADDRESS, GETTERS_CONTRACT_ADDRESS } from 'common-contracts';
-import { ProveTileContractCallArgs, TileType, WorldCoords } from 'common-types';
+import { ProveTileContractCallArgs, Tile, TileType, WorldCoords, Awaited } from 'common-types';
 import type { TinyWorld, TinyWorldGetters } from 'common-contracts/typechain';
 import {
   ContractCaller,
@@ -23,6 +23,19 @@ import {
   UnconfirmedProveTile,
 } from '../_types/ContractAPITypes';
 import { loadCoreContract, loadGettersContract } from './Blockchain';
+
+type RawTile = Awaited<ReturnType<TinyWorld['getCachedTile']>>;
+
+export function decodeTile(rawTile: RawTile): Tile {
+  return {
+    coords: {
+      x: rawTile.x.toNumber(),
+      y: rawTile.y.toNumber(),
+    },
+    originalTileType: rawTile.originalTileType,
+    currentTileType: rawTile.currentTileType,
+  };
+}
 
 /**
  * Roughly contains methods that map 1:1 with functions that live in the contract. Responsible for
@@ -83,15 +96,15 @@ export class ContractsAPI extends EventEmitter {
     const filter = {
       address: coreContract.address,
       topics: [
-        [coreContract.filters.TileProved(null, null, null).topics].map(
+        [coreContract.filters.TileUpdated(null, null, null).topics].map(
           (topicsOrUndefined) => (topicsOrUndefined || [])[0]
         ),
       ] as Array<string | Array<string>>,
     };
 
     const eventHandlers = {
-      [ContractEvent.TileProved]: (x: EthersBN, y: EthersBN, tileType: TileType) => {
-        this.emit(ContractsAPIEvent.TileProved, { x: x.toNumber(), y: y.toNumber(), tileType });
+      [ContractEvent.TileUpdated]: (x: EthersBN, y: EthersBN, tileType: TileType) => {
+        this.emit(ContractsAPIEvent.TileUpdated, { x: x.toNumber(), y: y.toNumber(), tileType });
       },
     };
 
@@ -101,7 +114,7 @@ export class ContractsAPI extends EventEmitter {
   public removeEventListeners(): void {
     const { coreContract } = this;
 
-    coreContract.removeAllListeners(ContractEvent.TileProved);
+    coreContract.removeAllListeners(ContractEvent.TileUpdated);
   }
 
   public async getSeed(): Promise<number> {
@@ -112,12 +125,17 @@ export class ContractsAPI extends EventEmitter {
     return (await this.makeCall<EthersBN>(this.coreContract.worldWidth)).toNumber();
   }
 
-  public async getCachedTile(coords: WorldCoords): Promise<TileType> {
-    const tileType = await this.makeCall<TileType>(this.coreContract.getCachedTile, [
+  public async getCachedTile(coords: WorldCoords): Promise<Tile> {
+    const rawTile = await this.makeCall<RawTile>(this.coreContract.getCachedTile, [
       coords.x,
       coords.y,
     ]);
-    return tileType;
+    return decodeTile(rawTile);
+  }
+
+  public async getTouchedTiles(): Promise<Tile[]> {
+    const rawTiles = await this.makeCall<RawTile[]>(this.coreContract.getTouchedTiles, []);
+    return rawTiles.map(decodeTile);
   }
 
   /**

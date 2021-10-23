@@ -44,7 +44,7 @@ export default function LandingPage() {
       const coords = { x: i, y: j };
       setQueryCoords(coords);
       setQueryingBlockchain(true);
-      const tileType = await gameManager.getCachedTile(coords);
+      const tileType = await gameManager.getTileTypeOfCoords(coords);
       setLastQueryResult(tileType);
       setQueryingBlockchain(false);
     }
@@ -55,10 +55,10 @@ export default function LandingPage() {
       console.log('testProof', i, j);
       const coords = { x: i, y: j };
       setQueryingBlockchain(true);
-      const tileType = await gameManager.getCachedTile(coords);
+      const tileType = await gameManager.getTileTypeOfCoords(coords);
       setQueryingBlockchain(false);
       console.log(`tiletype: ${tileType}`);
-      const tile = { coords, tileType };
+      const tile = { coords, originalTileType: tileType, currentTileType: tileType };
       const check = await gameManager.checkProof(tile);
       console.log('checked', check);
     }
@@ -88,7 +88,7 @@ export default function LandingPage() {
                       <GridSquare
                         key={100 * i + j}
                         onClick={onGridClick(i, j)}
-                        style={{ backgroundColor: tileTypeToColor[tile.tileType] }}
+                        style={{ backgroundColor: tileTypeToColor[tile.currentTileType] }}
                       />
                     );
                   })}
@@ -106,7 +106,7 @@ export default function LandingPage() {
                       <GridSquare
                         key={100 * i + j}
                         onClick={testProof(i, j)}
-                        style={{ backgroundColor: tileTypeToColor[tile.tileType] }}
+                        style={{ backgroundColor: tileTypeToColor[tile.currentTileType] }}
                       />
                     );
                   })}
