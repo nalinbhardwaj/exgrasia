@@ -108,6 +108,10 @@ export class ContractsAPI extends EventEmitter {
     return (await this.makeCall<EthersBN>(this.coreContract.seed)).toNumber();
   }
 
+  public async getWorldScale(): Promise<number> {
+    return (await this.makeCall<EthersBN>(this.coreContract.worldScale)).toNumber();
+  }
+
   public async getWorldWidth(): Promise<number> {
     return (await this.makeCall<EthersBN>(this.coreContract.worldWidth)).toNumber();
   }

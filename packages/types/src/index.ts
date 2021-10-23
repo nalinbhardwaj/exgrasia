@@ -12,6 +12,9 @@
 export enum TileType {
   UNKNOWN,
   WATER,
+  BEACH,
+  TREE,
+  CHEST,
   LAND,
   MAX = LAND, // NOTE: This MAX is hardcoded as 'divisor' in fake_perlin.circom!
 }

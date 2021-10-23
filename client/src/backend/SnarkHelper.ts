@@ -85,10 +85,14 @@ class SnarkProverQueue {
 
 class SnarkArgsHelper {
   private readonly seed: number;
+  private readonly width: number;
+  private readonly scale: number;
   private readonly snarkProverQueue: SnarkProverQueue;
 
-  constructor(seed: number) {
+  constructor(seed: number, width: number, scale: number) {
     this.seed = seed;
+    this.scale = scale;
+    this.width = width;
     this.snarkProverQueue = new SnarkProverQueue();
   }
 
@@ -101,6 +105,8 @@ class SnarkArgsHelper {
         x: tile.coords.x.toString(),
         y: tile.coords.y.toString(),
         seed: this.seed.toString(),
+        width: this.width.toString(),
+        scale: this.scale.toString(),
         tileType: tile.tileType.toString(),
       };
 

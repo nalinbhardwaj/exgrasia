@@ -44,6 +44,7 @@ export const Initializers = yup
   .object({
     SEED_1: yup.number().default(0),
     WORLD_WIDTH: yup.number().default(20),
+    WORLD_SCALE: yup.number().default(4),
   })
   .defined();
 

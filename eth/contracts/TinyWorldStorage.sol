@@ -6,6 +6,7 @@ import "./Types.sol";
 contract TinyWorldStorage {
     uint256 public seed;
     uint256 public worldWidth;
+    uint256 public worldScale;
     mapping(uint256 => mapping(uint256 => TileType)) cachedTiles;
 
     function getCachedTile(uint256 x, uint256 y) public view returns (TileType) {
