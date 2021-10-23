@@ -24,7 +24,7 @@ import {
 } from '../_types/ContractAPITypes';
 import { loadCoreContract, loadGettersContract } from './Blockchain';
 
-type RawTile = Awaited<ReturnType<TinyWorld['getCachedTile']>>;
+export type RawTile = Awaited<ReturnType<TinyWorld['getCachedTile']>>;
 
 export function decodeTileWithoutPerl(rawTile: RawTile): Tile {
   return {
@@ -97,15 +97,15 @@ export class ContractsAPI extends EventEmitter {
     const filter = {
       address: coreContract.address,
       topics: [
-        [coreContract.filters.TileUpdated(null, null, null).topics].map(
+        [coreContract.filters.TileUpdated(null).topics].map(
           (topicsOrUndefined) => (topicsOrUndefined || [])[0]
         ),
       ] as Array<string | Array<string>>,
     };
 
     const eventHandlers = {
-      [ContractEvent.TileUpdated]: (x: EthersBN, y: EthersBN, tileType: TileType) => {
-        this.emit(ContractsAPIEvent.TileUpdated, { x: x.toNumber(), y: y.toNumber(), tileType });
+      [ContractEvent.TileUpdated]: (rawTile: RawTile) => {
+        this.emit(ContractsAPIEvent.TileUpdated, rawTile);
       },
     };
 
@@ -120,6 +120,10 @@ export class ContractsAPI extends EventEmitter {
 
   public async getSeed(): Promise<number> {
     return (await this.makeCall<EthersBN>(this.coreContract.seed)).toNumber();
+  }
+
+  public async doRandomTileUpdate(coords: WorldCoords, tileType: TileType) {
+    await this.makeCall(this.coreContract.randomTileUpdate, [coords.x, coords.y, tileType]);
   }
 
   public async getWorldScale(): Promise<number> {

@@ -27,6 +27,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "initialize(uint256,uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[6])": FunctionFragment;
+    "randomTileUpdate(uint256,uint256,uint8)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "seed()": FunctionFragment;
     "touchedTiles(uint256)": FunctionFragment;
@@ -65,6 +66,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "randomTileUpdate",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
@@ -98,6 +103,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "proveTile", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "randomTileUpdate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
@@ -115,7 +124,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
 
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
-    "TileUpdated(uint256,uint256,uint8)": EventFragment;
+    "TileUpdated(tuple)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
@@ -245,6 +254,20 @@ export class TinyWorld extends Contract {
         BigNumberish,
         BigNumberish
       ],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    randomTileUpdate(
+      x: BigNumberish,
+      y: BigNumberish,
+      tileType: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "randomTileUpdate(uint256,uint256,uint8)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      tileType: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -423,6 +446,20 @@ export class TinyWorld extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  randomTileUpdate(
+    x: BigNumberish,
+    y: BigNumberish,
+    tileType: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "randomTileUpdate(uint256,uint256,uint8)"(
+    x: BigNumberish,
+    y: BigNumberish,
+    tileType: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
   "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -586,6 +623,20 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    randomTileUpdate(
+      x: BigNumberish,
+      y: BigNumberish,
+      tileType: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "randomTileUpdate(uint256,uint256,uint8)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      tileType: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
@@ -647,7 +698,7 @@ export class TinyWorld extends Contract {
       newOwner: string | null
     ): EventFilter;
 
-    TileUpdated(x: null, y: null, tileType: null): EventFilter;
+    TileUpdated(undefined: null): EventFilter;
   };
 
   estimateGas: {
@@ -712,6 +763,20 @@ export class TinyWorld extends Contract {
         BigNumberish,
         BigNumberish
       ],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    randomTileUpdate(
+      x: BigNumberish,
+      y: BigNumberish,
+      tileType: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "randomTileUpdate(uint256,uint256,uint8)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      tileType: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -816,6 +881,20 @@ export class TinyWorld extends Contract {
         BigNumberish,
         BigNumberish
       ],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    randomTileUpdate(
+      x: BigNumberish,
+      y: BigNumberish,
+      tileType: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "randomTileUpdate(uint256,uint256,uint8)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      tileType: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

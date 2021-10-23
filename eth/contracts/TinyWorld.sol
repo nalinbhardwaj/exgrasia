@@ -8,7 +8,7 @@ import "hardhat/console.sol";
 import "./ProveTileVerifier.sol";
 
 contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
-    event TileUpdated(uint256 x, uint256 y, TileType tileType);
+    event TileUpdated(Tile);
 
     function seedToTileType(uint256 perlin, uint256 raritySeed) private pure returns (TileType) {
         if (perlin > 18 && raritySeed < 1) {
@@ -20,6 +20,20 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         } else {
             return TileType.WATER;
         }
+    }
+
+    function randomTileUpdate(
+        uint256 x,
+        uint256 y,
+        TileType tileType
+    ) public {
+        Tile memory tile = Tile({
+            x: x,
+            y: y,
+            originalTileType: tileType,
+            currentTileType: tileType
+        });
+        emit TileUpdated(tile);
     }
 
     function initialize(

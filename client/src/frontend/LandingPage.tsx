@@ -6,6 +6,7 @@ import { EthConnection } from '@darkforest_eth/network';
 import { getEthConnection } from '../backend/Blockchain';
 import { DEV_TEST_PRIVATE_KEY, TileType, WorldCoords } from 'common-types';
 import { tileTypeToColor, getRandomTree } from '../utils';
+import { useGameManager, useTiles } from './Utils/AppHooks';
 
 const enum LoadingStep {
   NONE,
@@ -21,6 +22,7 @@ export default function LandingPage() {
   const [queryCoords, setQueryCoords] = useState<WorldCoords | undefined>();
   const [queryingBlockchain, setQueryingBlockchain] = useState<boolean>(false);
   const [lastQueryResult, setLastQueryResult] = useState<TileType | undefined>();
+  const tiles = useTiles(gameManager);
 
   useEffect(() => {
     getEthConnection()
@@ -64,6 +66,12 @@ export default function LandingPage() {
     }
   };
 
+  useEffect(() => {
+    if (gameManager) {
+      gameManager.tileUpdated$.publish();
+    }
+  }, [gameManager]);
+
   return (
     <>
       <Page>
@@ -80,8 +88,8 @@ export default function LandingPage() {
           <p>{`last queried for (${queryCoords?.x}, ${queryCoords?.y}): cached tile type is ${lastQueryResult}`}</p>
         ) : null}
         <p>yo</p>
-        {gameManager
-          ? gameManager.getTiles().map((coordRow, i) => {
+        {gameManager && tiles
+          ? tiles.value.map((coordRow, i) => {
               return (
                 <GridRow key={i}>
                   {coordRow.map((tile, j) => {

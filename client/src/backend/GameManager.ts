@@ -1,8 +1,9 @@
 import { EthConnection } from '@darkforest_eth/network';
+import { monomitter, Monomitter, Subscription } from '@darkforest_eth/events';
 import { perlin, PerlinConfig } from '@darkforest_eth/hashing';
 import { EthAddress, Tile, TileType, WorldCoords } from 'common-types';
 import { EventEmitter } from 'events';
-import { ContractsAPI, makeContractsAPI } from './ContractsAPI';
+import { ContractsAPI, makeContractsAPI, RawTile, decodeTileWithoutPerl } from './ContractsAPI';
 import SnarkHelper from './SnarkHelper';
 import { getRandomActionId, getRaritySeed, seedToTileType } from '../utils';
 import {
@@ -57,6 +58,8 @@ class GameManager extends EventEmitter {
 
   private readonly perlinConfig: PerlinConfig;
 
+  public tileUpdated$: Monomitter<void>;
+
   private constructor(
     account: EthAddress | undefined,
     ethConnection: EthConnection,
@@ -84,6 +87,8 @@ class GameManager extends EventEmitter {
       mirrorY: false,
       floor: true,
     };
+
+    this.tileUpdated$ = monomitter();
 
     for (let i = 0; i < worldWidth; i++) {
       this.tiles.push([]);
@@ -146,9 +151,14 @@ class GameManager extends EventEmitter {
     // do some logic
     // also, handle state updates for locally-initialized txIntents
     gameManager.contractsAPI
-      .on(ContractsAPIEvent.TileUpdated, async (_tile: Tile) => {
+      .on(ContractsAPIEvent.TileUpdated, async (_tile: RawTile) => {
         // todo: update in memory data store
         // todo: emit event to UI
+        console.log('event tile', _tile);
+        const tile = decodeTileWithoutPerl(_tile);
+
+        gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
+        gameManager.tileUpdated$.publish();
       })
       .on(ContractsAPIEvent.TxSubmitted, (unconfirmedTx: SubmittedTx) => {
         // todo: save the tx to localstorage
@@ -227,6 +237,10 @@ class GameManager extends EventEmitter {
 
   async getCachedTileType(coords: WorldCoords): Promise<TileType> {
     return (await this.contractsAPI.getCachedTile(coords)).currentTileType;
+  }
+
+  async doRandomTileUpdate(coords: WorldCoords, tileType: TileType) {
+    await this.contractsAPI.doRandomTileUpdate(coords, tileType);
   }
 
   async checkProof(tile: Tile): Promise<boolean> {
