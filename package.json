@@ -8,6 +8,7 @@
     "eth",
     "packages/contracts",
     "packages/types",
+    "packages/zk",
     "client"
   ],
   "scripts": {

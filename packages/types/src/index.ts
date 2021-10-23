@@ -9,11 +9,16 @@
  * @packageDocumentation
  */
 
+import type { Any } from 'ts-toolbelt';
+
 export enum TileType {
   UNKNOWN,
   WATER,
+  BEACH,
+  TREE,
+  CHEST,
   LAND,
-  MAX = LAND,
+  MAX = LAND, // NOTE: This MAX is hardcoded as 'divisor' in fake_perlin.circom!
 }
 
 export type WorldCoords = {
@@ -23,15 +28,21 @@ export type WorldCoords = {
 
 export type Tile = {
   coords: WorldCoords;
-  tileType: TileType;
+  originalTileType: TileType;
+  currentTileType: TileType;
+  perl: number;
 };
-import type { Any } from 'ts-toolbelt';
 
 /**
  * An abstract type used to differentiate between common types, like `number` or `string`.
  * The `Id` type parameter is the key to vary upon and should be unique unless being used to subtype.
  */
 export type Abstract<T, Id extends Any.Key> = Any.Type<T, Id>;
+
+/**
+ * Unwraps a Promise type into the type it contains. Useful when working with Promise-returning functions.
+ */
+export type Awaited<T> = Any.Await<T>;
 
 /**
  * This is expected to be a 40-character, lowercase hex string, prefixed with 0x
@@ -60,18 +71,40 @@ export function address(str: string): EthAddress {
   return `0x${ret}` as EthAddress;
 }
 
+export interface SnarkJSProof {
+  pi_a: [string, string, string];
+  pi_b: [[string, string], [string, string], [string, string]];
+  pi_c: [string, string, string];
+}
+
+export interface SnarkJSProofAndSignals {
+  proof: SnarkJSProof;
+  publicSignals: string[];
+}
+
+export interface SnarkInput {
+  x: string;
+  y: string;
+  seed: string;
+  width: string;
+  scale: string;
+  perlinBase: string;
+  isRare: string;
+}
+
 /**
  * Shape of the args for `revealLocation` DarkForestCore contract call
  */
-export type ProofArgs = [
-  [string, string], // proofA
-  [
-    // proofB
-    [string, string],
-    [string, string]
-  ],
-  [string, string], // proofC
-  [string, string, string, string] // x, y, seed, tileType
+export type ProofArgs = {
+  proof: SnarkJSProof;
+  input: SnarkInput;
+};
+
+export type ProveTileContractCallArgs = [
+  [string, string],
+  [[string, string], [string, string]],
+  [string, string],
+  [string, string, string, string]
 ];
 
 /**

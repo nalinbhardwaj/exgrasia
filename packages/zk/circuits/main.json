@@ -1,0 +1,10 @@
+{
+  "x": 1,
+  "y": 2,
+  "seed": 42,
+  "scale": 4,
+  "width": 40,
+  "perlinBase": 15,
+  "rarityThreshold": 3,
+  "isRare": 0
+}

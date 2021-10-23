@@ -7,12 +7,17 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "hardhat/console.sol";
 
 contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
-    event TileProved(uint256 x, uint256 y, TileType tileType);
+    event TileUpdated(uint256 x, uint256 y, TileType tileType);
 
-    function initialize(uint256 _seed, uint256 _worldWidth) public initializer {
+    function initialize(
+        uint256 _seed,
+        uint256 _worldWidth,
+        uint256 _worldScale
+    ) public initializer {
         __Ownable_init();
         seed = _seed;
         worldWidth = _worldWidth;
+        worldScale = _worldScale;
     }
 
     function proveTile(
@@ -24,10 +29,19 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         uint256 x = publicSignals[0];
         uint256 y = publicSignals[1];
         uint256 claimedSeed = publicSignals[2];
-        uint256 claimedTileType = publicSignals[3];
+        TileType tileType = TileType(publicSignals[3]);
+
         require(x < worldWidth);
         require(y < worldWidth);
         require(claimedSeed == seed);
-        cachedTiles[x][y] = TileType(claimedTileType);
+
+        Tile memory tile = Tile({
+            x: x,
+            y: y,
+            originalTileType: tileType,
+            currentTileType: tileType
+        });
+        cachedTiles[x][y] = tile;
+        touchedTiles.push(tile);
     }
 }

@@ -5,7 +5,7 @@ import GameManager from '../backend/GameManager';
 import { EthConnection } from '@darkforest_eth/network';
 import { getEthConnection } from '../backend/Blockchain';
 import { DEV_TEST_PRIVATE_KEY, TileType, WorldCoords } from 'common-types';
-import { tileTypeToColor } from '../utils';
+import { tileTypeToColor, getRandomTree } from '../utils';
 
 const enum LoadingStep {
   NONE,
@@ -29,6 +29,7 @@ export default function LandingPage() {
         setEthConnection(ethConnection);
         setStep(LoadingStep.LOADED_ETH_CONNECTION);
         const gm = await GameManager.create(ethConnection);
+        window.gm = gm;
         setGameManager(gm);
         setStep(LoadingStep.LOADED_GAME_MANAGER);
       })
@@ -39,13 +40,29 @@ export default function LandingPage() {
 
   const onGridClick = (i: number, j: number) => async () => {
     if (gameManager && !queryingBlockchain) {
-      console.log(i, j);
       const coords = { x: i, y: j };
       setQueryCoords(coords);
       setQueryingBlockchain(true);
-      const tileType = await gameManager.getCachedTile(coords);
+      const tileType = await gameManager.getCachedTileType(coords);
       setLastQueryResult(tileType);
       setQueryingBlockchain(false);
+    }
+  };
+
+  const submitProof = (i: number, j: number) => async () => {
+    if (gameManager && !queryingBlockchain) {
+      console.log('submitProof', i, j);
+      const coords = { x: i, y: j };
+      setQueryingBlockchain(true);
+      const tileType = await gameManager.getCachedTileType(coords);
+      setQueryingBlockchain(false);
+      console.log(`cached tiletype: ${tileType}`);
+      if (tileType !== 0) {
+        return;
+      }
+      const ogTileType = gameManager.getOriginalTile(coords);
+      const check = gameManager.proveTile(ogTileType);
+      console.log('checked', check);
     }
   };
 
@@ -64,17 +81,24 @@ export default function LandingPage() {
         {lastQueryResult !== undefined ? (
           <p>{`last queried for (${queryCoords?.x}, ${queryCoords?.y}): cached tile type is ${lastQueryResult}`}</p>
         ) : null}
+        <p>yo</p>
         {gameManager
           ? gameManager.getOriginalTiles().map((coordRow, i) => {
               return (
                 <GridRow key={i}>
                   {coordRow.map((tile, j) => {
+                    const tree = getRandomTree({ x: i, y: j }, coordRow.length);
+
                     return (
                       <GridSquare
                         key={100 * i + j}
-                        onClick={onGridClick(i, j)}
-                        style={{ backgroundColor: tileTypeToColor[tile.tileType] }}
-                      />
+                        onClick={submitProof(i, j)}
+                        style={{ backgroundColor: tileTypeToColor[tile.currentTileType] }}
+                      >
+                        {tile.currentTileType === TileType.TREE && (
+                          <span style={{ fontSize: '20px' }}>{tree}</span>
+                        )}
+                      </GridSquare>
                     );
                   })}
                 </GridRow>
@@ -103,9 +127,12 @@ const GridRow = styled.div`
 `;
 
 const GridSquare = styled.div`
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-color: black;
   border-style: solid;
   border-width: 1px;
+  justify-content: center;
+  vertical-align: middle;
+  text-align: center;
 `;
