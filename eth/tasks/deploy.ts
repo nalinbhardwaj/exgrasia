@@ -5,7 +5,7 @@ import * as path from 'path';
 import type { TinyWorld, TinyWorldGetters, TinyWorldCoreReturn } from '../task-types';
 import * as prettier from 'prettier';
 import { Signer, Contract } from 'ethers';
-import { DeployOptions } from '@openzeppelin/hardhat-upgrades/dist/deploy-proxy';
+// import { any } from '@openzeppelin/hardhat-upgrades/dist/deploy-proxy';
 import { TransactionMinedTimeout } from '@openzeppelin/upgrades-core';
 
 task('deploy', 'deploy all contracts').setAction(deploy);
@@ -64,7 +64,7 @@ async function deploySave(
    * for TinyWorld.
    *
    * ## Installation
-   * 
+   *
    * These contracts are not currently published online, but in the future may
    * be made available on NPM or Skypack.
    *
@@ -160,7 +160,7 @@ async function deployProxyWithRetry<C extends Contract>({
   contractName: string;
   signerOrOptions: Signer | FactoryOptions | undefined;
   contractArgs: unknown[];
-  deployOptions: DeployOptions;
+  deployOptions: any;
   hre: HardhatRuntimeEnvironment;
   retries: number;
 }): Promise<C> {
