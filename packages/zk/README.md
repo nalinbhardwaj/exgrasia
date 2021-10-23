@@ -12,6 +12,7 @@ By providing configuration containing your Phase 1 Powers of Tau and circuits, t
 ```
 cd packages/zk && yarn circom:dev
 yarn circom:cp
+cd ../../client && yarn start:dev
 ```
 
 Using fake Perlin:

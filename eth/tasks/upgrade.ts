@@ -1,6 +1,6 @@
 import { task } from 'hardhat/config';
 import { FactoryOptions, HardhatRuntimeEnvironment } from 'hardhat/types';
-import { DeployOptions } from '@openzeppelin/hardhat-upgrades/dist/deploy-proxy';
+// import { any } from '@openzeppelin/hardhat-upgrades/dist/deploy-proxy';
 import { Signer, Contract } from 'ethers';
 import { TransactionMinedTimeout } from '@openzeppelin/upgrades-core';
 
@@ -57,7 +57,7 @@ async function upgradeProxyWithRetry<C extends Contract>({
   contractName: string;
   contractAddress: string;
   signerOrOptions: Signer | FactoryOptions | undefined;
-  deployOptions: DeployOptions;
+  deployOptions: any;
   hre: HardhatRuntimeEnvironment;
   retries: number;
 }): Promise<C> {

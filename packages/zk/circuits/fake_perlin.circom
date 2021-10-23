@@ -13,7 +13,7 @@ template Main() {
     mod.dividend <== x + y + seed;
     mod.divisor <== tileTypeMax;
 
-    log("Logging from fake perlin circom");
+    log(9024358902345809);
     log(mod.remainder + mod.quotient * mod.divisor);
     log(mod.dividend)
     log(tileType);

@@ -3,6 +3,8 @@
 /* eslint-disable */
 export { Erc721UpgradeableFactory } from "./Erc721UpgradeableFactory";
 export type { Erc721Upgradeable } from "./Erc721Upgradeable";
+export { VerifierFactory } from "./VerifierFactory";
+export type { Verifier } from "./Verifier";
 export { TinyWorldFactory } from "./TinyWorldFactory";
 export type { TinyWorld } from "./TinyWorld";
 export { TinyWorldGettersFactory } from "./TinyWorldGettersFactory";

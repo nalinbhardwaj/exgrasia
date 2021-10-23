@@ -33,7 +33,7 @@ template IsNegative() {
     component num2Bits = Num2Bits(254);
     num2Bits.in <== in;
     component sign = Sign();
-    
+
     for (var i = 0; i < 254; i++) {
         sign.in[i] <== num2Bits.out[i];
     }
@@ -48,6 +48,8 @@ template IsNegative() {
 // (-8 - 2) // 5 = -2
 // -8 + 2 * 5 = 2
 // check: 2 - 2 * 5 = -8
+// SQRT_P is max ~10000000000000000000000000000000000000
+// Recommend divisor_bits ~<= 57 <= 256 / 4
 template Modulo(divisor_bits, SQRT_P) {
     signal input dividend; // -8
     signal input divisor; // 5
@@ -68,7 +70,7 @@ template Modulo(divisor_bits, SQRT_P) {
 
     signal output raw_remainder;
     raw_remainder <-- abs_dividend % divisor;
-    
+
     signal output neg_remainder;
     neg_remainder <-- divisor - raw_remainder;
 
@@ -103,7 +105,7 @@ template RandomGradientAt(DENOMINATOR) {
     signal input in[2];
     signal input scale;
     signal input KEY;
-    
+
     signal output out[2];
     component rand = Random();
     rand.in[0] <== in[0];
@@ -122,7 +124,7 @@ template RandomGradientAt(DENOMINATOR) {
     signal vectorDenominator;
     vectorDenominator <== DENOMINATOR / 1000;
 
-    out[0] <== xSelector.out * vectorDenominator; 
+    out[0] <== xSelector.out * vectorDenominator;
     out[1] <== ySelector.out * vectorDenominator;
 }
 
@@ -348,7 +350,7 @@ template PerlinValue(DENOMINATOR) {
 
         getWeights[i].corner[1] <-- coords[i][1] / scale;
         coords[i][1] === getWeights[i].corner[1] * scale;
-        
+
         getWeights[i].p[0] <-- p[0] / scale;
         p[0] === getWeights[i].p[0] * scale;
 
