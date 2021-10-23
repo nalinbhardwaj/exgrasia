@@ -101,7 +101,7 @@ class SnarkArgsHelper {
     try {
       const start = Date.now();
       console.log('INIT: calculating witness and proof');
-      console.log(`tile basic proof ${tile.tileType}`);
+      console.log(`tile basic proof ${tile.originalTileType}`);
       const input: SnarkInput = {
         x: tile.coords.x.toString(),
         y: tile.coords.y.toString(),
@@ -112,7 +112,7 @@ class SnarkArgsHelper {
         isRare: isRare(tile.coords, this.width) ? '1' : '0',
       };
 
-      console.log(`input: ${tile.tileType}`);
+      console.log(`input: ${tile.originalTileType}`);
 
       const { proof, publicSignals } = await this.snarkProverQueue.doProof(
         input,
@@ -143,7 +143,7 @@ class SnarkArgsHelper {
             tile.coords.x.toString(),
             tile.coords.y.toString(),
             this.seed.toString(),
-            tile.tileType.toString(),
+            tile.originalTileType.toString(),
           ],
         ]);
       }, 2000);

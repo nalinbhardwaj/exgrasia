@@ -22,7 +22,9 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface TinyWorldStorageInterface extends ethers.utils.Interface {
   functions: {
     "getCachedTile(uint256,uint256)": FunctionFragment;
+    "getTouchedTiles()": FunctionFragment;
     "seed()": FunctionFragment;
+    "touchedTiles(uint256)": FunctionFragment;
     "worldScale()": FunctionFragment;
     "worldWidth()": FunctionFragment;
   };
@@ -31,7 +33,15 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     functionFragment: "getCachedTile",
     values: [BigNumberish, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getTouchedTiles",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "seed", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "touchedTiles",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "worldScale",
     values?: undefined
@@ -45,7 +55,15 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     functionFragment: "getCachedTile",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTouchedTiles",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "seed", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "touchedTiles",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "worldScale", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "worldWidth", data: BytesLike): Result;
 
@@ -71,7 +89,16 @@ export class TinyWorldStorage extends Contract {
       y: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      0: number;
+      0: {
+        x: BigNumber;
+        y: BigNumber;
+        originalTileType: number;
+        currentTileType: number;
+        0: BigNumber;
+        1: BigNumber;
+        2: number;
+        3: number;
+      };
     }>;
 
     "getCachedTile(uint256,uint256)"(
@@ -79,7 +106,42 @@ export class TinyWorldStorage extends Contract {
       y: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      0: number;
+      0: {
+        x: BigNumber;
+        y: BigNumber;
+        originalTileType: number;
+        currentTileType: number;
+        0: BigNumber;
+        1: BigNumber;
+        2: number;
+        3: number;
+      };
+    }>;
+
+    getTouchedTiles(overrides?: CallOverrides): Promise<{
+      0: {
+        x: BigNumber;
+        y: BigNumber;
+        originalTileType: number;
+        currentTileType: number;
+        0: BigNumber;
+        1: BigNumber;
+        2: number;
+        3: number;
+      }[];
+    }>;
+
+    "getTouchedTiles()"(overrides?: CallOverrides): Promise<{
+      0: {
+        x: BigNumber;
+        y: BigNumber;
+        originalTileType: number;
+        currentTileType: number;
+        0: BigNumber;
+        1: BigNumber;
+        2: number;
+        3: number;
+      }[];
     }>;
 
     seed(overrides?: CallOverrides): Promise<{
@@ -88,6 +150,34 @@ export class TinyWorldStorage extends Contract {
 
     "seed()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
+    }>;
+
+    touchedTiles(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      originalTileType: number;
+      currentTileType: number;
+      0: BigNumber;
+      1: BigNumber;
+      2: number;
+      3: number;
+    }>;
+
+    "touchedTiles(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      originalTileType: number;
+      currentTileType: number;
+      0: BigNumber;
+      1: BigNumber;
+      2: number;
+      3: number;
     }>;
 
     worldScale(overrides?: CallOverrides): Promise<{
@@ -111,17 +201,93 @@ export class TinyWorldStorage extends Contract {
     x: BigNumberish,
     y: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<number>;
+  ): Promise<{
+    x: BigNumber;
+    y: BigNumber;
+    originalTileType: number;
+    currentTileType: number;
+    0: BigNumber;
+    1: BigNumber;
+    2: number;
+    3: number;
+  }>;
 
   "getCachedTile(uint256,uint256)"(
     x: BigNumberish,
     y: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<number>;
+  ): Promise<{
+    x: BigNumber;
+    y: BigNumber;
+    originalTileType: number;
+    currentTileType: number;
+    0: BigNumber;
+    1: BigNumber;
+    2: number;
+    3: number;
+  }>;
+
+  getTouchedTiles(
+    overrides?: CallOverrides
+  ): Promise<
+    {
+      x: BigNumber;
+      y: BigNumber;
+      originalTileType: number;
+      currentTileType: number;
+      0: BigNumber;
+      1: BigNumber;
+      2: number;
+      3: number;
+    }[]
+  >;
+
+  "getTouchedTiles()"(
+    overrides?: CallOverrides
+  ): Promise<
+    {
+      x: BigNumber;
+      y: BigNumber;
+      originalTileType: number;
+      currentTileType: number;
+      0: BigNumber;
+      1: BigNumber;
+      2: number;
+      3: number;
+    }[]
+  >;
 
   seed(overrides?: CallOverrides): Promise<BigNumber>;
 
   "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  touchedTiles(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{
+    x: BigNumber;
+    y: BigNumber;
+    originalTileType: number;
+    currentTileType: number;
+    0: BigNumber;
+    1: BigNumber;
+    2: number;
+    3: number;
+  }>;
+
+  "touchedTiles(uint256)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{
+    x: BigNumber;
+    y: BigNumber;
+    originalTileType: number;
+    currentTileType: number;
+    0: BigNumber;
+    1: BigNumber;
+    2: number;
+    3: number;
+  }>;
 
   worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -136,17 +302,93 @@ export class TinyWorldStorage extends Contract {
       x: BigNumberish,
       y: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<number>;
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      originalTileType: number;
+      currentTileType: number;
+      0: BigNumber;
+      1: BigNumber;
+      2: number;
+      3: number;
+    }>;
 
     "getCachedTile(uint256,uint256)"(
       x: BigNumberish,
       y: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<number>;
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      originalTileType: number;
+      currentTileType: number;
+      0: BigNumber;
+      1: BigNumber;
+      2: number;
+      3: number;
+    }>;
+
+    getTouchedTiles(
+      overrides?: CallOverrides
+    ): Promise<
+      {
+        x: BigNumber;
+        y: BigNumber;
+        originalTileType: number;
+        currentTileType: number;
+        0: BigNumber;
+        1: BigNumber;
+        2: number;
+        3: number;
+      }[]
+    >;
+
+    "getTouchedTiles()"(
+      overrides?: CallOverrides
+    ): Promise<
+      {
+        x: BigNumber;
+        y: BigNumber;
+        originalTileType: number;
+        currentTileType: number;
+        0: BigNumber;
+        1: BigNumber;
+        2: number;
+        3: number;
+      }[]
+    >;
 
     seed(overrides?: CallOverrides): Promise<BigNumber>;
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    touchedTiles(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      originalTileType: number;
+      currentTileType: number;
+      0: BigNumber;
+      1: BigNumber;
+      2: number;
+      3: number;
+    }>;
+
+    "touchedTiles(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      originalTileType: number;
+      currentTileType: number;
+      0: BigNumber;
+      1: BigNumber;
+      2: number;
+      3: number;
+    }>;
 
     worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -172,9 +414,23 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getTouchedTiles(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTouchedTiles()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     seed(overrides?: CallOverrides): Promise<BigNumber>;
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    touchedTiles(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "touchedTiles(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -198,9 +454,25 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getTouchedTiles(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getTouchedTiles()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     seed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "seed()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    touchedTiles(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "touchedTiles(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     worldScale(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

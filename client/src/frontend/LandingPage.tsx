@@ -43,7 +43,7 @@ export default function LandingPage() {
       const coords = { x: i, y: j };
       setQueryCoords(coords);
       setQueryingBlockchain(true);
-      const tileType = await gameManager.getCachedTile(coords);
+      const tileType = await gameManager.getCachedTileType(coords);
       setLastQueryResult(tileType);
       setQueryingBlockchain(false);
     }
@@ -54,7 +54,7 @@ export default function LandingPage() {
       console.log('submitProof', i, j);
       const coords = { x: i, y: j };
       setQueryingBlockchain(true);
-      const tileType = await gameManager.getCachedTile(coords);
+      const tileType = await gameManager.getCachedTileType(coords);
       setQueryingBlockchain(false);
       console.log(`cached tiletype: ${tileType}`);
       if (tileType !== 0) {
@@ -93,9 +93,9 @@ export default function LandingPage() {
                       <GridSquare
                         key={100 * i + j}
                         onClick={submitProof(i, j)}
-                        style={{ backgroundColor: tileTypeToColor[tile.tileType] }}
+                        style={{ backgroundColor: tileTypeToColor[tile.currentTileType] }}
                       >
-                        {tile.tileType === TileType.TREE && (
+                        {tile.currentTileType === TileType.TREE && (
                           <span style={{ fontSize: '20px' }}>{tree}</span>
                         )}
                       </GridSquare>
