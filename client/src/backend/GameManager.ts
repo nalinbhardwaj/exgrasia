@@ -239,10 +239,12 @@ class GameManager extends EventEmitter {
       });
   }
 
-  public proveTile(tile: Tile): GameManager {
+  public proveTile(coords: WorldCoords): GameManager {
     if (!this.account) {
       throw new Error('no account set');
     }
+
+    const tile = this.tiles[coords.x][coords.y];
 
     const actionId = getRandomActionId();
     const txIntent = {
@@ -253,7 +255,7 @@ class GameManager extends EventEmitter {
     this.onTxIntent(txIntent);
 
     this.snarkHelper
-      .getFakeProof(tile)
+      .getBasicProof(tile)
       .then((callArgs) => {
         return this.contractsAPI.proveTile(callArgs, txIntent);
       })

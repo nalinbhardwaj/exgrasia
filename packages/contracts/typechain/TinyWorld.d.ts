@@ -26,7 +26,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "getTouchedTiles()": FunctionFragment;
     "initialize(uint256,uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[4])": FunctionFragment;
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[8])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "seed()": FunctionFragment;
     "touchedTiles(uint256)": FunctionFragment;
@@ -54,7 +54,16 @@ interface TinyWorldInterface extends ethers.utils.Interface {
       [BigNumberish, BigNumberish],
       [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       [BigNumberish, BigNumberish],
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+      [
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish
+      ]
     ]
   ): string;
   encodeFunctionData(
@@ -215,15 +224,33 @@ export class TinyWorld extends Contract {
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
-      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      publicSignals: [
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish
+      ],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[4])"(
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[8])"(
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
-      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      publicSignals: [
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish
+      ],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -376,15 +403,33 @@ export class TinyWorld extends Contract {
     a: [BigNumberish, BigNumberish],
     b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
     c: [BigNumberish, BigNumberish],
-    publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+    publicSignals: [
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[4])"(
+  "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[8])"(
     a: [BigNumberish, BigNumberish],
     b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
     c: [BigNumberish, BigNumberish],
-    publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+    publicSignals: [
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -525,15 +570,33 @@ export class TinyWorld extends Contract {
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
-      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      publicSignals: [
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish
+      ],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[4])"(
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[8])"(
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
-      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      publicSignals: [
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish
+      ],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -640,15 +703,33 @@ export class TinyWorld extends Contract {
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
-      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      publicSignals: [
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish
+      ],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[4])"(
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[8])"(
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
-      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      publicSignals: [
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish
+      ],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -730,15 +811,33 @@ export class TinyWorld extends Contract {
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
-      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      publicSignals: [
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish
+      ],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[4])"(
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[8])"(
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
-      publicSignals: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      publicSignals: [
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish
+      ],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

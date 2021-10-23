@@ -124,9 +124,9 @@
       { "internalType": "uint256[2][2]", "name": "b", "type": "uint256[2][2]" },
       { "internalType": "uint256[2]", "name": "c", "type": "uint256[2]" },
       {
-        "internalType": "uint256[4]",
+        "internalType": "uint256[8]",
         "name": "publicSignals",
-        "type": "uint256[4]"
+        "type": "uint256[8]"
       }
     ],
     "name": "proveTile",

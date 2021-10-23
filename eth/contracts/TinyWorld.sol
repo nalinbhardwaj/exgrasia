@@ -5,9 +5,22 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "./TinyWorldStorage.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "hardhat/console.sol";
+import "./ProveTileVerifier.sol";
 
 contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     event TileUpdated(uint256 x, uint256 y, TileType tileType);
+
+    function perlinToTileType(uint256 perlin, bool isRare) private pure returns (TileType) {
+        if (perlin > 18 && isRare) {
+            return TileType.TREE;
+        } else if (perlin > 15) {
+            return TileType.LAND;
+        } else if (perlin > 13) {
+            return TileType.BEACH;
+        } else {
+            return TileType.WATER;
+        }
+    }
 
     function initialize(
         uint256 _seed,
@@ -24,16 +37,26 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         uint256[2] memory a,
         uint256[2][2] memory b,
         uint256[2] memory c,
-        uint256[4] memory publicSignals
+        uint256[8] memory publicSignals
     ) public {
-        uint256 x = publicSignals[0];
-        uint256 y = publicSignals[1];
-        uint256 claimedSeed = publicSignals[2];
-        TileType tileType = TileType(publicSignals[3]);
+        require(Verifier.verifyMainProof(a, b, c, publicSignals), "Failed ZK check");
+
+        uint256 perlinBase = publicSignals[0];
+        uint256 isRare = publicSignals[1];
+        uint256 x = publicSignals[2];
+        uint256 y = publicSignals[3];
+        uint256 claimedSeed = publicSignals[4];
+        uint256 claimedScale = publicSignals[5];
+        uint256 claimedWidth = publicSignals[6];
+        uint256 claimedRarityThreshold = publicSignals[7];
 
         require(x < worldWidth);
         require(y < worldWidth);
+        require(claimedScale == worldScale);
         require(claimedSeed == seed);
+        // TODO: check rarityThreshold
+
+        TileType tileType = perlinToTileType(perlinBase, isRare == 1);
 
         Tile memory tile = Tile({
             x: x,

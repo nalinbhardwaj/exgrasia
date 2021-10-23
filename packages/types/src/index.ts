@@ -107,6 +107,30 @@ export type ProveTileContractCallArgs = [
 ];
 
 /**
+ * Method for converting the output of snarkJS `fullProve` into args that can be
+ * passed into TinyWOrld smart contract functions which perform zk proof
+ * verification.
+ *
+ * @param snarkProof the SNARK proof
+ * @param publicSignals the circuit's public signals (i.e. output signals and
+ * public input signals)
+ */
+export function buildContractCallArgs(
+  snarkProof: SnarkJSProof,
+  publicSignals: string[]
+): ProveTileContractCallArgs {
+  // the object returned by genZKSnarkProof needs to be massaged into a set of parameters the verifying contract
+  // will accept
+  return [
+    snarkProof.pi_a.slice(0, 2), // pi_a
+    // genZKSnarkProof reverses values in the inner arrays of pi_b
+    [snarkProof.pi_b[0].slice(0).reverse(), snarkProof.pi_b[1].slice(0).reverse()], // pi_b
+    snarkProof.pi_c.slice(0, 2), // pi_c
+    publicSignals, // input
+  ] as ProveTileContractCallArgs;
+}
+
+/**
  * Corresponds to local dev deployer account 0x1c0f0Af3262A7213E59Be7f1440282279D788335
  */
 export const DEV_TEST_PRIVATE_KEY =

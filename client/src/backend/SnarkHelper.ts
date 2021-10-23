@@ -1,4 +1,10 @@
-import { SnarkJSProofAndSignals, Tile, SnarkInput, ProveTileContractCallArgs } from 'common-types';
+import {
+  SnarkJSProofAndSignals,
+  Tile,
+  SnarkInput,
+  ProveTileContractCallArgs,
+  buildContractCallArgs,
+} from 'common-types';
 import FastQueue from 'fastq';
 
 type ZKPTask = {
@@ -100,7 +106,7 @@ class SnarkArgsHelper {
     this.snarkProverQueue = new SnarkProverQueue();
   }
 
-  async getBasicProof(tile: Tile): Promise<SnarkJSProofAndSignals> {
+  async getBasicProof(tile: Tile): Promise<ProveTileContractCallArgs> {
     try {
       const start = Date.now();
       console.log('PROVE: calculating witness and proof');
@@ -124,8 +130,8 @@ class SnarkArgsHelper {
       );
       const end = Date.now();
       console.log(`PROVE: calculated witness and proof in ${end - start}ms`);
-
-      return { proof, publicSignals };
+      console.log(proof);
+      return buildContractCallArgs(proof, publicSignals);
     } catch (e) {
       throw e;
     }

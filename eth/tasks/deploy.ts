@@ -2,7 +2,13 @@ import { subtask, task, types } from 'hardhat/config';
 import { FactoryOptions, HardhatRuntimeEnvironment } from 'hardhat/types';
 import * as fs from 'fs';
 import * as path from 'path';
-import type { TinyWorld, TinyWorldGetters, TinyWorldCoreReturn } from '../task-types';
+import type {
+  TinyWorld,
+  TinyWorldGetters,
+  TinyWorldCoreReturn,
+  LibraryContracts,
+  Verifier,
+} from '../task-types';
 import * as prettier from 'prettier';
 import { Signer, Contract } from 'ethers';
 // import { any } from '@openzeppelin/hardhat-upgrades/dist/deploy-proxy';
@@ -14,8 +20,13 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
   // need to force a compile for tasks
   await hre.run('compile');
 
+  // deploy libraries
+  const libraries: LibraryContracts = await hre.run('deploy:libraries');
+
   // deploy the core contract
-  const tinyWorldCoreReturn: TinyWorldCoreReturn = await hre.run('deploy:core', {});
+  const tinyWorldCoreReturn: TinyWorldCoreReturn = await hre.run('deploy:core', {
+    verifierAddress: libraries.verifier.address,
+  });
 
   const coreAddress = tinyWorldCoreReturn.contract.address;
   console.log('TinyWorldCore deployed to:', coreAddress);
@@ -106,18 +117,43 @@ async function deploySave(
   fs.writeFileSync(contractsFile, addrFileContents);
 }
 
-subtask('deploy:core', 'deploy and return tokens contract').setAction(deployCore);
+subtask('deploy:libraries', 'deploy and return tokens contract').setAction(deployLibraries);
 
-async function deployCore(_args: {}, hre: HardhatRuntimeEnvironment): Promise<TinyWorldCoreReturn> {
+async function deployLibraries({}, hre: HardhatRuntimeEnvironment): Promise<LibraryContracts> {
+  const VerifierFactory = await hre.ethers.getContractFactory('Verifier');
+  const verifier = await VerifierFactory.deploy();
+  await verifier.deployTransaction.wait();
+
+  return {
+    verifier: verifier as Verifier,
+  };
+}
+
+subtask('deploy:core', 'deploy and return tokens contract')
+  .addParam('verifierAddress', '', undefined, types.string)
+  .setAction(deployCore);
+
+async function deployCore(
+  args: {
+    verifierAddress: string;
+  },
+  hre: HardhatRuntimeEnvironment
+): Promise<TinyWorldCoreReturn> {
   const tinyWorldCore = await deployProxyWithRetry<TinyWorld>({
     contractName: 'TinyWorld',
-    signerOrOptions: {},
+    signerOrOptions: {
+      libraries: {
+        Verifier: args.verifierAddress,
+      },
+    },
     contractArgs: [
       hre.initializers.SEED_1,
       hre.initializers.WORLD_WIDTH,
       hre.initializers.WORLD_SCALE,
     ],
-    deployOptions: {},
+    // Linking external libraries like `DarkForestUtils` is not yet supported, or
+    // skip this check with the `unsafeAllowLinkedLibraries` flag
+    deployOptions: { unsafeAllowLinkedLibraries: true },
     retries: 5,
     hre,
   });

@@ -60,6 +60,7 @@ export default function LandingPage() {
       }
       const tile = gameManager.getTile(coords);
       const check = await gameManager.checkProof(tile);
+      console.log(check);
     }
   };
 
@@ -89,7 +90,7 @@ export default function LandingPage() {
                     return (
                       <GridSquare
                         key={100 * i + j}
-                        onClick={generateAndCheckProof(i, j)}
+                        onClick={onGridClick(i, j)}
                         style={{ backgroundColor: tileTypeToColor[tile.currentTileType] }}
                       >
                         {tile.currentTileType === TileType.TREE && (
