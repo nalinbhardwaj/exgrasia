@@ -51,3 +51,16 @@ export function useWheatScore(gameManager: GameManager | undefined): Wrapper<num
 
   return wheatScore;
 }
+
+export function useBreadScore(gameManager: GameManager | undefined): Wrapper<number> {
+  const [breadScore, setBreadScore] = useState<Wrapper<number>>(() => new Wrapper(0));
+
+  const onUpdate = useCallback(async () => {
+    console.log('onUpdate');
+    setBreadScore(new Wrapper(gameManager ? await gameManager.getBreadScore() : 0));
+  }, [gameManager]);
+
+  useEmitterSubscribe(gameManager?.tileUpdated$, onUpdate);
+
+  return breadScore;
+}

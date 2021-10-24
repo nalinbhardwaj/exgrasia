@@ -21,6 +21,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface TinyWorldStorageInterface extends ethers.utils.Interface {
   functions: {
+    "breadScore(address)": FunctionFragment;
     "cachedTiles(uint256,uint256)": FunctionFragment;
     "getCachedTile(tuple)": FunctionFragment;
     "getTouchedTiles()": FunctionFragment;
@@ -34,6 +35,7 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     "worldWidth()": FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: "breadScore", values: [string]): string;
   encodeFunctionData(
     functionFragment: "cachedTiles",
     values: [BigNumberish, BigNumberish]
@@ -70,6 +72,7 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
 
+  decodeFunctionResult(functionFragment: "breadScore", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "cachedTiles",
     data: BytesLike
@@ -117,6 +120,20 @@ export class TinyWorldStorage extends Contract {
   interface: TinyWorldStorageInterface;
 
   functions: {
+    breadScore(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "breadScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     cachedTiles(
       arg0: BigNumberish,
       arg1: BigNumberish,
@@ -288,6 +305,13 @@ export class TinyWorldStorage extends Contract {
     }>;
   };
 
+  breadScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  "breadScore(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   cachedTiles(
     arg0: BigNumberish,
     arg1: BigNumberish,
@@ -421,6 +445,13 @@ export class TinyWorldStorage extends Contract {
   "worldWidth()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
+    breadScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "breadScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     cachedTiles(
       arg0: BigNumberish,
       arg1: BigNumberish,
@@ -557,6 +588,13 @@ export class TinyWorldStorage extends Contract {
   filters: {};
 
   estimateGas: {
+    breadScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "breadScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     cachedTiles(
       arg0: BigNumberish,
       arg1: BigNumberish,
@@ -645,6 +683,16 @@ export class TinyWorldStorage extends Contract {
   };
 
   populateTransaction: {
+    breadScore(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "breadScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     cachedTiles(
       arg0: BigNumberish,
       arg1: BigNumberish,

@@ -1,7 +1,17 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-enum TileType {UNKNOWN, WATER, SAND, TREE, STUMP, CHEST, FARM, GRASS}
+enum TileType {
+    UNKNOWN,
+    WATER,
+    SAND,
+    TREE,
+    STUMP,
+    CHEST,
+    FARM,
+    WINDMILL,
+    GRASS
+}
 
 struct Tile {
     Coords coords;

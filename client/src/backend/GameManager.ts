@@ -24,7 +24,6 @@ import {
   isUnconfirmedProveTile,
   isUnconfirmedTransitionTile,
   SubmittedTx,
-  tileTypeToTransition,
   TxIntent,
   UnconfirmedProveTile,
   UnconfirmedTransitionTile,
@@ -199,8 +198,7 @@ class GameManager extends EventEmitter {
         }
         if (isUnconfirmedTransitionTile(unconfirmedTx)) {
           const tile = unconfirmedTx.tile;
-          tile.currentTileType = tileTypeToTransitionTile[unconfirmedTx.tile.currentTileType];
-
+          tile.currentTileType = unconfirmedTx.toTileType;
           gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
           gameManager.tileUpdated$.publish();
         }
@@ -318,6 +316,48 @@ class GameManager extends EventEmitter {
     return this;
   }
 
+  tileTypeToSimpleTransition = {
+    [TileType.UNKNOWN]: {
+      methodName: ContractMethodName.TRANSITION_TILE,
+      toTileType: TileType.UNKNOWN,
+    },
+    [TileType.WATER]: {
+      methodName: ContractMethodName.TRANSITION_TILE,
+      toTileType: TileType.UNKNOWN,
+    },
+    [TileType.SAND]: {
+      methodName: ContractMethodName.TRANSITION_TILE,
+      toTileType: TileType.UNKNOWN,
+    },
+    [TileType.TREE]: { methodName: ContractMethodName.COLLECT_WOOD, toTileType: TileType.STUMP },
+    [TileType.STUMP]: {
+      methodName: ContractMethodName.TRANSITION_TILE,
+      toTileType: TileType.UNKNOWN,
+    },
+    [TileType.CHEST]: {
+      methodName: ContractMethodName.TRANSITION_TILE,
+      toTileType: TileType.UNKNOWN,
+    },
+    [TileType.FARM]: { methodName: ContractMethodName.HARVEST_WHEAT, toTileType: TileType.GRASS },
+    [TileType.WINDMILL]: {
+      methodName: ContractMethodName.MAKE_BREAD,
+      toTileType: TileType.WINDMILL,
+    },
+    [TileType.GRASS]: {
+      methodName: ContractMethodName.TRANSITION_TILE,
+      toTileType: TileType.UNKNOWN,
+    }, // lives in decideTransitionMethod
+  };
+
+  public async decideTransitionMethod(tileType: TileType) {
+    if (tileType == TileType.GRASS) {
+      if ((await this.getWoodScore()) >= 10)
+        return { methodName: ContractMethodName.MAKE_WINDMILL, toTileType: TileType.WINDMILL };
+      return { methodName: ContractMethodName.BUILD_FARM, toTileType: TileType.FARM };
+    }
+    return this.tileTypeToSimpleTransition[tileType];
+  }
+
   public async transitionTile(tile: Tile) {
     if (!this.account) {
       throw new Error('no account set');
@@ -328,10 +368,12 @@ class GameManager extends EventEmitter {
     }
 
     const actionId = getRandomActionId();
+    const transition = await this.decideTransitionMethod(tile.currentTileType);
     const txIntent: UnconfirmedTransitionTile = {
       actionId,
-      methodName: tileTypeToTransition[tile.currentTileType],
+      methodName: transition.methodName,
       tile,
+      toTileType: transition.toTileType,
     };
     this.onTxIntent(txIntent);
     const callArgs: TransitionTileContractCallArgs = [tile.coords];
@@ -348,6 +390,10 @@ class GameManager extends EventEmitter {
 
   public async getWheatScore() {
     return this.contractsAPI.getWheatScore();
+  }
+
+  public async getBreadScore() {
+    return this.contractsAPI.getBreadScore();
   }
 }
 

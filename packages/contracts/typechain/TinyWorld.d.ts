@@ -22,6 +22,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface TinyWorldInterface extends ethers.utils.Interface {
   functions: {
+    "breadScore(address)": FunctionFragment;
     "buildFarm(tuple)": FunctionFragment;
     "cachedTiles(uint256,uint256)": FunctionFragment;
     "collectWood(tuple)": FunctionFragment;
@@ -31,6 +32,8 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "harvestWheat(tuple)": FunctionFragment;
     "initialize(uint256,uint256,uint256)": FunctionFragment;
     "lastHarvested(uint256,uint256)": FunctionFragment;
+    "makeBread(tuple)": FunctionFragment;
+    "makeWindmill(tuple)": FunctionFragment;
     "owner()": FunctionFragment;
     "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -45,6 +48,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "worldWidth()": FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: "breadScore", values: [string]): string;
   encodeFunctionData(
     functionFragment: "buildFarm",
     values: [{ x: BigNumberish; y: BigNumberish }]
@@ -80,6 +84,14 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "lastHarvested",
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "makeBread",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "makeWindmill",
+    values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -131,6 +143,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
 
+  decodeFunctionResult(functionFragment: "breadScore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "buildFarm", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "cachedTiles",
@@ -159,6 +172,11 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "lastHarvested",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "makeBread", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "makeWindmill",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -212,6 +230,20 @@ export class TinyWorld extends Contract {
   interface: TinyWorldInterface;
 
   functions: {
+    breadScore(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "breadScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     buildFarm(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
@@ -351,6 +383,26 @@ export class TinyWorld extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
+
+    makeBread(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "makeBread(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    makeWindmill(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "makeWindmill(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     owner(overrides?: CallOverrides): Promise<{
       0: string;
@@ -507,6 +559,13 @@ export class TinyWorld extends Contract {
     }>;
   };
 
+  breadScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  "breadScore(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   buildFarm(
     coords: { x: BigNumberish; y: BigNumberish },
     overrides?: Overrides
@@ -639,6 +698,26 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  makeBread(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "makeBread(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  makeWindmill(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "makeWindmill(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   "owner()"(overrides?: CallOverrides): Promise<string>;
@@ -760,6 +839,13 @@ export class TinyWorld extends Contract {
   "worldWidth()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
+    breadScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "breadScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     buildFarm(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -892,6 +978,26 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    makeBread(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "makeBread(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    makeWindmill(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "makeWindmill(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     owner(overrides?: CallOverrides): Promise<string>;
 
     "owner()"(overrides?: CallOverrides): Promise<string>;
@@ -1023,6 +1129,13 @@ export class TinyWorld extends Contract {
   };
 
   estimateGas: {
+    breadScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "breadScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     buildFarm(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
@@ -1117,6 +1230,26 @@ export class TinyWorld extends Contract {
       arg0: BigNumberish,
       arg1: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    makeBread(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "makeBread(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    makeWindmill(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "makeWindmill(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1231,6 +1364,16 @@ export class TinyWorld extends Contract {
   };
 
   populateTransaction: {
+    breadScore(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "breadScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     buildFarm(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
@@ -1327,6 +1470,26 @@ export class TinyWorld extends Contract {
       arg0: BigNumberish,
       arg1: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    makeBread(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "makeBread(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    makeWindmill(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "makeWindmill(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;

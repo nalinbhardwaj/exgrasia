@@ -6,7 +6,13 @@ import { EthConnection } from '@darkforest_eth/network';
 import { getEthConnection } from '../backend/Blockchain';
 import { DEV_TEST_PRIVATE_KEY, Tile, TileType, WorldCoords } from 'common-types';
 import { tileTypeToColor, getTileEmoji } from '../utils';
-import { useGameManager, useTiles, useWheatScore, useWoodScore } from './Utils/AppHooks';
+import {
+  useBreadScore,
+  useGameManager,
+  useTiles,
+  useWheatScore,
+  useWoodScore,
+} from './Utils/AppHooks';
 
 const enum LoadingStep {
   NONE,
@@ -25,6 +31,7 @@ export default function LandingPage() {
   const tiles = useTiles(gameManager);
   const wheatScore = useWheatScore(gameManager);
   const woodScore = useWoodScore(gameManager);
+  const breadScore = useBreadScore(gameManager);
   const [tileEmojis, setTileEmojis] = useState<string[][]>([]);
 
   useEffect(() => {
@@ -95,7 +102,9 @@ export default function LandingPage() {
         {gameManager && (
           <p>{`world seed: ${gameManager.getWorldSeed()}. world width: ${gameManager.getWorldWidth()}`}</p>
         )}
-        {gameManager && <p>{`wood score: ${woodScore.value}. wheat score: ${wheatScore.value}`}</p>}
+        {gameManager && (
+          <p>{`wood score: ${woodScore.value}. wheat score: ${wheatScore.value}. bread score: ${breadScore.value}`}</p>
+        )}
         <p>{`errors: ${error}`}</p>
         {lastQueryResult !== undefined ? (
           <p>{`last queried for (${queryCoords?.x}, ${queryCoords?.y}): cached tile type is ${lastQueryResult}`}</p>

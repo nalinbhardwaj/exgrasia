@@ -16,16 +16,13 @@ export enum ContractMethodName {
   MAKE_BREAD = 'makeBread',
 }
 
-export const tileTypeToTransition = {
-  [TileType.UNKNOWN]: ContractMethodName.TRANSITION_TILE,
-  [TileType.WATER]: ContractMethodName.TRANSITION_TILE,
-  [TileType.SAND]: ContractMethodName.TRANSITION_TILE,
-  [TileType.TREE]: ContractMethodName.COLLECT_WOOD,
-  [TileType.STUMP]: ContractMethodName.TRANSITION_TILE,
-  [TileType.CHEST]: ContractMethodName.TRANSITION_TILE,
-  [TileType.FARM]: ContractMethodName.HARVEST_WHEAT,
-  [TileType.GRASS]: ContractMethodName.BUILD_FARM,
-};
+export const possibleTransitions = [
+  ContractMethodName.TRANSITION_TILE,
+  ContractMethodName.COLLECT_WOOD,
+  ContractMethodName.HARVEST_WHEAT,
+  ContractMethodName.BUILD_FARM,
+  ContractMethodName.MAKE_WINDMILL,
+];
 
 export const enum ContractsAPIEvent {
   TileUpdated = 'TileUpdated',
@@ -61,6 +58,7 @@ export function isUnconfirmedProveTile(txIntent: TxIntent): txIntent is Unconfir
 
 export type UnconfirmedTransitionTile = TxIntent & {
   tile: Tile;
+  toTileType: TileType;
 };
 
 export type SubmittedTransitionTile = UnconfirmedTransitionTile & SubmittedTx;
@@ -68,5 +66,5 @@ export type SubmittedTransitionTile = UnconfirmedTransitionTile & SubmittedTx;
 export function isUnconfirmedTransitionTile(
   txIntent: TxIntent
 ): txIntent is UnconfirmedTransitionTile {
-  return Object.values(tileTypeToTransition).includes(txIntent.methodName);
+  return possibleTransitions.includes(txIntent.methodName);
 }

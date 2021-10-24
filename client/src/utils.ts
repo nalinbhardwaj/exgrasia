@@ -10,18 +10,19 @@ export const tileTypeToColor = {
   [TileType.STUMP]: '#0A8754',
   [TileType.CHEST]: '#53F4FF',
   [TileType.FARM]: '#0A8754',
+  [TileType.WINDMILL]: '#0A8754',
   [TileType.GRASS]: '#0A8754',
 };
 
 export const tileTypeToTransitionTile = {
   [TileType.UNKNOWN]: TileType.UNKNOWN,
   [TileType.WATER]: TileType.UNKNOWN,
-  [TileType.BEACH]: TileType.UNKNOWN,
+  [TileType.SAND]: TileType.UNKNOWN,
   [TileType.TREE]: TileType.STUMP,
   [TileType.STUMP]: TileType.UNKNOWN,
   [TileType.CHEST]: TileType.UNKNOWN,
-  [TileType.FARM]: TileType.LAND,
-  [TileType.LAND]: TileType.FARM,
+  [TileType.FARM]: TileType.GRASS,
+  [TileType.GRASS]: TileType.FARM,
 };
 
 export const getRandomTree = (coords: WorldCoords, width: number) => {
@@ -43,11 +44,12 @@ export const getTileEmoji = (tile: Tile, isPrepped: boolean, width: number) => {
   } else if (tile.currentTileType == TileType.GRASS) {
     if (isPrepped) return '🚜';
   } else if (tile.currentTileType == TileType.FARM) return '🌾';
+  else if (tile.currentTileType == TileType.WINDMILL) return '🏭';
   return '';
 };
 
 export const seedToTileType = (perlin1: number, _perlin2: number, raritySeed: number): number => {
-  if (perlin1 > 18 && raritySeed < 1) {
+  if (perlin1 > 18 && raritySeed < 3) {
     return TileType.TREE;
   } else if (perlin1 > 15) {
     return TileType.GRASS;
