@@ -24,11 +24,13 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   functions: {
     "buildFarm(tuple)": FunctionFragment;
     "cachedTiles(uint256,uint256)": FunctionFragment;
-    "cutTree(tuple)": FunctionFragment;
+    "collectWood(tuple)": FunctionFragment;
     "editTransition(uint8,uint8,bool)": FunctionFragment;
     "getCachedTile(tuple)": FunctionFragment;
     "getTouchedTiles()": FunctionFragment;
+    "harvestWheat(tuple)": FunctionFragment;
     "initialize(uint256,uint256,uint256)": FunctionFragment;
+    "lastHarvested(uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -52,7 +54,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "cutTree",
+    functionFragment: "collectWood",
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(
@@ -68,8 +70,16 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "harvestWheat",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
+  encodeFunctionData(
     functionFragment: "initialize",
     values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lastHarvested",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -126,7 +136,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     functionFragment: "cachedTiles",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "cutTree", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "collectWood",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "editTransition",
     data: BytesLike
@@ -139,7 +152,15 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     functionFragment: "getTouchedTiles",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "harvestWheat",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "lastHarvested",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "proveTile", data: BytesLike): Result;
   decodeFunctionResult(
@@ -227,12 +248,12 @@ export class TinyWorld extends Contract {
       2: number;
     }>;
 
-    cutTree(
+    collectWood(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "cutTree(tuple)"(
+    "collectWood(tuple)"(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -291,6 +312,16 @@ export class TinyWorld extends Contract {
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
     }>;
 
+    harvestWheat(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "harvestWheat(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     initialize(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
@@ -304,6 +335,22 @@ export class TinyWorld extends Contract {
       _worldScale: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    lastHarvested(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "lastHarvested(uint256,uint256)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
     owner(overrides?: CallOverrides): Promise<{
       0: string;
@@ -496,12 +543,12 @@ export class TinyWorld extends Contract {
     2: number;
   }>;
 
-  cutTree(
+  collectWood(
     coords: { x: BigNumberish; y: BigNumberish },
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "cutTree(tuple)"(
+  "collectWood(tuple)"(
     coords: { x: BigNumberish; y: BigNumberish },
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -556,6 +603,16 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
 
+  harvestWheat(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "harvestWheat(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   initialize(
     _seed: BigNumberish,
     _worldWidth: BigNumberish,
@@ -569,6 +626,18 @@ export class TinyWorld extends Contract {
     _worldScale: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  lastHarvested(
+    arg0: BigNumberish,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "lastHarvested(uint256,uint256)"(
+    arg0: BigNumberish,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -727,12 +796,12 @@ export class TinyWorld extends Contract {
       2: number;
     }>;
 
-    cutTree(
+    collectWood(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "cutTree(tuple)"(
+    "collectWood(tuple)"(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<void>;
@@ -787,6 +856,16 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
 
+    harvestWheat(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "harvestWheat(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     initialize(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
@@ -800,6 +879,18 @@ export class TinyWorld extends Contract {
       _worldScale: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    lastHarvested(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "lastHarvested(uint256,uint256)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -954,12 +1045,12 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    cutTree(
+    collectWood(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "cutTree(tuple)"(
+    "collectWood(tuple)"(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -992,6 +1083,16 @@ export class TinyWorld extends Contract {
 
     "getTouchedTiles()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    harvestWheat(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "harvestWheat(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     initialize(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
@@ -1004,6 +1105,18 @@ export class TinyWorld extends Contract {
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
       overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    lastHarvested(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "lastHarvested(uint256,uint256)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1140,12 +1253,12 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    cutTree(
+    collectWood(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "cutTree(tuple)"(
+    "collectWood(tuple)"(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -1180,6 +1293,16 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    harvestWheat(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "harvestWheat(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     initialize(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
@@ -1192,6 +1315,18 @@ export class TinyWorld extends Contract {
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    lastHarvested(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "lastHarvested(uint256,uint256)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;

@@ -107,7 +107,7 @@ export type ProveTileContractCallArgs = [
   [string, string, string, string]
 ];
 
-export type TransitionTileContractCallArgs = [WorldCoords, TileType];
+export type TransitionTileContractCallArgs = [WorldCoords];
 /**
  * Method for converting the output of snarkJS `fullProve` into args that can be
  * passed into TinyWOrld smart contract functions which perform zk proof

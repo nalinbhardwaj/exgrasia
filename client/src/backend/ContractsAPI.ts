@@ -133,6 +133,26 @@ export class ContractsAPI extends EventEmitter {
     return (await this.makeCall<EthersBN>(this.coreContract.seed)).toNumber();
   }
 
+  public async getWheatScore(): Promise<number> {
+    if (!this.txExecutor) {
+      throw new Error('no signer, cannot execute tx');
+    }
+
+    const addr = this.ethConnection.getAddress();
+
+    return (await this.makeCall<EthersBN>(this.coreContract.wheatScore, [addr])).toNumber();
+  }
+
+  public async getWoodScore(): Promise<number> {
+    if (!this.txExecutor) {
+      throw new Error('no signer, cannot execute tx');
+    }
+
+    const addr = this.ethConnection.getAddress();
+
+    return (await this.makeCall<EthersBN>(this.coreContract.woodScore, [addr])).toNumber();
+  }
+
   // public async doRandomTileUpdate(coords: WorldCoords, tileType: TileType) {
   //   await this.makeCall(this.coreContract.randomTileUpdate, [coords.x, coords.y, tileType]);
   // }
@@ -148,7 +168,7 @@ export class ContractsAPI extends EventEmitter {
     const tx = this.txExecutor.queueTransaction(
       action.actionId,
       this.coreContract,
-      ContractMethodName.TRANSITION_TILE,
+      action.methodName,
       args
     );
     const unminedTransitionTileTx: SubmittedTransitionTile = {

@@ -6,7 +6,7 @@ import { EthConnection } from '@darkforest_eth/network';
 import { getEthConnection } from '../backend/Blockchain';
 import { DEV_TEST_PRIVATE_KEY, Tile, TileType, WorldCoords } from 'common-types';
 import { tileTypeToColor, getTileEmoji } from '../utils';
-import { useGameManager, useTiles } from './Utils/AppHooks';
+import { useGameManager, useTiles, useWheatScore, useWoodScore } from './Utils/AppHooks';
 
 const enum LoadingStep {
   NONE,
@@ -23,6 +23,8 @@ export default function LandingPage() {
   const [queryingBlockchain, setQueryingBlockchain] = useState<boolean>(false);
   const [lastQueryResult, setLastQueryResult] = useState<TileType | undefined>();
   const tiles = useTiles(gameManager);
+  const wheatScore = useWheatScore(gameManager);
+  const woodScore = useWoodScore(gameManager);
   const [tileEmojis, setTileEmojis] = useState<string[][]>([]);
 
   useEffect(() => {
@@ -73,9 +75,7 @@ export default function LandingPage() {
     if (!gameManager || queryingBlockchain) return;
     console.log('proveOrTransition');
     if (!tile.isPrepped) return gameManager.proveTile(tile.coords);
-    if (tile.isPrepped && tile.currentTileType == TileType.LAND)
-      return await gameManager.transitionTile(tile, TileType.FARM);
-    else return await gameManager.proveTile(tile.coords);
+    return await gameManager.transitionTile(tile);
   };
 
   useEffect(() => {
@@ -92,9 +92,10 @@ export default function LandingPage() {
         <p>{`The current loading step is: ${step}`}</p>
         {ethConnection ? <p>{`current user: ${ethConnection.getAddress()}`}</p> : null}
         <p>{`GameManager loaded: ${!!gameManager}`}</p>
-        {gameManager ? (
+        {gameManager && (
           <p>{`world seed: ${gameManager.getWorldSeed()}. world width: ${gameManager.getWorldWidth()}`}</p>
-        ) : null}
+        )}
+        {gameManager && <p>{`wood score: ${woodScore.value}. wheat score: ${wheatScore.value}`}</p>}
         <p>{`errors: ${error}`}</p>
         {lastQueryResult !== undefined ? (
           <p>{`last queried for (${queryCoords?.x}, ${queryCoords?.y}): cached tile type is ${lastQueryResult}`}</p>

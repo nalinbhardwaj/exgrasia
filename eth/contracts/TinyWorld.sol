@@ -37,6 +37,7 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         worldScale = _worldScale;
         transitions[TileType.TREE][TileType.STUMP] = true;
         transitions[TileType.LAND][TileType.FARM] = true;
+        transitions[TileType.FARM][TileType.LAND] = true;
     }
 
     function transitionTile(Coords memory coords, TileType toTileType) public {
@@ -50,12 +51,18 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
 
     function buildFarm(Coords memory coords) public {
         transitionTile(coords, TileType.FARM);
-        // TODO: Change score
     }
 
-    function cutTree(Coords memory coords) public {
+    function collectWood(Coords memory coords) public {
         transitionTile(coords, TileType.STUMP);
-        // TODO: Change score
+        woodScore[msg.sender]++;
+    }
+
+    function harvestWheat(Coords memory coords) public {
+        require(block.timestamp >= lastHarvested[coords.x][coords.y] + 60);
+        transitionTile(coords, TileType.LAND);
+        wheatScore[msg.sender] += 3;
+        lastHarvested[coords.x][coords.y] = block.timestamp;
     }
 
     function editTransition(

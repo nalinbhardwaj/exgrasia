@@ -17,6 +17,7 @@ import {
   ContractsAPIEvent,
   isUnconfirmedProveTile,
   SubmittedTx,
+  tileTypeToTransition,
   TxIntent,
   UnconfirmedProveTile,
   UnconfirmedTransitionTile,
@@ -301,7 +302,7 @@ class GameManager extends EventEmitter {
     return this;
   }
 
-  public async transitionTile(tile: Tile, toTileType: TileType) {
+  public async transitionTile(tile: Tile) {
     if (!this.account) {
       throw new Error('no account set');
     }
@@ -313,17 +314,24 @@ class GameManager extends EventEmitter {
     const actionId = getRandomActionId();
     const txIntent: UnconfirmedTransitionTile = {
       actionId,
-      methodName: ContractMethodName.TRANSITION_TILE,
+      methodName: tileTypeToTransition[tile.currentTileType],
       tile,
-      toTileType,
     };
     this.onTxIntent(txIntent);
-    const callArgs: TransitionTileContractCallArgs = [tile.coords, toTileType];
+    const callArgs: TransitionTileContractCallArgs = [tile.coords];
     this.contractsAPI.transitionTile(callArgs, txIntent).catch((err) => {
       this.onTxIntentFail(txIntent, err);
     });
 
     return this;
+  }
+
+  public async getWoodScore() {
+    return this.contractsAPI.getWoodScore();
+  }
+
+  public async getWheatScore() {
+    return this.contractsAPI.getWheatScore();
   }
 }
 

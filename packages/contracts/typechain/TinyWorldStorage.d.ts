@@ -24,6 +24,7 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     "cachedTiles(uint256,uint256)": FunctionFragment;
     "getCachedTile(tuple)": FunctionFragment;
     "getTouchedTiles()": FunctionFragment;
+    "lastHarvested(uint256,uint256)": FunctionFragment;
     "seed()": FunctionFragment;
     "touchedTiles(uint256)": FunctionFragment;
     "transitions(uint8,uint8)": FunctionFragment;
@@ -44,6 +45,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getTouchedTiles",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lastHarvested",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "seed", values?: undefined): string;
   encodeFunctionData(
@@ -75,6 +80,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getTouchedTiles",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "lastHarvested",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "seed", data: BytesLike): Result;
@@ -172,6 +181,22 @@ export class TinyWorldStorage extends Contract {
 
     "getTouchedTiles()"(overrides?: CallOverrides): Promise<{
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
+    }>;
+
+    lastHarvested(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "lastHarvested(uint256,uint256)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
     }>;
 
     seed(overrides?: CallOverrides): Promise<{
@@ -325,6 +350,18 @@ export class TinyWorldStorage extends Contract {
     overrides?: CallOverrides
   ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
 
+  lastHarvested(
+    arg0: BigNumberish,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "lastHarvested(uint256,uint256)"(
+    arg0: BigNumberish,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   seed(overrides?: CallOverrides): Promise<BigNumber>;
 
   "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -446,6 +483,18 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
 
+    lastHarvested(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "lastHarvested(uint256,uint256)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     seed(overrides?: CallOverrides): Promise<BigNumber>;
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -534,6 +583,18 @@ export class TinyWorldStorage extends Contract {
 
     "getTouchedTiles()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    lastHarvested(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "lastHarvested(uint256,uint256)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     seed(overrides?: CallOverrides): Promise<BigNumber>;
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -609,6 +670,18 @@ export class TinyWorldStorage extends Contract {
     getTouchedTiles(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getTouchedTiles()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    lastHarvested(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "lastHarvested(uint256,uint256)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

@@ -11,6 +11,7 @@ contract TinyWorldStorage {
     Coords[] public touchedTiles;
     uint256 public worldScale;
     mapping(address => uint256) public wheatScore;
+    mapping(uint256 => mapping(uint256 => uint256)) public lastHarvested;
     mapping(address => uint256) public woodScore;
 
     function getCachedTile(Coords memory coords) public view returns (Tile memory) {
