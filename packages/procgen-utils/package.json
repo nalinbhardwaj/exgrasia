@@ -1,0 +1,30 @@
+{
+  "name": "common-procgen-utils",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "files": [
+    "dist/",
+    "interfaces/"
+  ],
+  "scripts": {
+    "prepublishOnly": "npm run docs",
+    "prepare": "tsc -p . && cp -r src/fractions dist/fractions",
+    "test": "exit 0",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "docs": "typedoc && npm run format"
+  },
+  "dependencies": {
+    "big-integer": "^1.6.48"
+  },
+  "devDependencies": {
+    "eslint": "^7.30.0",
+    "prettier": "^2.3.0",
+    "typedoc": "^0.21.4",
+    "typedoc-plugin-markdown": "^3.10.3",
+    "typescript": "^4.3.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

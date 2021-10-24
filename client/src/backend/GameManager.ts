@@ -1,6 +1,6 @@
 import { EthConnection } from '@darkforest_eth/network';
 import { monomitter, Monomitter, Subscription } from '@darkforest_eth/events';
-import { perlin, PerlinConfig } from '@darkforest_eth/hashing';
+import { perlin, PerlinConfig } from 'common-procgen-utils';
 import { EthAddress, Tile, TileType, WorldCoords } from 'common-types';
 import { EventEmitter } from 'events';
 import { ContractsAPI, makeContractsAPI, RawTile, decodeTileWithoutPerl } from './ContractsAPI';

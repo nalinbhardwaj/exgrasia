@@ -1,5 +1,5 @@
-import { rand } from '@darkforest_eth/hashing';
-import { mimcWithRounds } from '@darkforest_eth/hashing/dist/mimc';
+import { rand } from 'common-procgen-utils';
+import { mimcWithRounds } from 'common-procgen-utils/dist/mimc';
 import { TileType, WorldCoords, Tile } from 'common-types';
 
 export const tileTypeToColor = {
