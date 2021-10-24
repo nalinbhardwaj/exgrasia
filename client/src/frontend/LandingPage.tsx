@@ -72,6 +72,7 @@ export default function LandingPage() {
   const proveOrTransition = (tile: Tile) => async () => {
     if (!gameManager || queryingBlockchain) return;
     console.log('proveOrTransition');
+    if (!tile.isPrepped) return gameManager.proveTile(tile.coords);
     if (tile.isPrepped && tile.currentTileType == TileType.LAND)
       return await gameManager.transitionTile(tile, TileType.FARM);
     else return await gameManager.proveTile(tile.coords);

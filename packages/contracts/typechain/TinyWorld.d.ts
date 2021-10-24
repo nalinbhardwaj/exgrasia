@@ -287,29 +287,11 @@ export class TinyWorld extends Contract {
     }>;
 
     getTouchedTiles(overrides?: CallOverrides): Promise<{
-      0: {
-        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
-        currentTileType: number;
-        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
-        2: BigNumber;
-        3: number;
-      }[];
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
     }>;
 
     "getTouchedTiles()"(overrides?: CallOverrides): Promise<{
-      0: {
-        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
-        currentTileType: number;
-        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
-        2: BigNumber;
-        3: number;
-      }[];
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
     }>;
 
     initialize(
@@ -380,28 +362,20 @@ export class TinyWorld extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
-      currentTileType: number;
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
       1: BigNumber;
-      2: BigNumber;
-      3: number;
     }>;
 
     "touchedTiles(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
-      currentTileType: number;
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
       1: BigNumber;
-      2: BigNumber;
-      3: number;
     }>;
 
     transferOwnership(
@@ -581,33 +555,11 @@ export class TinyWorld extends Contract {
 
   getTouchedTiles(
     overrides?: CallOverrides
-  ): Promise<
-    {
-      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
-      currentTileType: number;
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      1: BigNumber;
-      2: BigNumber;
-      3: number;
-    }[]
-  >;
+  ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
 
   "getTouchedTiles()"(
     overrides?: CallOverrides
-  ): Promise<
-    {
-      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
-      currentTileType: number;
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      1: BigNumber;
-      2: BigNumber;
-      3: number;
-    }[]
-  >;
+  ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
 
   initialize(
     _seed: BigNumberish,
@@ -669,28 +621,20 @@ export class TinyWorld extends Contract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<{
-    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
-    currentTileType: number;
-    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    x: BigNumber;
+    y: BigNumber;
+    0: BigNumber;
     1: BigNumber;
-    2: BigNumber;
-    3: number;
   }>;
 
   "touchedTiles(uint256)"(
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<{
-    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
-    currentTileType: number;
-    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    x: BigNumber;
+    y: BigNumber;
+    0: BigNumber;
     1: BigNumber;
-    2: BigNumber;
-    3: number;
   }>;
 
   transferOwnership(
@@ -844,33 +788,11 @@ export class TinyWorld extends Contract {
 
     getTouchedTiles(
       overrides?: CallOverrides
-    ): Promise<
-      {
-        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
-        currentTileType: number;
-        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
-        2: BigNumber;
-        3: number;
-      }[]
-    >;
+    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
 
     "getTouchedTiles()"(
       overrides?: CallOverrides
-    ): Promise<
-      {
-        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
-        currentTileType: number;
-        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
-        2: BigNumber;
-        3: number;
-      }[]
-    >;
+    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
 
     initialize(
       _seed: BigNumberish,
@@ -932,28 +854,20 @@ export class TinyWorld extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
-      currentTileType: number;
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
       1: BigNumber;
-      2: BigNumber;
-      3: number;
     }>;
 
     "touchedTiles(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
-      currentTileType: number;
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
       1: BigNumber;
-      2: BigNumber;
-      3: number;
     }>;
 
     transferOwnership(

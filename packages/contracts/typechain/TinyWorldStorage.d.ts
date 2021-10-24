@@ -171,29 +171,11 @@ export class TinyWorldStorage extends Contract {
     }>;
 
     getTouchedTiles(overrides?: CallOverrides): Promise<{
-      0: {
-        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
-        currentTileType: number;
-        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
-        2: BigNumber;
-        3: number;
-      }[];
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
     }>;
 
     "getTouchedTiles()"(overrides?: CallOverrides): Promise<{
-      0: {
-        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
-        currentTileType: number;
-        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
-        2: BigNumber;
-        3: number;
-      }[];
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
     }>;
 
     seed(overrides?: CallOverrides): Promise<{
@@ -208,28 +190,20 @@ export class TinyWorldStorage extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
-      currentTileType: number;
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
       1: BigNumber;
-      2: BigNumber;
-      3: number;
     }>;
 
     "touchedTiles(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
-      currentTileType: number;
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
       1: BigNumber;
-      2: BigNumber;
-      3: number;
     }>;
 
     transitions(
@@ -353,33 +327,11 @@ export class TinyWorldStorage extends Contract {
 
   getTouchedTiles(
     overrides?: CallOverrides
-  ): Promise<
-    {
-      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
-      currentTileType: number;
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      1: BigNumber;
-      2: BigNumber;
-      3: number;
-    }[]
-  >;
+  ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
 
   "getTouchedTiles()"(
     overrides?: CallOverrides
-  ): Promise<
-    {
-      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
-      currentTileType: number;
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      1: BigNumber;
-      2: BigNumber;
-      3: number;
-    }[]
-  >;
+  ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
 
   seed(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -389,28 +341,20 @@ export class TinyWorldStorage extends Contract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<{
-    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
-    currentTileType: number;
-    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    x: BigNumber;
+    y: BigNumber;
+    0: BigNumber;
     1: BigNumber;
-    2: BigNumber;
-    3: number;
   }>;
 
   "touchedTiles(uint256)"(
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<{
-    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
-    currentTileType: number;
-    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    x: BigNumber;
+    y: BigNumber;
+    0: BigNumber;
     1: BigNumber;
-    2: BigNumber;
-    3: number;
   }>;
 
   transitions(
@@ -508,33 +452,11 @@ export class TinyWorldStorage extends Contract {
 
     getTouchedTiles(
       overrides?: CallOverrides
-    ): Promise<
-      {
-        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
-        currentTileType: number;
-        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
-        2: BigNumber;
-        3: number;
-      }[]
-    >;
+    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
 
     "getTouchedTiles()"(
       overrides?: CallOverrides
-    ): Promise<
-      {
-        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
-        currentTileType: number;
-        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
-        2: BigNumber;
-        3: number;
-      }[]
-    >;
+    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
 
     seed(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -544,28 +466,20 @@ export class TinyWorldStorage extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
-      currentTileType: number;
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
       1: BigNumber;
-      2: BigNumber;
-      3: number;
     }>;
 
     "touchedTiles(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
-      currentTileType: number;
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
       1: BigNumber;
-      2: BigNumber;
-      3: number;
     }>;
 
     transitions(

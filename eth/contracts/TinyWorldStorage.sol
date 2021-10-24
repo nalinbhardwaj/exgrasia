@@ -8,7 +8,7 @@ contract TinyWorldStorage {
     uint256 public worldWidth;
     mapping(uint256 => mapping(uint256 => Tile)) public cachedTiles;
     mapping(TileType => mapping(TileType => bool)) public transitions; // Stores tree > stump as 1 (valid transition)
-    Tile[] public touchedTiles;
+    Coords[] public touchedTiles;
     uint256 public worldScale;
     mapping(address => uint256) public wheatScore;
     mapping(address => uint256) public woodScore;
@@ -17,7 +17,7 @@ contract TinyWorldStorage {
         return cachedTiles[coords.x][coords.y];
     }
 
-    function getTouchedTiles() public view returns (Tile[] memory) {
+    function getTouchedTiles() public view returns (Coords[] memory) {
         return touchedTiles;
-    } // TODO: Why do you need this?
+    }
 }

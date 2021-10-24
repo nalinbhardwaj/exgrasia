@@ -34,6 +34,7 @@ import {
 import { loadCoreContract, loadGettersContract } from './Blockchain';
 
 export type RawTile = Awaited<ReturnType<TinyWorld['getCachedTile']>>;
+export type RawCoords = Awaited<ReturnType<TinyWorld['getTouchedTiles']>>;
 
 export function decodeTile(rawTile: RawTile): Tile {
   return {
@@ -172,9 +173,12 @@ export class ContractsAPI extends EventEmitter {
     return decodeTile(rawTile);
   }
 
-  public async getTouchedTilesWithoutPerl(): Promise<Tile[]> {
-    const rawTiles = await this.makeCall<RawTile[]>(this.coreContract.getTouchedTiles, []);
-    return rawTiles.map(decodeTile);
+  public async getTouchedCoords(): Promise<WorldCoords[]> {
+    const rawCoords = await this.makeCall<RawCoords>(this.coreContract.getTouchedTiles, []);
+    const coords = rawCoords.map((coords) => {
+      return { x: coords.x.toNumber(), y: coords.y.toNumber() };
+    });
+    return coords;
   }
 
   /**

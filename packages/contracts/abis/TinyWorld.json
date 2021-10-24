@@ -192,32 +192,10 @@
     "outputs": [
       {
         "components": [
-          {
-            "components": [
-              { "internalType": "uint256", "name": "x", "type": "uint256" },
-              { "internalType": "uint256", "name": "y", "type": "uint256" }
-            ],
-            "internalType": "struct Coords",
-            "name": "coords",
-            "type": "tuple"
-          },
-          {
-            "internalType": "uint256",
-            "name": "originalPerlin",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "originalRaritySeed",
-            "type": "uint256"
-          },
-          {
-            "internalType": "enum TileType",
-            "name": "currentTileType",
-            "type": "uint8"
-          }
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
         ],
-        "internalType": "struct Tile[]",
+        "internalType": "struct Coords[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -277,30 +255,8 @@
     "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "touchedTiles",
     "outputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "coords",
-        "type": "tuple"
-      },
-      {
-        "internalType": "uint256",
-        "name": "originalPerlin",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "originalRaritySeed",
-        "type": "uint256"
-      },
-      {
-        "internalType": "enum TileType",
-        "name": "currentTileType",
-        "type": "uint8"
-      }
+      { "internalType": "uint256", "name": "x", "type": "uint256" },
+      { "internalType": "uint256", "name": "y", "type": "uint256" }
     ],
     "stateMutability": "view",
     "type": "function"

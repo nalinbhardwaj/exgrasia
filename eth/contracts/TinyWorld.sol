@@ -84,14 +84,15 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
 
         TileType tileType = seedToTileType(perlinBase, raritySeed);
 
+        Coords memory coords = Coords(x, y);
         Tile memory tile = Tile({
-            coords: Coords(x, y),
+            coords: coords,
             originalPerlin: perlinBase,
             originalRaritySeed: raritySeed,
             currentTileType: tileType
         });
         cachedTiles[x][y] = tile;
-        touchedTiles.push(tile);
+        touchedTiles.push(coords);
         emit TileUpdated(cachedTiles[x][y]);
     }
 }
