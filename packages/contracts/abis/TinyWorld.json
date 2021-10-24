@@ -33,13 +33,13 @@
             "type": "tuple"
           },
           {
-            "internalType": "uint256",
-            "name": "originalPerlin",
-            "type": "uint256"
+            "internalType": "uint256[2]",
+            "name": "perlin",
+            "type": "uint256[2]"
           },
           {
             "internalType": "uint256",
-            "name": "originalRaritySeed",
+            "name": "raritySeed",
             "type": "uint256"
           },
           {
@@ -90,16 +90,7 @@
         "name": "coords",
         "type": "tuple"
       },
-      {
-        "internalType": "uint256",
-        "name": "originalPerlin",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "originalRaritySeed",
-        "type": "uint256"
-      },
+      { "internalType": "uint256", "name": "raritySeed", "type": "uint256" },
       {
         "internalType": "enum TileType",
         "name": "currentTileType",
@@ -163,13 +154,13 @@
             "type": "tuple"
           },
           {
-            "internalType": "uint256",
-            "name": "originalPerlin",
-            "type": "uint256"
+            "internalType": "uint256[2]",
+            "name": "perlin",
+            "type": "uint256[2]"
           },
           {
             "internalType": "uint256",
-            "name": "originalRaritySeed",
+            "name": "raritySeed",
             "type": "uint256"
           },
           {
@@ -227,9 +218,9 @@
       { "internalType": "uint256[2][2]", "name": "b", "type": "uint256[2][2]" },
       { "internalType": "uint256[2]", "name": "c", "type": "uint256[2]" },
       {
-        "internalType": "uint256[6]",
+        "internalType": "uint256[7]",
         "name": "publicSignals",
-        "type": "uint256[6]"
+        "type": "uint256[7]"
       }
     ],
     "name": "proveTile",

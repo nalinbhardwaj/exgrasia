@@ -31,8 +31,8 @@ export type WorldCoords = {
 export type Tile = {
   coords: WorldCoords;
   currentTileType: TileType;
-  originalPerlin: number;
-  originalRaritySeed: number;
+  perl: [number, number];
+  raritySeed: number;
   isPrepped: boolean;
 };
 

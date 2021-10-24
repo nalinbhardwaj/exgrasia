@@ -114,13 +114,11 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: BigNumber;
-      3: number;
+      2: number;
     }>;
 
     "cachedTiles(uint256,uint256)"(
@@ -129,13 +127,11 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: BigNumber;
-      3: number;
+      2: number;
     }>;
 
     getCachedTile(
@@ -144,11 +140,11 @@ export class TinyWorldStorage extends Contract {
     ): Promise<{
       0: {
         coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
         currentTileType: number;
         0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
+        1: [BigNumber, BigNumber];
         2: BigNumber;
         3: number;
       };
@@ -160,11 +156,11 @@ export class TinyWorldStorage extends Contract {
     ): Promise<{
       0: {
         coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
         currentTileType: number;
         0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
+        1: [BigNumber, BigNumber];
         2: BigNumber;
         3: number;
       };
@@ -273,13 +269,11 @@ export class TinyWorldStorage extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
+    raritySeed: BigNumber;
     currentTileType: number;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
-    2: BigNumber;
-    3: number;
+    2: number;
   }>;
 
   "cachedTiles(uint256,uint256)"(
@@ -288,13 +282,11 @@ export class TinyWorldStorage extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
+    raritySeed: BigNumber;
     currentTileType: number;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
-    2: BigNumber;
-    3: number;
+    2: number;
   }>;
 
   getCachedTile(
@@ -302,11 +294,11 @@ export class TinyWorldStorage extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
+    perlin: [BigNumber, BigNumber];
+    raritySeed: BigNumber;
     currentTileType: number;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    1: BigNumber;
+    1: [BigNumber, BigNumber];
     2: BigNumber;
     3: number;
   }>;
@@ -316,11 +308,11 @@ export class TinyWorldStorage extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
+    perlin: [BigNumber, BigNumber];
+    raritySeed: BigNumber;
     currentTileType: number;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    1: BigNumber;
+    1: [BigNumber, BigNumber];
     2: BigNumber;
     3: number;
   }>;
@@ -398,13 +390,11 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: BigNumber;
-      3: number;
+      2: number;
     }>;
 
     "cachedTiles(uint256,uint256)"(
@@ -413,13 +403,11 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: BigNumber;
-      3: number;
+      2: number;
     }>;
 
     getCachedTile(
@@ -427,11 +415,11 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      perlin: [BigNumber, BigNumber];
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      1: BigNumber;
+      1: [BigNumber, BigNumber];
       2: BigNumber;
       3: number;
     }>;
@@ -441,11 +429,11 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      perlin: [BigNumber, BigNumber];
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      1: BigNumber;
+      1: [BigNumber, BigNumber];
       2: BigNumber;
       3: number;
     }>;

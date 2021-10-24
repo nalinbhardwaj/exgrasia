@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "typedocOptions": {
+    "entryPoints": ["src/index.ts"],
+    "out": ".",
+    "hideBreadcrumbs": true,
+    "readme": "none",
+    "disableSources": true,
+    "disableOutputCheck": true
+  }
+}

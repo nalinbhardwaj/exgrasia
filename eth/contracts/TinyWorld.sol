@@ -10,12 +10,16 @@ import "./ProveTileVerifier.sol";
 contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     event TileUpdated(Tile);
 
-    function seedToTileType(uint256 perlin, uint256 raritySeed) private pure returns (TileType) {
-        if (perlin > 18 && raritySeed < 1) {
+    function seedToTileType(
+        uint256 perlin1,
+        uint256 perlin2,
+        uint256 raritySeed
+    ) private pure returns (TileType) {
+        if (perlin1 > 18 && raritySeed < 1) {
             return TileType.TREE;
-        } else if (perlin > 15) {
+        } else if (perlin1 > 15) {
             return TileType.LAND;
-        } else if (perlin > 13) {
+        } else if (perlin1 > 13) {
             return TileType.BEACH;
         } else {
             return TileType.WATER;
@@ -66,29 +70,30 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         uint256[2] memory a,
         uint256[2][2] memory b,
         uint256[2] memory c,
-        uint256[6] memory publicSignals
+        uint256[7] memory publicSignals
     ) public {
         require(Verifier.verifyMainProof(a, b, c, publicSignals), "Failed ZK check");
 
-        uint256 perlinBase = publicSignals[0];
-        uint256 raritySeed = publicSignals[1];
-        uint256 x = publicSignals[2];
-        uint256 y = publicSignals[3];
-        uint256 claimedSeed = publicSignals[4];
-        uint256 claimedScale = publicSignals[5];
+        uint256 perlinBase1 = publicSignals[0];
+        uint256 perlinBase2 = publicSignals[1];
+        uint256 raritySeed = publicSignals[2];
+        uint256 x = publicSignals[3];
+        uint256 y = publicSignals[4];
+        uint256 claimedSeed = publicSignals[5];
+        uint256 claimedScale = publicSignals[6];
 
         require(x < worldWidth);
         require(y < worldWidth);
         require(claimedScale == worldScale);
         require(claimedSeed == seed);
 
-        TileType tileType = seedToTileType(perlinBase, raritySeed);
+        TileType tileType = seedToTileType(perlinBase1, perlinBase2, raritySeed);
 
         Coords memory coords = Coords(x, y);
         Tile memory tile = Tile({
-            coords: coords,
-            originalPerlin: perlinBase,
-            originalRaritySeed: raritySeed,
+            coords: Coords(x, y),
+            perlin: [perlinBase1, perlinBase2],
+            raritySeed: raritySeed,
             currentTileType: tileType
         });
         cachedTiles[x][y] = tile;

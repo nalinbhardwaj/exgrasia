@@ -1,6 +1,6 @@
 import { EthConnection } from '@darkforest_eth/network';
 import { monomitter, Monomitter, Subscription } from '@darkforest_eth/events';
-import { perlin, PerlinConfig } from '@darkforest_eth/hashing';
+import { perlin, PerlinConfig } from 'common-procgen-utils';
 import {
   EthAddress,
   Tile,
@@ -102,20 +102,27 @@ class GameManager extends EventEmitter {
       this.tiles.push([]);
       for (let j = 0; j < worldWidth; j++) {
         const coords = { x: i, y: j };
-        const originalPerlin = perlin(coords, this.perlinConfig);
-        const originalRaritySeed = getRaritySeed(coords, this.worldSeed, this.worldScale);
-        const currentTileType = seedToTileType(originalPerlin, originalRaritySeed);
+        const perl1 = perlin(coords, this.perlinConfig);
+        const perl2 = perlin(coords, { ...this.perlinConfig, key: this.perlinConfig.key + 1 });
+        const raritySeed = getRaritySeed(coords, this.worldSeed, this.worldScale);
+        const originalTileType = seedToTileType(perl1, perl2, raritySeed);
         this.tiles[i].push({
           coords: coords,
-          originalPerlin,
-          originalRaritySeed,
-          currentTileType: currentTileType,
+          currentTileType: originalTileType,
+          perl: [perl1, perl2],
+          raritySeed,
           isPrepped: false,
         });
       }
     }
 
     for (const touchedTile of touchedTiles) {
+      const perl1 = perlin(touchedTile.coords, this.perlinConfig);
+      const perl2 = perlin(touchedTile.coords, {
+        ...this.perlinConfig,
+        key: this.perlinConfig.key + 1,
+      });
+      touchedTile.perl = [perl1, perl2];
       this.tiles[touchedTile.coords.x][touchedTile.coords.y] = touchedTile;
       console.log('loaded touched tile from contract:');
       console.log(touchedTile);

@@ -12,7 +12,7 @@
     "@typescript-eslint/no-empty-function": ["error", { "allow": ["arrowFunctions"] }],
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
-      "error",
+      "off",
       { "varsIgnorePattern": "(^_)", "argsIgnorePattern": "(^_)" }
     ],
     "@typescript-eslint/no-var-requires": "off",
