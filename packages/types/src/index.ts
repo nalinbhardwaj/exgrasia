@@ -16,7 +16,9 @@ export enum TileType {
   WATER,
   BEACH,
   TREE,
+  STUMP,
   CHEST,
+  FARM,
   LAND,
   MAX = LAND, // NOTE: This MAX is hardcoded as 'divisor' in fake_perlin.circom!
 }
@@ -28,9 +30,10 @@ export type WorldCoords = {
 
 export type Tile = {
   coords: WorldCoords;
-  originalTileType: TileType;
   currentTileType: TileType;
   perl: [number, number];
+  raritySeed: number;
+  isPrepped: boolean;
 };
 
 /**
@@ -104,6 +107,7 @@ export type ProveTileContractCallArgs = [
   [string, string, string, string]
 ];
 
+export type TransitionTileContractCallArgs = [WorldCoords, TileType];
 /**
  * Method for converting the output of snarkJS `fullProve` into args that can be
  * passed into TinyWOrld smart contract functions which perform zk proof

@@ -23,12 +23,24 @@
     "inputs": [
       {
         "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" },
           {
-            "internalType": "enum TileType",
-            "name": "originalTileType",
-            "type": "uint8"
+            "components": [
+              { "internalType": "uint256", "name": "x", "type": "uint256" },
+              { "internalType": "uint256", "name": "y", "type": "uint256" }
+            ],
+            "internalType": "struct Coords",
+            "name": "coords",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint256[2]",
+            "name": "perlin",
+            "type": "uint256[2]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "raritySeed",
+            "type": "uint256"
           },
           {
             "internalType": "enum TileType",
@@ -47,19 +59,109 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "x", "type": "uint256" },
-      { "internalType": "uint256", "name": "y", "type": "uint256" }
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "coords",
+        "type": "tuple"
+      }
+    ],
+    "name": "buildFarm",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "", "type": "uint256" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "cachedTiles",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "coords",
+        "type": "tuple"
+      },
+      { "internalType": "uint256", "name": "raritySeed", "type": "uint256" },
+      {
+        "internalType": "enum TileType",
+        "name": "currentTileType",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "coords",
+        "type": "tuple"
+      }
+    ],
+    "name": "cutTree",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "enum TileType", "name": "from", "type": "uint8" },
+      { "internalType": "enum TileType", "name": "to", "type": "uint8" },
+      { "internalType": "bool", "name": "isValid", "type": "bool" }
+    ],
+    "name": "editTransition",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "coords",
+        "type": "tuple"
+      }
     ],
     "name": "getCachedTile",
     "outputs": [
       {
         "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" },
           {
-            "internalType": "enum TileType",
-            "name": "originalTileType",
-            "type": "uint8"
+            "components": [
+              { "internalType": "uint256", "name": "x", "type": "uint256" },
+              { "internalType": "uint256", "name": "y", "type": "uint256" }
+            ],
+            "internalType": "struct Coords",
+            "name": "coords",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint256[2]",
+            "name": "perlin",
+            "type": "uint256[2]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "raritySeed",
+            "type": "uint256"
           },
           {
             "internalType": "enum TileType",
@@ -81,12 +183,24 @@
     "outputs": [
       {
         "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" },
           {
-            "internalType": "enum TileType",
-            "name": "originalTileType",
-            "type": "uint8"
+            "components": [
+              { "internalType": "uint256", "name": "x", "type": "uint256" },
+              { "internalType": "uint256", "name": "y", "type": "uint256" }
+            ],
+            "internalType": "struct Coords",
+            "name": "coords",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint256[2]",
+            "name": "perlin",
+            "type": "uint256[2]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "raritySeed",
+            "type": "uint256"
           },
           {
             "internalType": "enum TileType",
@@ -137,17 +251,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "x", "type": "uint256" },
-      { "internalType": "uint256", "name": "y", "type": "uint256" },
-      { "internalType": "enum TileType", "name": "tileType", "type": "uint8" }
-    ],
-    "name": "randomTileUpdate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
@@ -165,13 +268,16 @@
     "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "touchedTiles",
     "outputs": [
-      { "internalType": "uint256", "name": "x", "type": "uint256" },
-      { "internalType": "uint256", "name": "y", "type": "uint256" },
       {
-        "internalType": "enum TileType",
-        "name": "originalTileType",
-        "type": "uint8"
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "coords",
+        "type": "tuple"
       },
+      { "internalType": "uint256", "name": "raritySeed", "type": "uint256" },
       {
         "internalType": "enum TileType",
         "name": "currentTileType",
@@ -188,6 +294,48 @@
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "coords",
+        "type": "tuple"
+      },
+      { "internalType": "enum TileType", "name": "toTileType", "type": "uint8" }
+    ],
+    "name": "transitionTile",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "enum TileType", "name": "", "type": "uint8" },
+      { "internalType": "enum TileType", "name": "", "type": "uint8" }
+    ],
+    "name": "transitions",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "wheatScore",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "woodScore",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {

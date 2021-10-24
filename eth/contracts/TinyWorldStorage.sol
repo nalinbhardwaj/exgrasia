@@ -6,15 +6,18 @@ import "./Types.sol";
 contract TinyWorldStorage {
     uint256 public seed;
     uint256 public worldWidth;
-    mapping(uint256 => mapping(uint256 => Tile)) cachedTiles;
+    mapping(uint256 => mapping(uint256 => Tile)) public cachedTiles;
+    mapping(TileType => mapping(TileType => bool)) public transitions; // Stores tree > stump as 1 (valid transition)
     Tile[] public touchedTiles;
     uint256 public worldScale;
+    mapping(address => uint256) public wheatScore;
+    mapping(address => uint256) public woodScore;
 
-    function getCachedTile(uint256 x, uint256 y) public view returns (Tile memory) {
-        return cachedTiles[x][y];
+    function getCachedTile(Coords memory coords) public view returns (Tile memory) {
+        return cachedTiles[coords.x][coords.y];
     }
 
     function getTouchedTiles() public view returns (Tile[] memory) {
         return touchedTiles;
-    }
+    } // TODO: Why do you need this?
 }
