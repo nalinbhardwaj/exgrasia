@@ -20,7 +20,7 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         } else if (perlin1 > 15) {
             return TileType.LAND;
         } else if (perlin1 > 13) {
-            return TileType.BEACH;
+            return TileType.SAND;
         } else {
             return TileType.WATER;
         }

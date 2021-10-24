@@ -5,7 +5,7 @@ import { TileType, WorldCoords, Tile } from 'common-types';
 export const tileTypeToColor = {
   [TileType.UNKNOWN]: 'grey',
   [TileType.WATER]: '#3C91E6',
-  [TileType.BEACH]: '#EE964B',
+  [TileType.SAND]: '#EE964B',
   [TileType.TREE]: '#0A8754',
   [TileType.STUMP]: '#0A8754',
   [TileType.CHEST]: '#53F4FF',
@@ -40,7 +40,7 @@ export const seedToTileType = (perlin1: number, _perlin2: number, raritySeed: nu
     return TileType.TREE;
   } else if (perlin1 > 15) {
     return TileType.LAND;
-  } else if (perlin1 > 13) return TileType.BEACH;
+  } else if (perlin1 > 13) return TileType.SAND;
   return TileType.WATER;
 };
 

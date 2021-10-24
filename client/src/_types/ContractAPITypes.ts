@@ -19,7 +19,7 @@ export enum ContractMethodName {
 export const tileTypeToTransition = {
   [TileType.UNKNOWN]: ContractMethodName.TRANSITION_TILE,
   [TileType.WATER]: ContractMethodName.TRANSITION_TILE,
-  [TileType.BEACH]: ContractMethodName.TRANSITION_TILE,
+  [TileType.SAND]: ContractMethodName.TRANSITION_TILE,
   [TileType.TREE]: ContractMethodName.COLLECT_WOOD,
   [TileType.STUMP]: ContractMethodName.TRANSITION_TILE,
   [TileType.CHEST]: ContractMethodName.TRANSITION_TILE,

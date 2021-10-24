@@ -14,7 +14,7 @@ import type { Any } from 'ts-toolbelt';
 export enum TileType {
   UNKNOWN,
   WATER,
-  BEACH,
+  SAND,
   TREE,
   STUMP,
   CHEST,
