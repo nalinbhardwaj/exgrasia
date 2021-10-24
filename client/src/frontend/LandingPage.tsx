@@ -48,6 +48,7 @@ export default function LandingPage() {
         setStep(LoadingStep.LOADED_GAME_MANAGER);
       })
       .catch((e) => {
+        console.log(e);
         setError(e.message);
       });
   }, []);
@@ -159,7 +160,7 @@ export default function LandingPage() {
                         }}
                       >
                         {i == location.value.x && j == location.value.y && (
-                          <span style={{ fontSize: '20px', zIndex: 10 }}>👨‍🎨</span>
+                          <span style={{ fontSize: '15px', zIndex: 10 }}>👨‍🎨</span>
                         )}
                         <span style={{ fontSize: '20px' }}>{content}</span>
                       </GridSquare>
@@ -179,7 +180,7 @@ const Page = styled.div`
   width: 100%;
   height: 100%;
   color: black;
-  font-size: 12;
+  font-size: 7;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -193,7 +194,7 @@ const GridRow = styled.div`
 const GridSquare = styled.div`
   width: 22px;
   height: 22px;
-  border-color: black;
+  border-color: rgba(0, 0, 0, 0.15);
   border-style: solid;
   border-width: 1px;
   justify-content: center;

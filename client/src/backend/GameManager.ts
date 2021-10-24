@@ -11,13 +11,7 @@ import {
 import { EventEmitter } from 'events';
 import { ContractsAPI, makeContractsAPI, RawTile, decodeTile } from './ContractsAPI';
 import SnarkHelper from './SnarkHelper';
-import {
-  getRandomActionId,
-  getRandomTree,
-  getRaritySeed,
-  seedToTileType,
-  tileTypeToTransitionTile,
-} from '../utils';
+import { getRandomActionId, getRandomTree, getRaritySeed, seedToTileType } from '../utils';
 import {
   ContractMethodName,
   ContractsAPIEvent,
@@ -74,7 +68,8 @@ class GameManager extends EventEmitter {
   private readonly tiles: Tile[][];
   public playerCoords: WorldCoords;
 
-  private readonly perlinConfig: PerlinConfig;
+  private readonly perlinConfig1: PerlinConfig;
+  private readonly perlinConfig2: PerlinConfig;
 
   public tileUpdated$: Monomitter<void>;
   public playerUpdated$: Monomitter<void>;
@@ -100,8 +95,15 @@ class GameManager extends EventEmitter {
     this.snarkHelper = snarkHelper;
     this.tiles = [];
     this.playerCoords = { x: -1, y: -1 };
-    this.perlinConfig = {
+    this.perlinConfig1 = {
       key: worldSeed,
+      scale: worldScale,
+      mirrorX: false,
+      mirrorY: false,
+      floor: true,
+    };
+    this.perlinConfig2 = {
+      key: worldSeed + 1,
       scale: worldScale,
       mirrorX: false,
       mirrorY: false,
@@ -115,10 +117,10 @@ class GameManager extends EventEmitter {
       this.tiles.push([]);
       for (let j = 0; j < worldWidth; j++) {
         const coords = { x: i, y: j };
-        const perl1 = perlin(coords, this.perlinConfig);
-        const perl2 = perlin(coords, { ...this.perlinConfig, key: this.perlinConfig.key + 1 });
+        const perl1 = perlin(coords, this.perlinConfig1);
+        const perl2 = perlin(coords, this.perlinConfig2);
         const raritySeed = getRaritySeed(coords, this.worldSeed, this.worldScale);
-        const originalTileType = seedToTileType(perl1, perl2, raritySeed);
+        const originalTileType = seedToTileType(coords, perl1, perl2, raritySeed);
         this.tiles[i].push({
           coords: coords,
           currentTileType: originalTileType,
@@ -130,12 +132,6 @@ class GameManager extends EventEmitter {
     }
 
     for (const touchedTile of touchedTiles) {
-      const perl1 = perlin(touchedTile.coords, this.perlinConfig);
-      const perl2 = perlin(touchedTile.coords, {
-        ...this.perlinConfig,
-        key: this.perlinConfig.key + 1,
-      });
-      touchedTile.perl = [perl1, perl2];
       this.tiles[touchedTile.coords.x][touchedTile.coords.y] = touchedTile;
       console.log('loaded touched tile from contract:');
       console.log(touchedTile);
@@ -366,6 +362,18 @@ class GameManager extends EventEmitter {
       methodName: ContractMethodName.TRANSITION_TILE,
       toTileType: TileType.UNKNOWN,
     }, // lives in decideTransitionMethod
+    [TileType.SNOW]: {
+      methodName: ContractMethodName.TRANSITION_TILE,
+      toTileType: TileType.UNKNOWN,
+    },
+    [TileType.STONE]: {
+      methodName: ContractMethodName.TRANSITION_TILE,
+      toTileType: TileType.UNKNOWN,
+    },
+    [TileType.ICE]: {
+      methodName: ContractMethodName.TRANSITION_TILE,
+      toTileType: TileType.UNKNOWN,
+    },
   };
 
   public async decideTransitionMethod(tileType: TileType) {

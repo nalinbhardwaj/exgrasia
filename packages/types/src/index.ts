@@ -21,7 +21,10 @@ export enum TileType {
   FARM,
   WINDMILL,
   GRASS,
-  MAX = GRASS, // NOTE: This MAX is hardcoded as 'divisor' in fake_perlin.circom!
+  SNOW,
+  STONE,
+  ICE,
+  MAX = ICE, // NOTE: This MAX is hardcoded as 'divisor' in fake_perlin.circom!
 }
 
 export type WorldCoords = {

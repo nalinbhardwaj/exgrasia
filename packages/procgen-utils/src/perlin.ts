@@ -58,13 +58,11 @@ export interface PerlinConfig {
 
 type HashFn = (...inputs: number[]) => number;
 
-export const rand =
-  (key: number) =>
-  (...args: number[]) => {
-    return perlinRandHash(key)(...args)
-      .remainder(16)
-      .toJSNumber();
-  };
+export const rand = (key: number) => (...args: number[]) => {
+  return perlinRandHash(key)(...args)
+    .remainder(16)
+    .toJSNumber();
+};
 
 /*
 const generateVecs = () => {
@@ -227,7 +225,7 @@ const valueAt = (p: Vector, scale: Fraction, randFn: (...inputs: number[]) => nu
   return out;
 };
 
-export const MAX_PERLIN_VALUE = 32;
+export const MAX_PERLIN_VALUE = 64;
 
 /**
  * Calculates the perlin for a location, given the x,y pair and the PerlinConfig for the game.
