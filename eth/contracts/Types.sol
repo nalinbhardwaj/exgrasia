@@ -1,21 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-enum TileType {
-    UNKNOWN,
-    WATER,
-    BEACH,
-    TREE,
-    STUMP,
-    CHEST,
-    FARM,
-    LAND
-}
+enum TileType {UNKNOWN, WATER, BEACH, TREE, STUMP, CHEST, FARM, LAND}
 
 struct Tile {
     Coords coords;
-    uint256 originalPerlin;
-    uint256 originalRaritySeed;
+    uint256[2] perlin;
+    uint256 raritySeed;
     TileType currentTileType;
 }
 

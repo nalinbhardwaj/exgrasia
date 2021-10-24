@@ -1,5 +1,5 @@
-import { rand } from '@darkforest_eth/hashing';
-import { mimcWithRounds } from '@darkforest_eth/hashing/dist/mimc';
+import { rand } from 'common-procgen-utils';
+import { mimcWithRounds } from 'common-procgen-utils/dist/mimc';
 import { TileType, WorldCoords, Tile } from 'common-types';
 
 export const tileTypeToColor = {
@@ -25,6 +25,10 @@ export const getRaritySeed = (coords: WorldCoords, seed: number, scale: number) 
   return extracted;
 };
 
+<<<<<<< HEAD
+export const seedToTileType = (perlin1: number, _perlin2: number, raritySeed: number): number => {
+  if (perlin1 > 18 && raritySeed < 1) {
+=======
 export const getTileEmoji = (tile: Tile, isPrepped: boolean, width: number) => {
   if (tile.currentTileType == TileType.TREE) {
     if (isPrepped) return '🌿';
@@ -37,10 +41,11 @@ export const getTileEmoji = (tile: Tile, isPrepped: boolean, width: number) => {
 
 export const seedToTileType = (perlin: number, raritySeed: number): number => {
   if (perlin > 18 && raritySeed < 1) {
+>>>>>>> master
     return TileType.TREE;
-  } else if (perlin > 15) {
+  } else if (perlin1 > 15) {
     return TileType.LAND;
-  } else if (perlin > 13) return TileType.BEACH;
+  } else if (perlin1 > 13) return TileType.BEACH;
   return TileType.WATER;
 };
 

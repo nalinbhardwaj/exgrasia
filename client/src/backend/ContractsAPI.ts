@@ -42,8 +42,8 @@ export function decodeTile(rawTile: RawTile): Tile {
       y: rawTile.coords.y.toNumber(),
     },
     currentTileType: rawTile.currentTileType,
-    originalPerlin: rawTile.originalPerlin.toNumber(),
-    originalRaritySeed: rawTile.originalRaritySeed.toNumber(),
+    perl: rawTile.perlin.map(toNumber),
+    raritySeed: rawTile.raritySeed.toNumber(),
     isPrepped: true,
   };
 }

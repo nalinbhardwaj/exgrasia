@@ -30,7 +30,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "getTouchedTiles()": FunctionFragment;
     "initialize(uint256,uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[6])": FunctionFragment;
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "seed()": FunctionFragment;
     "touchedTiles(uint256)": FunctionFragment;
@@ -79,6 +79,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
       [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       [BigNumberish, BigNumberish],
       [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -206,13 +207,11 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: BigNumber;
-      3: number;
+      2: number;
     }>;
 
     "cachedTiles(uint256,uint256)"(
@@ -221,13 +220,11 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: BigNumber;
-      3: number;
+      2: number;
     }>;
 
     cutTree(
@@ -260,11 +257,11 @@ export class TinyWorld extends Contract {
     ): Promise<{
       0: {
         coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
         currentTileType: number;
         0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
+        1: [BigNumber, BigNumber];
         2: BigNumber;
         3: number;
       };
@@ -276,11 +273,11 @@ export class TinyWorld extends Contract {
     ): Promise<{
       0: {
         coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
         currentTileType: number;
         0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
+        1: [BigNumber, BigNumber];
         2: BigNumber;
         3: number;
       };
@@ -289,11 +286,11 @@ export class TinyWorld extends Contract {
     getTouchedTiles(overrides?: CallOverrides): Promise<{
       0: {
         coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
         currentTileType: number;
         0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
+        1: [BigNumber, BigNumber];
         2: BigNumber;
         3: number;
       }[];
@@ -302,11 +299,11 @@ export class TinyWorld extends Contract {
     "getTouchedTiles()"(overrides?: CallOverrides): Promise<{
       0: {
         coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
         currentTileType: number;
         0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
+        1: [BigNumber, BigNumber];
         2: BigNumber;
         3: number;
       }[];
@@ -344,16 +341,18 @@ export class TinyWorld extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[6])"(
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
       publicSignals: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -381,13 +380,11 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: BigNumber;
-      3: number;
+      2: number;
     }>;
 
     "touchedTiles(uint256)"(
@@ -395,13 +392,11 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: BigNumber;
-      3: number;
+      2: number;
     }>;
 
     transferOwnership(
@@ -503,13 +498,11 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
+    raritySeed: BigNumber;
     currentTileType: number;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
-    2: BigNumber;
-    3: number;
+    2: number;
   }>;
 
   "cachedTiles(uint256,uint256)"(
@@ -518,13 +511,11 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
+    raritySeed: BigNumber;
     currentTileType: number;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
-    2: BigNumber;
-    3: number;
+    2: number;
   }>;
 
   cutTree(
@@ -556,11 +547,11 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
+    perlin: [BigNumber, BigNumber];
+    raritySeed: BigNumber;
     currentTileType: number;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    1: BigNumber;
+    1: [BigNumber, BigNumber];
     2: BigNumber;
     3: number;
   }>;
@@ -570,11 +561,11 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
+    perlin: [BigNumber, BigNumber];
+    raritySeed: BigNumber;
     currentTileType: number;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    1: BigNumber;
+    1: [BigNumber, BigNumber];
     2: BigNumber;
     3: number;
   }>;
@@ -584,11 +575,11 @@ export class TinyWorld extends Contract {
   ): Promise<
     {
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      perlin: [BigNumber, BigNumber];
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      1: BigNumber;
+      1: [BigNumber, BigNumber];
       2: BigNumber;
       3: number;
     }[]
@@ -599,11 +590,11 @@ export class TinyWorld extends Contract {
   ): Promise<
     {
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      perlin: [BigNumber, BigNumber];
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      1: BigNumber;
+      1: [BigNumber, BigNumber];
       2: BigNumber;
       3: number;
     }[]
@@ -637,16 +628,18 @@ export class TinyWorld extends Contract {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
       BigNumberish
     ],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[6])"(
+  "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
     a: [BigNumberish, BigNumberish],
     b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
     c: [BigNumberish, BigNumberish],
     publicSignals: [
+      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -670,13 +663,11 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
+    raritySeed: BigNumber;
     currentTileType: number;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
-    2: BigNumber;
-    3: number;
+    2: number;
   }>;
 
   "touchedTiles(uint256)"(
@@ -684,13 +675,11 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    originalPerlin: BigNumber;
-    originalRaritySeed: BigNumber;
+    raritySeed: BigNumber;
     currentTileType: number;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
-    2: BigNumber;
-    3: number;
+    2: number;
   }>;
 
   transferOwnership(
@@ -766,13 +755,11 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: BigNumber;
-      3: number;
+      2: number;
     }>;
 
     "cachedTiles(uint256,uint256)"(
@@ -781,13 +768,11 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: BigNumber;
-      3: number;
+      2: number;
     }>;
 
     cutTree(
@@ -819,11 +804,11 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      perlin: [BigNumber, BigNumber];
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      1: BigNumber;
+      1: [BigNumber, BigNumber];
       2: BigNumber;
       3: number;
     }>;
@@ -833,11 +818,11 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      perlin: [BigNumber, BigNumber];
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      1: BigNumber;
+      1: [BigNumber, BigNumber];
       2: BigNumber;
       3: number;
     }>;
@@ -847,11 +832,11 @@ export class TinyWorld extends Contract {
     ): Promise<
       {
         coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
         currentTileType: number;
         0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
+        1: [BigNumber, BigNumber];
         2: BigNumber;
         3: number;
       }[]
@@ -862,11 +847,11 @@ export class TinyWorld extends Contract {
     ): Promise<
       {
         coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        originalPerlin: BigNumber;
-        originalRaritySeed: BigNumber;
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
         currentTileType: number;
         0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-        1: BigNumber;
+        1: [BigNumber, BigNumber];
         2: BigNumber;
         3: number;
       }[]
@@ -900,16 +885,18 @@ export class TinyWorld extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[6])"(
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
       publicSignals: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -933,13 +920,11 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: BigNumber;
-      3: number;
+      2: number;
     }>;
 
     "touchedTiles(uint256)"(
@@ -947,13 +932,11 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-      originalPerlin: BigNumber;
-      originalRaritySeed: BigNumber;
+      raritySeed: BigNumber;
       currentTileType: number;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: BigNumber;
-      3: number;
+      2: number;
     }>;
 
     transferOwnership(
@@ -1111,16 +1094,18 @@ export class TinyWorld extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[6])"(
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
       publicSignals: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -1297,16 +1282,18 @@ export class TinyWorld extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[6])"(
+    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
       publicSignals: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
