@@ -19,8 +19,8 @@ export enum TileType {
   STUMP,
   CHEST,
   FARM,
-  LAND,
-  MAX = LAND, // NOTE: This MAX is hardcoded as 'divisor' in fake_perlin.circom!
+  GRASS,
+  MAX = GRASS, // NOTE: This MAX is hardcoded as 'divisor' in fake_perlin.circom!
 }
 
 export type WorldCoords = {

@@ -24,7 +24,7 @@ export const tileTypeToTransition = {
   [TileType.STUMP]: ContractMethodName.TRANSITION_TILE,
   [TileType.CHEST]: ContractMethodName.TRANSITION_TILE,
   [TileType.FARM]: ContractMethodName.HARVEST_WHEAT,
-  [TileType.LAND]: ContractMethodName.BUILD_FARM,
+  [TileType.GRASS]: ContractMethodName.BUILD_FARM,
 };
 
 export const enum ContractsAPIEvent {

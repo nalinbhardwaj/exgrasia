@@ -10,7 +10,7 @@ export const tileTypeToColor = {
   [TileType.STUMP]: '#0A8754',
   [TileType.CHEST]: '#53F4FF',
   [TileType.FARM]: '#0A8754',
-  [TileType.LAND]: '#0A8754',
+  [TileType.GRASS]: '#0A8754',
 };
 
 export const getRandomTree = (coords: WorldCoords, width: number) => {
@@ -29,7 +29,7 @@ export const getTileEmoji = (tile: Tile, isPrepped: boolean, width: number) => {
   if (tile.currentTileType == TileType.TREE) {
     if (isPrepped) return '🌿';
     else return getRandomTree(tile.coords, width);
-  } else if (tile.currentTileType == TileType.LAND) {
+  } else if (tile.currentTileType == TileType.GRASS) {
     if (isPrepped) return '🚜';
   } else if (tile.currentTileType == TileType.FARM) return '🌾';
   return '';
@@ -39,7 +39,7 @@ export const seedToTileType = (perlin1: number, _perlin2: number, raritySeed: nu
   if (perlin1 > 18 && raritySeed < 1) {
     return TileType.TREE;
   } else if (perlin1 > 15) {
-    return TileType.LAND;
+    return TileType.GRASS;
   } else if (perlin1 > 13) return TileType.SAND;
   return TileType.WATER;
 };

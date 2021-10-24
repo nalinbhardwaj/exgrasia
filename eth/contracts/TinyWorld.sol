@@ -18,7 +18,7 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         if (perlin1 > 18 && raritySeed < 1) {
             return TileType.TREE;
         } else if (perlin1 > 15) {
-            return TileType.LAND;
+            return TileType.GRASS;
         } else if (perlin1 > 13) {
             return TileType.SAND;
         } else {
@@ -36,8 +36,8 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         worldWidth = _worldWidth;
         worldScale = _worldScale;
         transitions[TileType.TREE][TileType.STUMP] = true;
-        transitions[TileType.LAND][TileType.FARM] = true;
-        transitions[TileType.FARM][TileType.LAND] = true;
+        transitions[TileType.GRASS][TileType.FARM] = true;
+        transitions[TileType.FARM][TileType.GRASS] = true;
     }
 
     function transitionTile(Coords memory coords, TileType toTileType) public {
@@ -60,7 +60,7 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
 
     function harvestWheat(Coords memory coords) public {
         require(block.timestamp >= lastHarvested[coords.x][coords.y] + 60);
-        transitionTile(coords, TileType.LAND);
+        transitionTile(coords, TileType.GRASS);
         wheatScore[msg.sender] += 3;
         lastHarvested[coords.x][coords.y] = block.timestamp;
     }
