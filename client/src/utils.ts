@@ -13,6 +13,17 @@ export const tileTypeToColor = {
   [TileType.GRASS]: '#0A8754',
 };
 
+export const tileTypeToTransitionTile = {
+  [TileType.UNKNOWN]: TileType.UNKNOWN,
+  [TileType.WATER]: TileType.UNKNOWN,
+  [TileType.BEACH]: TileType.UNKNOWN,
+  [TileType.TREE]: TileType.STUMP,
+  [TileType.STUMP]: TileType.UNKNOWN,
+  [TileType.CHEST]: TileType.UNKNOWN,
+  [TileType.FARM]: TileType.LAND,
+  [TileType.LAND]: TileType.FARM,
+};
+
 export const getRandomTree = (coords: WorldCoords, width: number) => {
   const trees = ['🌲', '🌴', '🌳', '🎄'];
   const random = Math.floor(rand(4)(coords.x * width + coords.y) % trees.length);

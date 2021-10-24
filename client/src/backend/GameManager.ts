@@ -11,11 +11,18 @@ import {
 import { EventEmitter } from 'events';
 import { ContractsAPI, makeContractsAPI, RawTile, decodeTile } from './ContractsAPI';
 import SnarkHelper from './SnarkHelper';
-import { getRandomActionId, getRandomTree, getRaritySeed, seedToTileType } from '../utils';
+import {
+  getRandomActionId,
+  getRandomTree,
+  getRaritySeed,
+  seedToTileType,
+  tileTypeToTransitionTile,
+} from '../utils';
 import {
   ContractMethodName,
   ContractsAPIEvent,
   isUnconfirmedProveTile,
+  isUnconfirmedTransitionTile,
   SubmittedTx,
   tileTypeToTransition,
   TxIntent,
@@ -169,12 +176,10 @@ class GameManager extends EventEmitter {
     // do some logic
     // also, handle state updates for locally-initialized txIntents
     gameManager.contractsAPI
-      .on(ContractsAPIEvent.TileUpdated, async (_tile: RawTile) => {
+      .on(ContractsAPIEvent.TileUpdated, async (tile: Tile) => {
         // todo: update in memory data store
         // todo: emit event to UI
-        console.log('event tile', _tile);
-        const tile = decodeTile(_tile);
-        console.log;
+        console.log('event tile', tile);
 
         gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
         gameManager.tileUpdated$.publish();
@@ -186,7 +191,18 @@ class GameManager extends EventEmitter {
       .on(ContractsAPIEvent.TxConfirmed, async (unconfirmedTx: SubmittedTx) => {
         // todo: remove the tx from localstorage
         if (isUnconfirmedProveTile(unconfirmedTx)) {
-          // todo: update in memory data store
+          const tile = unconfirmedTx.tile;
+          tile.isPrepped = true;
+
+          gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
+          gameManager.tileUpdated$.publish();
+        }
+        if (isUnconfirmedTransitionTile(unconfirmedTx)) {
+          const tile = unconfirmedTx.tile;
+          tile.currentTileType = tileTypeToTransitionTile[unconfirmedTx.tile.currentTileType];
+
+          gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
+          gameManager.tileUpdated$.publish();
         }
         gameManager.onTxConfirmed(unconfirmedTx);
       })

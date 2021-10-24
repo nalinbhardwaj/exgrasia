@@ -116,7 +116,7 @@ export class ContractsAPI extends EventEmitter {
 
     const eventHandlers = {
       [ContractEvent.TileUpdated]: (rawTile: RawTile) => {
-        this.emit(ContractsAPIEvent.TileUpdated, rawTile);
+        this.emit(ContractsAPIEvent.TileUpdated, decodeTile(rawTile));
       },
     };
 
