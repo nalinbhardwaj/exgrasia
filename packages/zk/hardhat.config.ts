@@ -8,7 +8,7 @@ module.exports = {
   solidity: '0.8.4',
   circom: {
     inputBasePath: './circuits',
-    ptau: 'pot15_final.ptau',
+    ptau: 'powersOfTau28_hez_final_16.ptau',
     circuits: [{ name: 'main' }], //, { name: 'fake_perlin' }
   },
 };

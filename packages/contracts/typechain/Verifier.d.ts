@@ -21,7 +21,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface VerifierInterface extends ethers.utils.Interface {
   functions: {
-    "verifyMainProof(uint256[2],uint256[2][2],uint256[2],uint256[6])": FunctionFragment;
+    "verifyMainProof(uint256[2],uint256[2][2],uint256[2],uint256[7])": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -31,6 +31,7 @@ interface VerifierInterface extends ethers.utils.Interface {
       [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       [BigNumberish, BigNumberish],
       [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -73,6 +74,7 @@ export class Verifier extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: CallOverrides
@@ -80,11 +82,12 @@ export class Verifier extends Contract {
       0: boolean;
     }>;
 
-    "verifyMainProof(uint256[2],uint256[2][2],uint256[2],uint256[6])"(
+    "verifyMainProof(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
       input: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -108,16 +111,18 @@ export class Verifier extends Contract {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
       BigNumberish
     ],
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  "verifyMainProof(uint256[2],uint256[2][2],uint256[2],uint256[6])"(
+  "verifyMainProof(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
     a: [BigNumberish, BigNumberish],
     b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
     c: [BigNumberish, BigNumberish],
     input: [
+      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -139,16 +144,18 @@ export class Verifier extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "verifyMainProof(uint256[2],uint256[2][2],uint256[2],uint256[6])"(
+    "verifyMainProof(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
       input: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -173,16 +180,18 @@ export class Verifier extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "verifyMainProof(uint256[2],uint256[2][2],uint256[2],uint256[6])"(
+    "verifyMainProof(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
       input: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -205,16 +214,18 @@ export class Verifier extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "verifyMainProof(uint256[2],uint256[2][2],uint256[2],uint256[6])"(
+    "verifyMainProof(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
       input: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,

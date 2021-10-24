@@ -34,7 +34,7 @@ export function decodeTileWithoutPerl(rawTile: RawTile): Tile {
     },
     originalTileType: rawTile.originalTileType,
     currentTileType: rawTile.currentTileType,
-    perl: 0,
+    perl: [0, 0],
   };
 }
 

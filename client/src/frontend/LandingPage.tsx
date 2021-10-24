@@ -75,7 +75,7 @@ export default function LandingPage() {
   return (
     <>
       <Page>
-        <h1>Hello!</h1>
+        {/* <h1>Hello!</h1>
         <p>{`The contract address is: ${CORE_CONTRACT_ADDRESS}`}</p>
         <p>{`The current loading step is: ${step}`}</p>
         {ethConnection ? <p>{`current user: ${ethConnection.getAddress()}`}</p> : null}
@@ -87,7 +87,7 @@ export default function LandingPage() {
         {lastQueryResult !== undefined ? (
           <p>{`last queried for (${queryCoords?.x}, ${queryCoords?.y}): cached tile type is ${lastQueryResult}`}</p>
         ) : null}
-        <p>yo</p>
+        <p>yo</p> */}
         {gameManager && tiles
           ? tiles.value.map((coordRow, i) => {
               return (
@@ -133,9 +133,10 @@ const GridRow = styled.div`
 `;
 
 const GridSquare = styled.div`
-  width: 22px;
-  height: 22px;
-  border-color: black;
+  width: 11px;
+  height: 11px;
+  font-size: 6px;
+  border-color: rgba(0, 0, 0, 0.15);
   border-style: solid;
   border-width: 1px;
   justify-content: center;

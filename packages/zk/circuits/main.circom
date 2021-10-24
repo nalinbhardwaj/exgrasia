@@ -22,24 +22,27 @@ template Random() {
     out <== num2Bits.out[3] * 8 + num2Bits.out[2] * 4 + num2Bits.out[1] * 2 + num2Bits.out[0];
 }
 
-template Main(BITS) {
+template Main(BITS, N_PERLINS) {
 	signal input x;
 	signal input y;
 	signal input seed;
 	signal input scale;
-    signal output perlinBase;
+    signal output perlinBase[N_PERLINS];
     signal output raritySeed;
 
-    component perlin = MultiScalePerlin();
+    component perlin[N_PERLINS];
+    for (var i = 0; i < N_PERLINS; i++) {
+        perlin[i] = MultiScalePerlin();
 
-    perlin.p[0] <== x;
-    perlin.p[1] <== y;
-    perlin.SCALE <== scale;
-    perlin.xMirror <== 0;
-    perlin.yMirror <== 0;
-    perlin.KEY <== seed;
-    perlinBase <== perlin.out;
-    log(perlin.out);
+        perlin[i].p[0] <== x;
+        perlin[i].p[1] <== y;
+        perlin[i].SCALE <== scale;
+        perlin[i].xMirror <== 0;
+        perlin[i].yMirror <== 0;
+        perlin[i].KEY <== seed + i;
+        perlinBase[i] <== perlin[i].out;
+        log(perlin[i].out);
+    }
 
     component rand = Random();
     rand.in[0] <== x;
@@ -50,4 +53,4 @@ template Main(BITS) {
     log(raritySeed);
 }
 
-component main = Main(20);
+component main = Main(20, 2);

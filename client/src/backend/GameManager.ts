@@ -94,22 +94,29 @@ class GameManager extends EventEmitter {
       this.tiles.push([]);
       for (let j = 0; j < worldWidth; j++) {
         const coords = { x: i, y: j };
-        const perl = perlin(coords, this.perlinConfig);
+        const perl1 = perlin(coords, this.perlinConfig);
+        const perl2 = perlin(coords, { ...this.perlinConfig, key: this.perlinConfig.key + 1 });
         const originalTileType = seedToTileType(
-          perl,
+          perl1,
+          perl2,
           getRaritySeed(coords, this.worldSeed, this.worldScale)
         );
         this.tiles[i].push({
           coords: coords,
           originalTileType,
           currentTileType: originalTileType,
-          perl,
+          perl: [perl1, perl2],
         });
       }
     }
 
     for (const touchedTile of touchedTilesWithoutPerl) {
-      touchedTile.perl = perlin(touchedTile.coords, this.perlinConfig);
+      const perl1 = perlin(touchedTile.coords, this.perlinConfig);
+      const perl2 = perlin(touchedTile.coords, {
+        ...this.perlinConfig,
+        key: this.perlinConfig.key + 1,
+      });
+      touchedTile.perl = [perl1, perl2];
       this.tiles[touchedTile.coords.x][touchedTile.coords.y] = touchedTile;
       console.log('loaded touched tile from contract:');
       console.log(touchedTile);

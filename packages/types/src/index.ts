@@ -30,7 +30,7 @@ export type Tile = {
   coords: WorldCoords;
   originalTileType: TileType;
   currentTileType: TileType;
-  perl: number;
+  perl: [number, number];
 };
 
 /**
