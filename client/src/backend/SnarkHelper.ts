@@ -111,7 +111,7 @@ class SnarkArgsHelper {
       const start = Date.now();
       console.log('PROVE: calculating witness and proof');
       console.log(
-        `proving tile (${tile.coords.x}, ${tile.coords.y}) is of type: ${tile.originalTileType}`
+        `proving tile (${tile.coords.x}, ${tile.coords.y}) is of type: ${tile.currentTileType}`
       );
       const input: SnarkInput = {
         x: tile.coords.x.toString(),
@@ -149,7 +149,7 @@ class SnarkArgsHelper {
             tile.coords.x.toString(),
             tile.coords.y.toString(),
             this.seed.toString(),
-            tile.originalTileType.toString(),
+            tile.currentTileType.toString(),
           ],
         ]);
       }, 2000);

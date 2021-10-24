@@ -7,7 +7,9 @@ export const tileTypeToColor = {
   [TileType.WATER]: '#3C91E6',
   [TileType.BEACH]: '#EE964B',
   [TileType.TREE]: '#0A8754',
+  [TileType.STUMP]: '#0A8754',
   [TileType.CHEST]: '#53F4FF',
+  [TileType.FARM]: '#0A8754',
   [TileType.LAND]: '#0A8754',
 };
 
@@ -21,6 +23,16 @@ export const getRaritySeed = (coords: WorldCoords, seed: number, scale: number) 
   const hash = mimcWithRounds(4, seed)(coords.x, coords.y, scale).toString(2);
   const extracted = parseInt(hash.slice(-4), 2);
   return extracted;
+};
+
+export const getTileEmoji = (tile: Tile, isPrepped: boolean, width: number) => {
+  if (tile.currentTileType == TileType.TREE) {
+    if (isPrepped) return '🌿';
+    else return getRandomTree(tile.coords, width);
+  } else if (tile.currentTileType == TileType.LAND) {
+    if (isPrepped) return '🚜';
+  } else if (tile.currentTileType == TileType.FARM) return '🌾';
+  return '';
 };
 
 export const seedToTileType = (perlin: number, raritySeed: number): number => {

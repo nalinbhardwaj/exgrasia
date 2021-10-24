@@ -21,17 +21,25 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface TinyWorldStorageInterface extends ethers.utils.Interface {
   functions: {
-    "getCachedTile(uint256,uint256)": FunctionFragment;
+    "cachedTiles(uint256,uint256)": FunctionFragment;
+    "getCachedTile(tuple)": FunctionFragment;
     "getTouchedTiles()": FunctionFragment;
     "seed()": FunctionFragment;
     "touchedTiles(uint256)": FunctionFragment;
+    "transitions(uint8,uint8)": FunctionFragment;
+    "wheatScore(address)": FunctionFragment;
+    "woodScore(address)": FunctionFragment;
     "worldScale()": FunctionFragment;
     "worldWidth()": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "getCachedTile",
+    functionFragment: "cachedTiles",
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCachedTile",
+    values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(
     functionFragment: "getTouchedTiles",
@@ -43,6 +51,12 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "transitions",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "wheatScore", values: [string]): string;
+  encodeFunctionData(functionFragment: "woodScore", values: [string]): string;
+  encodeFunctionData(
     functionFragment: "worldScale",
     values?: undefined
   ): string;
@@ -51,6 +65,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "cachedTiles",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getCachedTile",
     data: BytesLike
@@ -64,6 +82,12 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     functionFragment: "touchedTiles",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "transitions",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "wheatScore", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "woodScore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "worldScale", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "worldWidth", data: BytesLike): Result;
 
@@ -84,62 +108,90 @@ export class TinyWorldStorage extends Contract {
   interface: TinyWorldStorageInterface;
 
   functions: {
+    cachedTiles(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      originalPerlin: BigNumber;
+      originalRaritySeed: BigNumber;
+      currentTileType: number;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: BigNumber;
+      2: BigNumber;
+      3: number;
+    }>;
+
+    "cachedTiles(uint256,uint256)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      originalPerlin: BigNumber;
+      originalRaritySeed: BigNumber;
+      currentTileType: number;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: BigNumber;
+      2: BigNumber;
+      3: number;
+    }>;
+
     getCachedTile(
-      x: BigNumberish,
-      y: BigNumberish,
+      coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<{
       0: {
-        x: BigNumber;
-        y: BigNumber;
-        originalTileType: number;
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        originalPerlin: BigNumber;
+        originalRaritySeed: BigNumber;
         currentTileType: number;
-        0: BigNumber;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         1: BigNumber;
-        2: number;
+        2: BigNumber;
         3: number;
       };
     }>;
 
-    "getCachedTile(uint256,uint256)"(
-      x: BigNumberish,
-      y: BigNumberish,
+    "getCachedTile(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<{
       0: {
-        x: BigNumber;
-        y: BigNumber;
-        originalTileType: number;
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        originalPerlin: BigNumber;
+        originalRaritySeed: BigNumber;
         currentTileType: number;
-        0: BigNumber;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         1: BigNumber;
-        2: number;
+        2: BigNumber;
         3: number;
       };
     }>;
 
     getTouchedTiles(overrides?: CallOverrides): Promise<{
       0: {
-        x: BigNumber;
-        y: BigNumber;
-        originalTileType: number;
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        originalPerlin: BigNumber;
+        originalRaritySeed: BigNumber;
         currentTileType: number;
-        0: BigNumber;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         1: BigNumber;
-        2: number;
+        2: BigNumber;
         3: number;
       }[];
     }>;
 
     "getTouchedTiles()"(overrides?: CallOverrides): Promise<{
       0: {
-        x: BigNumber;
-        y: BigNumber;
-        originalTileType: number;
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        originalPerlin: BigNumber;
+        originalRaritySeed: BigNumber;
         currentTileType: number;
-        0: BigNumber;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         1: BigNumber;
-        2: number;
+        2: BigNumber;
         3: number;
       }[];
     }>;
@@ -156,13 +208,13 @@ export class TinyWorldStorage extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      x: BigNumber;
-      y: BigNumber;
-      originalTileType: number;
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      originalPerlin: BigNumber;
+      originalRaritySeed: BigNumber;
       currentTileType: number;
-      0: BigNumber;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: number;
+      2: BigNumber;
       3: number;
     }>;
 
@@ -170,14 +222,58 @@ export class TinyWorldStorage extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      x: BigNumber;
-      y: BigNumber;
-      originalTileType: number;
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      originalPerlin: BigNumber;
+      originalRaritySeed: BigNumber;
       currentTileType: number;
-      0: BigNumber;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: number;
+      2: BigNumber;
       3: number;
+    }>;
+
+    transitions(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "transitions(uint8,uint8)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    wheatScore(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "wheatScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    woodScore(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "woodScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
     }>;
 
     worldScale(overrides?: CallOverrides): Promise<{
@@ -197,33 +293,61 @@ export class TinyWorldStorage extends Contract {
     }>;
   };
 
-  getCachedTile(
-    x: BigNumberish,
-    y: BigNumberish,
+  cachedTiles(
+    arg0: BigNumberish,
+    arg1: BigNumberish,
     overrides?: CallOverrides
   ): Promise<{
-    x: BigNumber;
-    y: BigNumber;
-    originalTileType: number;
+    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    originalPerlin: BigNumber;
+    originalRaritySeed: BigNumber;
     currentTileType: number;
-    0: BigNumber;
+    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
-    2: number;
+    2: BigNumber;
     3: number;
   }>;
 
-  "getCachedTile(uint256,uint256)"(
-    x: BigNumberish,
-    y: BigNumberish,
+  "cachedTiles(uint256,uint256)"(
+    arg0: BigNumberish,
+    arg1: BigNumberish,
     overrides?: CallOverrides
   ): Promise<{
-    x: BigNumber;
-    y: BigNumber;
-    originalTileType: number;
+    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    originalPerlin: BigNumber;
+    originalRaritySeed: BigNumber;
     currentTileType: number;
-    0: BigNumber;
+    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
-    2: number;
+    2: BigNumber;
+    3: number;
+  }>;
+
+  getCachedTile(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<{
+    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    originalPerlin: BigNumber;
+    originalRaritySeed: BigNumber;
+    currentTileType: number;
+    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    1: BigNumber;
+    2: BigNumber;
+    3: number;
+  }>;
+
+  "getCachedTile(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<{
+    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    originalPerlin: BigNumber;
+    originalRaritySeed: BigNumber;
+    currentTileType: number;
+    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    1: BigNumber;
+    2: BigNumber;
     3: number;
   }>;
 
@@ -231,13 +355,13 @@ export class TinyWorldStorage extends Contract {
     overrides?: CallOverrides
   ): Promise<
     {
-      x: BigNumber;
-      y: BigNumber;
-      originalTileType: number;
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      originalPerlin: BigNumber;
+      originalRaritySeed: BigNumber;
       currentTileType: number;
-      0: BigNumber;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: number;
+      2: BigNumber;
       3: number;
     }[]
   >;
@@ -246,13 +370,13 @@ export class TinyWorldStorage extends Contract {
     overrides?: CallOverrides
   ): Promise<
     {
-      x: BigNumber;
-      y: BigNumber;
-      originalTileType: number;
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      originalPerlin: BigNumber;
+      originalRaritySeed: BigNumber;
       currentTileType: number;
-      0: BigNumber;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: number;
+      2: BigNumber;
       3: number;
     }[]
   >;
@@ -265,13 +389,13 @@ export class TinyWorldStorage extends Contract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<{
-    x: BigNumber;
-    y: BigNumber;
-    originalTileType: number;
+    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    originalPerlin: BigNumber;
+    originalRaritySeed: BigNumber;
     currentTileType: number;
-    0: BigNumber;
+    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
-    2: number;
+    2: BigNumber;
     3: number;
   }>;
 
@@ -279,15 +403,41 @@ export class TinyWorldStorage extends Contract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<{
-    x: BigNumber;
-    y: BigNumber;
-    originalTileType: number;
+    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    originalPerlin: BigNumber;
+    originalRaritySeed: BigNumber;
     currentTileType: number;
-    0: BigNumber;
+    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
-    2: number;
+    2: BigNumber;
     3: number;
   }>;
+
+  transitions(
+    arg0: BigNumberish,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "transitions(uint8,uint8)"(
+    arg0: BigNumberish,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  wheatScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  "wheatScore(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  woodScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  "woodScore(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -298,33 +448,61 @@ export class TinyWorldStorage extends Contract {
   "worldWidth()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
-    getCachedTile(
-      x: BigNumberish,
-      y: BigNumberish,
+    cachedTiles(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      x: BigNumber;
-      y: BigNumber;
-      originalTileType: number;
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      originalPerlin: BigNumber;
+      originalRaritySeed: BigNumber;
       currentTileType: number;
-      0: BigNumber;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: number;
+      2: BigNumber;
       3: number;
     }>;
 
-    "getCachedTile(uint256,uint256)"(
-      x: BigNumberish,
-      y: BigNumberish,
+    "cachedTiles(uint256,uint256)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      x: BigNumber;
-      y: BigNumber;
-      originalTileType: number;
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      originalPerlin: BigNumber;
+      originalRaritySeed: BigNumber;
       currentTileType: number;
-      0: BigNumber;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: number;
+      2: BigNumber;
+      3: number;
+    }>;
+
+    getCachedTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      originalPerlin: BigNumber;
+      originalRaritySeed: BigNumber;
+      currentTileType: number;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: BigNumber;
+      2: BigNumber;
+      3: number;
+    }>;
+
+    "getCachedTile(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      originalPerlin: BigNumber;
+      originalRaritySeed: BigNumber;
+      currentTileType: number;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: BigNumber;
+      2: BigNumber;
       3: number;
     }>;
 
@@ -332,13 +510,13 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<
       {
-        x: BigNumber;
-        y: BigNumber;
-        originalTileType: number;
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        originalPerlin: BigNumber;
+        originalRaritySeed: BigNumber;
         currentTileType: number;
-        0: BigNumber;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         1: BigNumber;
-        2: number;
+        2: BigNumber;
         3: number;
       }[]
     >;
@@ -347,13 +525,13 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<
       {
-        x: BigNumber;
-        y: BigNumber;
-        originalTileType: number;
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        originalPerlin: BigNumber;
+        originalRaritySeed: BigNumber;
         currentTileType: number;
-        0: BigNumber;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         1: BigNumber;
-        2: number;
+        2: BigNumber;
         3: number;
       }[]
     >;
@@ -366,13 +544,13 @@ export class TinyWorldStorage extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      x: BigNumber;
-      y: BigNumber;
-      originalTileType: number;
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      originalPerlin: BigNumber;
+      originalRaritySeed: BigNumber;
       currentTileType: number;
-      0: BigNumber;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: number;
+      2: BigNumber;
       3: number;
     }>;
 
@@ -380,15 +558,41 @@ export class TinyWorldStorage extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      x: BigNumber;
-      y: BigNumber;
-      originalTileType: number;
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      originalPerlin: BigNumber;
+      originalRaritySeed: BigNumber;
       currentTileType: number;
-      0: BigNumber;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
-      2: number;
+      2: BigNumber;
       3: number;
     }>;
+
+    transitions(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "transitions(uint8,uint8)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    wheatScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "wheatScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    woodScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "woodScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -402,15 +606,25 @@ export class TinyWorldStorage extends Contract {
   filters: {};
 
   estimateGas: {
-    getCachedTile(
-      x: BigNumberish,
-      y: BigNumberish,
+    cachedTiles(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getCachedTile(uint256,uint256)"(
-      x: BigNumberish,
-      y: BigNumberish,
+    "cachedTiles(uint256,uint256)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getCachedTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getCachedTile(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -432,6 +646,32 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    transitions(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "transitions(uint8,uint8)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    wheatScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "wheatScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    woodScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "woodScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
     "worldScale()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -442,15 +682,25 @@ export class TinyWorldStorage extends Contract {
   };
 
   populateTransaction: {
-    getCachedTile(
-      x: BigNumberish,
-      y: BigNumberish,
+    cachedTiles(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getCachedTile(uint256,uint256)"(
-      x: BigNumberish,
-      y: BigNumberish,
+    "cachedTiles(uint256,uint256)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getCachedTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getCachedTile(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -471,6 +721,38 @@ export class TinyWorldStorage extends Contract {
 
     "touchedTiles(uint256)"(
       arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    transitions(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "transitions(uint8,uint8)"(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    wheatScore(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "wheatScore(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    woodScore(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "woodScore(address)"(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

@@ -1,17 +1,25 @@
 import { EthConnection } from '@darkforest_eth/network';
 import { monomitter, Monomitter, Subscription } from '@darkforest_eth/events';
 import { perlin, PerlinConfig } from '@darkforest_eth/hashing';
-import { EthAddress, Tile, TileType, WorldCoords } from 'common-types';
+import {
+  EthAddress,
+  Tile,
+  TileType,
+  TransitionTileContractCallArgs,
+  WorldCoords,
+} from 'common-types';
 import { EventEmitter } from 'events';
-import { ContractsAPI, makeContractsAPI, RawTile, decodeTileWithoutPerl } from './ContractsAPI';
+import { ContractsAPI, makeContractsAPI, RawTile, decodeTile } from './ContractsAPI';
 import SnarkHelper from './SnarkHelper';
-import { getRandomActionId, getRaritySeed, seedToTileType } from '../utils';
+import { getRandomActionId, getRandomTree, getRaritySeed, seedToTileType } from '../utils';
 import {
   ContractMethodName,
   ContractsAPIEvent,
   isUnconfirmedProveTile,
   SubmittedTx,
   TxIntent,
+  UnconfirmedProveTile,
+  UnconfirmedTransitionTile,
 } from '../_types/ContractAPITypes';
 
 class GameManager extends EventEmitter {
@@ -94,22 +102,21 @@ class GameManager extends EventEmitter {
       this.tiles.push([]);
       for (let j = 0; j < worldWidth; j++) {
         const coords = { x: i, y: j };
-        const perl = perlin(coords, this.perlinConfig);
-        const originalTileType = seedToTileType(
-          perl,
-          getRaritySeed(coords, this.worldSeed, this.worldScale)
-        );
+        const originalPerlin = perlin(coords, this.perlinConfig);
+        const originalRaritySeed = getRaritySeed(coords, this.worldSeed, this.worldScale);
+        const currentTileType = seedToTileType(originalPerlin, originalRaritySeed);
         this.tiles[i].push({
           coords: coords,
-          originalTileType,
-          currentTileType: originalTileType,
-          perl,
+          originalPerlin,
+          originalRaritySeed,
+          currentTileType: currentTileType,
+          isPrepped: false,
         });
       }
     }
 
     for (const touchedTile of touchedTilesWithoutPerl) {
-      touchedTile.perl = perlin(touchedTile.coords, this.perlinConfig);
+      touchedTile.originalPerlin = perlin(touchedTile.coords, this.perlinConfig);
       this.tiles[touchedTile.coords.x][touchedTile.coords.y] = touchedTile;
       console.log('loaded touched tile from contract:');
       console.log(touchedTile);
@@ -155,7 +162,7 @@ class GameManager extends EventEmitter {
         // todo: update in memory data store
         // todo: emit event to UI
         console.log('event tile', _tile);
-        const tile = decodeTileWithoutPerl(_tile);
+        const tile = decodeTile(_tile);
 
         gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
         gameManager.tileUpdated$.publish();
@@ -239,9 +246,9 @@ class GameManager extends EventEmitter {
     return (await this.contractsAPI.getCachedTile(coords)).currentTileType;
   }
 
-  async doRandomTileUpdate(coords: WorldCoords, tileType: TileType) {
-    await this.contractsAPI.doRandomTileUpdate(coords, tileType);
-  }
+  // async doRandomTileUpdate(coords: WorldCoords, tileType: TileType) {
+  //   await this.contractsAPI.doRandomTileUpdate(coords, tileType);
+  // }
 
   async checkProof(tile: Tile): Promise<boolean> {
     return this.snarkHelper
@@ -264,7 +271,7 @@ class GameManager extends EventEmitter {
     const tile = this.tiles[coords.x][coords.y];
 
     const actionId = getRandomActionId();
-    const txIntent = {
+    const txIntent: UnconfirmedProveTile = {
       actionId,
       methodName: ContractMethodName.PROVE_TILE,
       tile,
@@ -279,6 +286,31 @@ class GameManager extends EventEmitter {
       .catch((err) => {
         this.onTxIntentFail(txIntent, err);
       });
+
+    return this;
+  }
+
+  public async transitionTile(tile: Tile, toTileType: TileType) {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+
+    if (!tile.isPrepped) {
+      throw new Error('tile not prepped');
+    }
+
+    const actionId = getRandomActionId();
+    const txIntent: UnconfirmedTransitionTile = {
+      actionId,
+      methodName: ContractMethodName.TRANSITION_TILE,
+      tile,
+      toTileType,
+    };
+    this.onTxIntent(txIntent);
+    const callArgs: TransitionTileContractCallArgs = [tile.coords, toTileType];
+    this.contractsAPI.transitionTile(callArgs, txIntent).catch((err) => {
+      this.onTxIntentFail(txIntent, err);
+    });
 
     return this;
   }

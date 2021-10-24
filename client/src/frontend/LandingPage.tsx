@@ -4,8 +4,8 @@ import { CORE_CONTRACT_ADDRESS } from 'common-contracts';
 import GameManager from '../backend/GameManager';
 import { EthConnection } from '@darkforest_eth/network';
 import { getEthConnection } from '../backend/Blockchain';
-import { DEV_TEST_PRIVATE_KEY, TileType, WorldCoords } from 'common-types';
-import { tileTypeToColor, getRandomTree } from '../utils';
+import { DEV_TEST_PRIVATE_KEY, Tile, TileType, WorldCoords } from 'common-types';
+import { tileTypeToColor, getTileEmoji } from '../utils';
 import { useGameManager, useTiles } from './Utils/AppHooks';
 
 const enum LoadingStep {
@@ -23,6 +23,7 @@ export default function LandingPage() {
   const [queryingBlockchain, setQueryingBlockchain] = useState<boolean>(false);
   const [lastQueryResult, setLastQueryResult] = useState<TileType | undefined>();
   const tiles = useTiles(gameManager);
+  const [tileEmojis, setTileEmojis] = useState<string[][]>([]);
 
   useEffect(() => {
     getEthConnection()
@@ -43,10 +44,12 @@ export default function LandingPage() {
   const onGridClick = (i: number, j: number) => async () => {
     if (gameManager && !queryingBlockchain) {
       const coords = { x: i, y: j };
+      console.log('here');
       setQueryCoords(coords);
       setQueryingBlockchain(true);
       const tileType = await gameManager.getCachedTileType(coords);
       setLastQueryResult(tileType);
+      console.log('there', tileType);
       setQueryingBlockchain(false);
     }
   };
@@ -64,6 +67,14 @@ export default function LandingPage() {
       const check = await gameManager.checkProof(tile);
       console.log(check);
     }
+  };
+
+  const proveOrTransition = (tile: Tile) => async () => {
+    if (!gameManager || queryingBlockchain) return;
+    console.log('proveOrTransition');
+    if (tile.isPrepped && tile.currentTileType == TileType.LAND)
+      return await gameManager.transitionTile(tile, TileType.FARM);
+    else return await gameManager.proveTile(tile.coords);
   };
 
   useEffect(() => {
@@ -93,17 +104,15 @@ export default function LandingPage() {
               return (
                 <GridRow key={i}>
                   {coordRow.map((tile, j) => {
-                    const tree = getRandomTree({ x: i, y: j }, coordRow.length);
+                    const content = getTileEmoji(tile, tile.isPrepped, coordRow.length);
 
                     return (
                       <GridSquare
                         key={100 * i + j}
-                        onClick={onGridClick(i, j)}
+                        onClick={proveOrTransition(tile)}
                         style={{ backgroundColor: tileTypeToColor[tile.currentTileType] }}
                       >
-                        {tile.currentTileType === TileType.TREE && (
-                          <span style={{ fontSize: '20px' }}>{tree}</span>
-                        )}
+                        <span style={{ fontSize: '20px' }}>{content}</span>
                       </GridSquare>
                     );
                   })}

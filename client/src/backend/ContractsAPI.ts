@@ -1,5 +1,12 @@
 import { CORE_CONTRACT_ADDRESS, GETTERS_CONTRACT_ADDRESS } from 'common-contracts';
-import { ProveTileContractCallArgs, Tile, TileType, WorldCoords, Awaited } from 'common-types';
+import {
+  ProveTileContractCallArgs,
+  TransitionTileContractCallArgs,
+  Tile,
+  TileType,
+  WorldCoords,
+  Awaited,
+} from 'common-types';
 import type { TinyWorld, TinyWorldGetters } from 'common-contracts/typechain';
 import {
   ContractCaller,
@@ -19,22 +26,25 @@ import {
   ContractMethodName,
   ContractsAPIEvent,
   SubmittedProveTile,
+  SubmittedTransitionTile,
   SubmittedTx,
   UnconfirmedProveTile,
+  UnconfirmedTransitionTile,
 } from '../_types/ContractAPITypes';
 import { loadCoreContract, loadGettersContract } from './Blockchain';
 
 export type RawTile = Awaited<ReturnType<TinyWorld['getCachedTile']>>;
 
-export function decodeTileWithoutPerl(rawTile: RawTile): Tile {
+export function decodeTile(rawTile: RawTile): Tile {
   return {
     coords: {
-      x: rawTile.x.toNumber(),
-      y: rawTile.y.toNumber(),
+      x: rawTile.coords.x.toNumber(),
+      y: rawTile.coords.y.toNumber(),
     },
-    originalTileType: rawTile.originalTileType,
     currentTileType: rawTile.currentTileType,
-    perl: 0,
+    originalPerlin: rawTile.originalPerlin.toNumber(),
+    originalRaritySeed: rawTile.originalRaritySeed.toNumber(),
+    isPrepped: true,
   };
 }
 
@@ -122,8 +132,31 @@ export class ContractsAPI extends EventEmitter {
     return (await this.makeCall<EthersBN>(this.coreContract.seed)).toNumber();
   }
 
-  public async doRandomTileUpdate(coords: WorldCoords, tileType: TileType) {
-    await this.makeCall(this.coreContract.randomTileUpdate, [coords.x, coords.y, tileType]);
+  // public async doRandomTileUpdate(coords: WorldCoords, tileType: TileType) {
+  //   await this.makeCall(this.coreContract.randomTileUpdate, [coords.x, coords.y, tileType]);
+  // }
+
+  public async transitionTile(
+    args: TransitionTileContractCallArgs,
+    action: UnconfirmedTransitionTile
+  ): Promise<providers.TransactionReceipt> {
+    if (!this.txExecutor) {
+      throw new Error('no signer, cannot execute tx');
+    }
+
+    const tx = this.txExecutor.queueTransaction(
+      action.actionId,
+      this.coreContract,
+      ContractMethodName.TRANSITION_TILE,
+      args
+    );
+    const unminedTransitionTileTx: SubmittedTransitionTile = {
+      ...action,
+      txHash: (await tx.submitted).hash,
+      sentAtTimestamp: Math.floor(Date.now() / 1000),
+    };
+
+    return this.waitFor(unminedTransitionTileTx, tx.confirmed);
   }
 
   public async getWorldScale(): Promise<number> {
@@ -135,16 +168,13 @@ export class ContractsAPI extends EventEmitter {
   }
 
   public async getCachedTile(coords: WorldCoords): Promise<Tile> {
-    const rawTile = await this.makeCall<RawTile>(this.coreContract.getCachedTile, [
-      coords.x,
-      coords.y,
-    ]);
-    return decodeTileWithoutPerl(rawTile);
+    const rawTile = await this.makeCall<RawTile>(this.coreContract.getCachedTile, [coords]);
+    return decodeTile(rawTile);
   }
 
   public async getTouchedTilesWithoutPerl(): Promise<Tile[]> {
     const rawTiles = await this.makeCall<RawTile[]>(this.coreContract.getTouchedTiles, []);
-    return rawTiles.map(decodeTileWithoutPerl);
+    return rawTiles.map(decodeTile);
   }
 
   /**

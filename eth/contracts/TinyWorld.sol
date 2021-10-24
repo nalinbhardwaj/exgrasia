@@ -22,20 +22,6 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         }
     }
 
-    function randomTileUpdate(
-        uint256 x,
-        uint256 y,
-        TileType tileType
-    ) public {
-        Tile memory tile = Tile({
-            x: x,
-            y: y,
-            originalTileType: tileType,
-            currentTileType: tileType
-        });
-        emit TileUpdated(tile);
-    }
-
     function initialize(
         uint256 _seed,
         uint256 _worldWidth,
@@ -45,6 +31,35 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         seed = _seed;
         worldWidth = _worldWidth;
         worldScale = _worldScale;
+        transitions[TileType.TREE][TileType.STUMP] = true;
+        transitions[TileType.LAND][TileType.FARM] = true;
+    }
+
+    function transitionTile(Coords memory coords, TileType toTileType) public {
+        console.log("Checking transition tile");
+        require(cachedTiles[coords.x][coords.y].currentTileType != TileType.UNKNOWN);
+        TileType fromTileType = cachedTiles[coords.x][coords.y].currentTileType;
+        require(transitions[fromTileType][toTileType] == true);
+        cachedTiles[coords.x][coords.y].currentTileType = toTileType;
+        emit TileUpdated(cachedTiles[coords.x][coords.y]);
+    }
+
+    function buildFarm(Coords memory coords) public {
+        transitionTile(coords, TileType.FARM);
+        // TODO: Change score
+    }
+
+    function cutTree(Coords memory coords) public {
+        transitionTile(coords, TileType.STUMP);
+        // TODO: Change score
+    }
+
+    function editTransition(
+        TileType from,
+        TileType to,
+        bool isValid
+    ) public onlyOwner {
+        transitions[from][to] = isValid;
     }
 
     function proveTile(
@@ -70,12 +85,13 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         TileType tileType = seedToTileType(perlinBase, raritySeed);
 
         Tile memory tile = Tile({
-            x: x,
-            y: y,
-            originalTileType: tileType,
+            coords: Coords(x, y),
+            originalPerlin: perlinBase,
+            originalRaritySeed: raritySeed,
             currentTileType: tileType
         });
         cachedTiles[x][y] = tile;
         touchedTiles.push(tile);
+        emit TileUpdated(cachedTiles[x][y]);
     }
 }
