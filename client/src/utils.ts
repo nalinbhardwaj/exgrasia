@@ -35,9 +35,9 @@ export const getTileEmoji = (tile: Tile, isPrepped: boolean, width: number) => {
     else return getRandomTree(tile.coords, width);
   } else if (tile.currentTileType === TileType.GRASS) {
     if (isPrepped) return '🚜';
-  } else if (tile.currentTileType == TileType.FARM) return '🌾';
-  else if (tile.currentTileType == TileType.WINDMILL) return '🏭';
-  else if (tile.currentTileType == TileType.STUMP) return '🪵🌿';
+  } else if (tile.currentTileType === TileType.FARM) return '🌾';
+  else if (tile.currentTileType === TileType.WINDMILL) return '🏭';
+  else if (tile.currentTileType === TileType.STUMP) return '🪵🌿';
   return '';
 };
 
@@ -63,7 +63,7 @@ export const seedToTileType = (
 ): number => {
   const height = perlin1;
   let temperature = perlin2;
-  temperature += (coords.x - 50) / 2;
+  temperature += Math.floor((coords.x - 50) / 2);
 
   let altitudeType = ALTITUDE.SEA;
   if (height > 40) {

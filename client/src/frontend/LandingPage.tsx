@@ -9,7 +9,6 @@ import { DEV_TEST_PRIVATE_KEY, Tile, TileType, WorldCoords } from 'common-types'
 import { tileTypeToColor, getTileEmoji } from '../utils';
 import {
   useBreadScore,
-  useGameManager,
   useLocation,
   useTiles,
   useWheatScore,
@@ -159,7 +158,7 @@ export default function LandingPage() {
                             .toHexString(),
                         }}
                       >
-                        {i == location.value.x && j == location.value.y && (
+                        {i === location.value.x && j === location.value.y && (
                           <span style={{ fontSize: '15px', zIndex: 10 }}>👨‍🎨</span>
                         )}
                         <span style={{ fontSize: '20px' }}>{content}</span>

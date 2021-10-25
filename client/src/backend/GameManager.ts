@@ -377,7 +377,7 @@ class GameManager extends EventEmitter {
   };
 
   public async decideTransitionMethod(tileType: TileType) {
-    if (tileType == TileType.GRASS) {
+    if (tileType === TileType.GRASS) {
       if ((await this.getWoodScore()) >= 10)
         return { methodName: ContractMethodName.MAKE_WINDMILL, toTileType: TileType.WINDMILL };
       return { methodName: ContractMethodName.BUILD_FARM, toTileType: TileType.FARM };

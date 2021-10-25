@@ -405,7 +405,7 @@ template SingleScalePerlin(scale_bits, DENOMINATOR, SQRT_P) {
 }
 
 template MultiScalePerlin() {
-    var DENOMINATOR = 1125899906842624000; // good for length scales up to 16384. 2^50 * 1000
+    var DENOMINATOR = 2251799813685248000; // good for length scales up to 16384. 2^50 * 1000
     var DENOMINATOR_BITS = 61;
     var SQRT_P = 1000000000000000000000000000000000000;
 
@@ -455,10 +455,10 @@ template MultiScalePerlin() {
     adder.out === 4 * outDividedByCount;
 
     // outDividedByCount is between [-DENOMINATOR*sqrt(2)/2, DENOMINATOR*sqrt(2)/2]
-    component divBy16 = Modulo(DENOMINATOR_BITS, SQRT_P);
-    divBy16.dividend <== outDividedByCount * 16;
-    divBy16.divisor <== DENOMINATOR;
-    out <== divBy16.quotient + 16;
+    component divBy32 = Modulo(DENOMINATOR_BITS, SQRT_P);
+    divBy32.dividend <== outDividedByCount * 32;
+    divBy32.divisor <== DENOMINATOR;
+    out <== divBy32.quotient + 32;
 }
 
 // component main = MultiScalePerlin(3); // if you change this n, you also need to recompute DENOMINATOR with JS.
