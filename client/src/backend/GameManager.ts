@@ -21,10 +21,12 @@ import {
 import {
   ContractMethodName,
   ContractsAPIEvent,
+  isUnconfirmedMovePlayer,
   isUnconfirmedProveTile,
   isUnconfirmedTransitionTile,
   SubmittedTx,
   TxIntent,
+  UnconfirmedMovePlayer,
   UnconfirmedProveTile,
   UnconfirmedTransitionTile,
 } from '../_types/ContractAPITypes';
@@ -70,10 +72,12 @@ class GameManager extends EventEmitter {
   private readonly worldScale: number;
 
   private readonly tiles: Tile[][];
+  public playerCoords: WorldCoords;
 
   private readonly perlinConfig: PerlinConfig;
 
   public tileUpdated$: Monomitter<void>;
+  public playerUpdated$: Monomitter<void>;
 
   private constructor(
     account: EthAddress | undefined,
@@ -95,6 +99,7 @@ class GameManager extends EventEmitter {
     this.worldScale = worldScale;
     this.snarkHelper = snarkHelper;
     this.tiles = [];
+    this.playerCoords = { x: -1, y: -1 };
     this.perlinConfig = {
       key: worldSeed,
       scale: worldScale,
@@ -104,6 +109,7 @@ class GameManager extends EventEmitter {
     };
 
     this.tileUpdated$ = monomitter();
+    this.playerUpdated$ = monomitter();
 
     for (let i = 0; i < worldWidth; i++) {
       this.tiles.push([]);
@@ -183,6 +189,15 @@ class GameManager extends EventEmitter {
         gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
         gameManager.tileUpdated$.publish();
       })
+      .on(ContractsAPIEvent.PlayerUpdated, async (tile: Tile) => {
+        // todo: update in memory data store
+        // todo: emit event to UI
+        // TODO: do something???
+        console.log('event player', tile);
+
+        gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
+        gameManager.tileUpdated$.publish();
+      })
       .on(ContractsAPIEvent.TxSubmitted, (unconfirmedTx: SubmittedTx) => {
         // todo: save the tx to localstorage
         gameManager.onTxSubmit(unconfirmedTx);
@@ -202,10 +217,14 @@ class GameManager extends EventEmitter {
           gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
           gameManager.tileUpdated$.publish();
         }
+        if (isUnconfirmedMovePlayer(unconfirmedTx)) {
+          gameManager.playerCoords = unconfirmedTx.coords;
+          gameManager.playerUpdated$.publish();
+        }
         gameManager.onTxConfirmed(unconfirmedTx);
       })
       .on(ContractsAPIEvent.TxReverted, async (unconfirmedTx: SubmittedTx) => {
-        // todo: removethe tx from localStorage
+        // todo: remove the tx from localStorage
         gameManager.onTxReverted(unconfirmedTx);
       });
 
@@ -384,6 +403,25 @@ class GameManager extends EventEmitter {
     return this;
   }
 
+  public async movePlayer(coords: WorldCoords) {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+
+    const actionId = getRandomActionId();
+    const txIntent: UnconfirmedMovePlayer = {
+      actionId,
+      methodName: ContractMethodName.MOVE_PLAYER,
+      coords,
+    };
+    this.onTxIntent(txIntent);
+    this.contractsAPI.movePlayer(txIntent).catch((err) => {
+      this.onTxIntentFail(txIntent, err);
+    });
+
+    return this;
+  }
+
   public async getWoodScore() {
     return this.contractsAPI.getWoodScore();
   }
@@ -394,6 +432,29 @@ class GameManager extends EventEmitter {
 
   public async getBreadScore() {
     return this.contractsAPI.getBreadScore();
+  }
+
+  public async getLocation() {
+    return this.contractsAPI.getLocation();
+  }
+
+  public async initPlayerLocation(coords: WorldCoords) {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+
+    const actionId = getRandomActionId();
+    const txIntent: UnconfirmedMovePlayer = {
+      actionId,
+      methodName: ContractMethodName.INIT_PLAYER_LOCATION,
+      coords,
+    };
+    this.onTxIntent(txIntent);
+    this.contractsAPI.initPlayerLocation(txIntent).catch((err) => {
+      this.onTxIntentFail(txIntent, err);
+    });
+
+    return this;
   }
 }
 

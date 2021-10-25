@@ -45,6 +45,7 @@ export const getTileEmoji = (tile: Tile, isPrepped: boolean, width: number) => {
     if (isPrepped) return '🚜';
   } else if (tile.currentTileType == TileType.FARM) return '🌾';
   else if (tile.currentTileType == TileType.WINDMILL) return '🏭';
+  else if (tile.currentTileType == TileType.STUMP) return '🪵';
   return '';
 };
 

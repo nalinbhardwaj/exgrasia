@@ -16,6 +16,9 @@ contract TinyWorldStorage {
 
     mapping(uint256 => mapping(uint256 => uint256)) public lastHarvested;
 
+    mapping(address => Coords) public playerLocation;
+    mapping(address => bool) public playerInited;
+
     function getCachedTile(Coords memory coords) public view returns (Tile memory) {
         return cachedTiles[coords.x][coords.y];
     }

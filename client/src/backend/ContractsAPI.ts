@@ -25,16 +25,18 @@ import {
   ContractEvent,
   ContractMethodName,
   ContractsAPIEvent,
+  SubmittedMovePlayer,
   SubmittedProveTile,
   SubmittedTransitionTile,
   SubmittedTx,
+  UnconfirmedMovePlayer,
   UnconfirmedProveTile,
   UnconfirmedTransitionTile,
 } from '../_types/ContractAPITypes';
 import { loadCoreContract, loadGettersContract } from './Blockchain';
 
 export type RawTile = Awaited<ReturnType<TinyWorld['getCachedTile']>>;
-export type RawCoords = Awaited<ReturnType<TinyWorld['getTouchedTiles']>>;
+export type RawCoords = Awaited<ReturnType<TinyWorld['playerLocation']>>;
 
 export function decodeTile(rawTile: RawTile): Tile {
   return {
@@ -111,12 +113,21 @@ export class ContractsAPI extends EventEmitter {
         [coreContract.filters.TileUpdated(null).topics].map(
           (topicsOrUndefined) => (topicsOrUndefined || [])[0]
         ),
+        [coreContract.filters.PlayerUpdated(null).topics].map(
+          (topicsOrUndefined) => (topicsOrUndefined || [])[0]
+        ),
       ] as Array<string | Array<string>>,
     };
 
     const eventHandlers = {
       [ContractEvent.TileUpdated]: (rawTile: RawTile) => {
         this.emit(ContractsAPIEvent.TileUpdated, decodeTile(rawTile));
+      },
+      [ContractEvent.PlayerUpdated]: (coords: RawCoords) => {
+        this.emit(ContractsAPIEvent.PlayerUpdated, {
+          x: coords.x.toNumber(),
+          y: coords.y.toNumber(),
+        });
       },
     };
 
@@ -127,6 +138,7 @@ export class ContractsAPI extends EventEmitter {
     const { coreContract } = this;
 
     coreContract.removeAllListeners(ContractEvent.TileUpdated);
+    coreContract.removeAllListeners(ContractEvent.PlayerUpdated);
   }
 
   public async getSeed(): Promise<number> {
@@ -161,6 +173,60 @@ export class ContractsAPI extends EventEmitter {
     const addr = this.ethConnection.getAddress();
 
     return (await this.makeCall<EthersBN>(this.coreContract.breadScore, [addr])).toNumber();
+  }
+
+  public async getLocation(): Promise<WorldCoords> {
+    if (!this.txExecutor) {
+      throw new Error('no signer, cannot execute tx');
+    }
+
+    const addr = this.ethConnection.getAddress();
+
+    const rawCoords = await this.makeCall<RawCoords>(this.coreContract.playerLocation, [addr]);
+    return {
+      x: rawCoords.x.toNumber(),
+      y: rawCoords.y.toNumber(),
+    };
+  }
+
+  public async initPlayerLocation(action: UnconfirmedMovePlayer) {
+    if (!this.txExecutor) {
+      throw new Error('no signer, cannot execute tx');
+    }
+
+    const tx = this.txExecutor.queueTransaction(
+      action.actionId,
+      this.coreContract,
+      action.methodName,
+      [action.coords]
+    );
+    const unminedMovePlayerTx: SubmittedMovePlayer = {
+      ...action,
+      txHash: (await tx.submitted).hash,
+      sentAtTimestamp: Math.floor(Date.now() / 1000),
+    };
+
+    return this.waitFor(unminedMovePlayerTx, tx.confirmed);
+  }
+
+  public async movePlayer(action: UnconfirmedMovePlayer) {
+    if (!this.txExecutor) {
+      throw new Error('no signer, cannot execute tx');
+    }
+
+    const tx = this.txExecutor.queueTransaction(
+      action.actionId,
+      this.coreContract,
+      action.methodName,
+      [action.coords]
+    );
+    const unminedMovePlayerTx: SubmittedMovePlayer = {
+      ...action,
+      txHash: (await tx.submitted).hash,
+      sentAtTimestamp: Math.floor(Date.now() / 1000),
+    };
+
+    return this.waitFor(unminedMovePlayerTx, tx.confirmed);
   }
 
   // public async doRandomTileUpdate(coords: WorldCoords, tileType: TileType) {
@@ -204,11 +270,14 @@ export class ContractsAPI extends EventEmitter {
   }
 
   public async getTouchedCoords(): Promise<WorldCoords[]> {
-    const rawCoords = await this.makeCall<RawCoords>(this.coreContract.getTouchedTiles, []);
-    const coords = rawCoords.map((coords) => {
+    const touchedRawCoords = await this.makeCall<RawCoords[]>(
+      this.coreContract.getTouchedTiles,
+      []
+    );
+    const touchedCoords = touchedRawCoords.map((coords) => {
       return { x: coords.x.toNumber(), y: coords.y.toNumber() };
     });
-    return coords;
+    return touchedCoords;
   }
 
   /**

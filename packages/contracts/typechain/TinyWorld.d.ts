@@ -30,11 +30,15 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "getCachedTile(tuple)": FunctionFragment;
     "getTouchedTiles()": FunctionFragment;
     "harvestWheat(tuple)": FunctionFragment;
+    "initPlayerLocation(tuple)": FunctionFragment;
     "initialize(uint256,uint256,uint256)": FunctionFragment;
     "lastHarvested(uint256,uint256)": FunctionFragment;
     "makeBread(tuple)": FunctionFragment;
     "makeWindmill(tuple)": FunctionFragment;
+    "movePlayer(tuple)": FunctionFragment;
     "owner()": FunctionFragment;
+    "playerInited(address)": FunctionFragment;
+    "playerLocation(address)": FunctionFragment;
     "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "seed()": FunctionFragment;
@@ -78,6 +82,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(
+    functionFragment: "initPlayerLocation",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
+  encodeFunctionData(
     functionFragment: "initialize",
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
@@ -93,7 +101,19 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     functionFragment: "makeWindmill",
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
+  encodeFunctionData(
+    functionFragment: "movePlayer",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "playerInited",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "playerLocation",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "proveTile",
     values: [
@@ -169,6 +189,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     functionFragment: "harvestWheat",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "initPlayerLocation",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "lastHarvested",
@@ -179,7 +203,16 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     functionFragment: "makeWindmill",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "movePlayer", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "playerInited",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "playerLocation",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "proveTile", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -209,10 +242,12 @@ interface TinyWorldInterface extends ethers.utils.Interface {
 
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
+    "PlayerUpdated(tuple)": EventFragment;
     "TileUpdated(tuple)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PlayerUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TileUpdated"): EventFragment;
 }
 
@@ -354,6 +389,16 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    initPlayerLocation(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "initPlayerLocation(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     initialize(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
@@ -404,12 +449,56 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    movePlayer(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "movePlayer(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     owner(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
     "owner()"(overrides?: CallOverrides): Promise<{
       0: string;
+    }>;
+
+    playerInited(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "playerInited(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    playerLocation(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
+    "playerLocation(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
     }>;
 
     proveTile(
@@ -672,6 +761,16 @@ export class TinyWorld extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  initPlayerLocation(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "initPlayerLocation(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   initialize(
     _seed: BigNumberish,
     _worldWidth: BigNumberish,
@@ -718,9 +817,46 @@ export class TinyWorld extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  movePlayer(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "movePlayer(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   "owner()"(overrides?: CallOverrides): Promise<string>;
+
+  playerInited(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "playerInited(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  playerLocation(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<{
+    x: BigNumber;
+    y: BigNumber;
+    0: BigNumber;
+    1: BigNumber;
+  }>;
+
+  "playerLocation(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<{
+    x: BigNumber;
+    y: BigNumber;
+    0: BigNumber;
+    1: BigNumber;
+  }>;
 
   proveTile(
     a: [BigNumberish, BigNumberish],
@@ -952,6 +1088,16 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    initPlayerLocation(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "initPlayerLocation(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     initialize(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
@@ -998,9 +1144,46 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    movePlayer(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "movePlayer(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     owner(overrides?: CallOverrides): Promise<string>;
 
     "owner()"(overrides?: CallOverrides): Promise<string>;
+
+    playerInited(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "playerInited(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    playerLocation(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
+    "playerLocation(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
 
     proveTile(
       a: [BigNumberish, BigNumberish],
@@ -1125,6 +1308,8 @@ export class TinyWorld extends Contract {
       newOwner: string | null
     ): EventFilter;
 
+    PlayerUpdated(undefined: null): EventFilter;
+
     TileUpdated(undefined: null): EventFilter;
   };
 
@@ -1206,6 +1391,16 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    initPlayerLocation(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "initPlayerLocation(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     initialize(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
@@ -1252,9 +1447,33 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    movePlayer(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "movePlayer(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    playerInited(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "playerInited(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    playerLocation(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "playerLocation(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     proveTile(
       a: [BigNumberish, BigNumberish],
@@ -1446,6 +1665,16 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    initPlayerLocation(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "initPlayerLocation(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     initialize(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
@@ -1492,9 +1721,39 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    movePlayer(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "movePlayer(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    playerInited(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "playerInited(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    playerLocation(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "playerLocation(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     proveTile(
       a: [BigNumberish, BigNumberish],

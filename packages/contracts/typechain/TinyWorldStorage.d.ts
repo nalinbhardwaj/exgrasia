@@ -26,6 +26,8 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     "getCachedTile(tuple)": FunctionFragment;
     "getTouchedTiles()": FunctionFragment;
     "lastHarvested(uint256,uint256)": FunctionFragment;
+    "playerInited(address)": FunctionFragment;
+    "playerLocation(address)": FunctionFragment;
     "seed()": FunctionFragment;
     "touchedTiles(uint256)": FunctionFragment;
     "transitions(uint8,uint8)": FunctionFragment;
@@ -51,6 +53,14 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "lastHarvested",
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "playerInited",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "playerLocation",
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "seed", values?: undefined): string;
   encodeFunctionData(
@@ -87,6 +97,14 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "lastHarvested",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "playerInited",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "playerLocation",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "seed", data: BytesLike): Result;
@@ -214,6 +232,40 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
+    }>;
+
+    playerInited(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "playerInited(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    playerLocation(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
+    "playerLocation(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
     }>;
 
     seed(overrides?: CallOverrides): Promise<{
@@ -386,6 +438,33 @@ export class TinyWorldStorage extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  playerInited(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "playerInited(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  playerLocation(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<{
+    x: BigNumber;
+    y: BigNumber;
+    0: BigNumber;
+    1: BigNumber;
+  }>;
+
+  "playerLocation(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<{
+    x: BigNumber;
+    y: BigNumber;
+    0: BigNumber;
+    1: BigNumber;
+  }>;
+
   seed(overrides?: CallOverrides): Promise<BigNumber>;
 
   "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -526,6 +605,33 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    playerInited(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "playerInited(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    playerLocation(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
+    "playerLocation(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      x: BigNumber;
+      y: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
     seed(overrides?: CallOverrides): Promise<BigNumber>;
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -633,6 +739,20 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    playerInited(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "playerInited(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    playerLocation(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "playerLocation(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     seed(overrides?: CallOverrides): Promise<BigNumber>;
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -730,6 +850,26 @@ export class TinyWorldStorage extends Contract {
     "lastHarvested(uint256,uint256)"(
       arg0: BigNumberish,
       arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    playerInited(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "playerInited(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    playerLocation(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "playerLocation(address)"(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

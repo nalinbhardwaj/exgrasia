@@ -9,6 +9,7 @@ import { tileTypeToColor, getTileEmoji } from '../utils';
 import {
   useBreadScore,
   useGameManager,
+  useLocation,
   useTiles,
   useWheatScore,
   useWoodScore,
@@ -32,7 +33,7 @@ export default function LandingPage() {
   const wheatScore = useWheatScore(gameManager);
   const woodScore = useWoodScore(gameManager);
   const breadScore = useBreadScore(gameManager);
-  const [tileEmojis, setTileEmojis] = useState<string[][]>([]);
+  const location = useLocation(gameManager);
 
   useEffect(() => {
     getEthConnection()
@@ -105,6 +106,7 @@ export default function LandingPage() {
         {gameManager && (
           <p>{`wood score: ${woodScore.value}. wheat score: ${wheatScore.value}. bread score: ${breadScore.value}`}</p>
         )}
+        {gameManager && <p>{`location.x: ${location.value.x}, location.y: ${location.value.y}`}</p>}
         <p>{`errors: ${error}`}</p>
         {lastQueryResult !== undefined ? (
           <p>{`last queried for (${queryCoords?.x}, ${queryCoords?.y}): cached tile type is ${lastQueryResult}`}</p>
@@ -123,6 +125,9 @@ export default function LandingPage() {
                         onClick={proveOrTransition(tile)}
                         style={{ backgroundColor: tileTypeToColor[tile.currentTileType] }}
                       >
+                        {i == location.value.x && j == location.value.y && (
+                          <span style={{ fontSize: '20px', zIndex: 10 }}>👨‍🎨</span>
+                        )}
                         <span style={{ fontSize: '20px' }}>{content}</span>
                       </GridSquare>
                     );

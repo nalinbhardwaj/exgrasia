@@ -64,3 +64,16 @@ export function useBreadScore(gameManager: GameManager | undefined): Wrapper<num
 
   return breadScore;
 }
+
+export function useLocation(gameManager: GameManager | undefined): Wrapper<WorldCoords> {
+  const [coords, setCoords] = useState<Wrapper<WorldCoords>>(() => new Wrapper({ x: -1, y: -1 }));
+
+  const onUpdate = useCallback(async () => {
+    console.log('onUpdate useLocation');
+    setCoords(new Wrapper(gameManager ? await gameManager.getLocation() : { x: -1, y: -1 }));
+  }, [gameManager]);
+
+  useEmitterSubscribe(gameManager?.playerUpdated$, onUpdate);
+
+  return coords;
+}

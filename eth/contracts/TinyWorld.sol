@@ -9,6 +9,7 @@ import "./ProveTileVerifier.sol";
 
 contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     event TileUpdated(Tile);
+    event PlayerUpdated(Coords);
 
     function seedToTileType(
         uint256 perlin1,
@@ -26,6 +27,20 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         }
     }
 
+    function abs(int256 x) private pure returns (uint256) {
+        return uint256(x >= 0 ? x : -x);
+    }
+
+    function dist(Coords memory a, Coords memory b) private pure returns (uint256) {
+        return abs(int256(a.x) - int256(b.x)) + abs(int256(a.y) - int256(b.y));
+    }
+
+    modifier isClose(Coords memory loc) {
+        require(playerInited[msg.sender], "Player not inited");
+        require(dist(playerLocation[msg.sender], loc) <= 1, "Location too far");
+        _;
+    }
+
     function initialize(
         uint256 _seed,
         uint256 _worldWidth,
@@ -41,11 +56,13 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         transitions[TileType.FARM][TileType.GRASS] = true;
     }
 
-    function transitionTile(Coords memory coords, TileType toTileType) public {
-        console.log("Checking transition tile");
-        require(cachedTiles[coords.x][coords.y].currentTileType != TileType.UNKNOWN);
+    function transitionTile(Coords memory coords, TileType toTileType) public isClose(coords) {
+        require(
+            cachedTiles[coords.x][coords.y].currentTileType != TileType.UNKNOWN,
+            "Tile not proven"
+        );
         TileType fromTileType = cachedTiles[coords.x][coords.y].currentTileType;
-        require(transitions[fromTileType][toTileType] == true);
+        require(transitions[fromTileType][toTileType] == true, "Cannot make transition");
         cachedTiles[coords.x][coords.y].currentTileType = toTileType;
         emit TileUpdated(cachedTiles[coords.x][coords.y]);
     }
@@ -60,23 +77,42 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     }
 
     function harvestWheat(Coords memory coords) public {
-        require(block.timestamp >= lastHarvested[coords.x][coords.y] + 60);
+        require(block.timestamp >= lastHarvested[coords.x][coords.y] + 60, "Harvesting too soon");
         transitionTile(coords, TileType.GRASS);
         wheatScore[msg.sender] += 3;
         lastHarvested[coords.x][coords.y] = block.timestamp;
     }
 
     function makeWindmill(Coords memory coords) public {
-        require(woodScore[msg.sender] >= 10);
+        require(woodScore[msg.sender] >= 10, "Not enough wood");
         woodScore[msg.sender] -= 10;
         transitionTile(coords, TileType.WINDMILL);
     }
 
-    function makeBread(Coords memory coords) public {
-        require(wheatScore[msg.sender] >= 3);
-        require(cachedTiles[coords.x][coords.y].currentTileType == TileType.WINDMILL);
+    function makeBread(Coords memory coords) public isClose(coords) {
+        require(wheatScore[msg.sender] >= 3, "Not enough wheat");
+        require(
+            cachedTiles[coords.x][coords.y].currentTileType == TileType.WINDMILL,
+            "Not a Windmill"
+        );
         wheatScore[msg.sender] -= 3;
         breadScore[msg.sender] += 1;
+    }
+
+    function initPlayerLocation(Coords memory coords) public {
+        require(playerInited[msg.sender] == false, "Already inited");
+        playerLocation[msg.sender] = coords;
+        playerInited[msg.sender] = true;
+        emit PlayerUpdated(coords);
+    }
+
+    function movePlayer(Coords memory coords) public isClose(coords) {
+        require(
+            cachedTiles[coords.x][coords.y].currentTileType != TileType.UNKNOWN,
+            "Tile not proven"
+        );
+        playerLocation[msg.sender] = coords;
+        emit PlayerUpdated(coords);
     }
 
     function editTransition(
@@ -92,7 +128,7 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         uint256[2][2] memory b,
         uint256[2] memory c,
         uint256[7] memory publicSignals
-    ) public {
+    ) public isClose(Coords(publicSignals[3], publicSignals[4])) {
         require(Verifier.verifyMainProof(a, b, c, publicSignals), "Failed ZK check");
 
         uint256 perlinBase1 = publicSignals[0];

@@ -1,7 +1,8 @@
-import { Tile, TileType } from 'common-types';
+import { Tile, TileType, WorldCoords } from 'common-types';
 
 export const enum ContractEvent {
   TileUpdated = 'TileUpdated',
+  PlayerUpdated = 'PlayerUpdated',
 }
 
 export enum ContractMethodName {
@@ -14,6 +15,8 @@ export enum ContractMethodName {
   HARVEST_WHEAT = 'harvestWheat',
   MAKE_WINDMILL = 'makeWindmill',
   MAKE_BREAD = 'makeBread',
+  MOVE_PLAYER = 'movePlayer',
+  INIT_PLAYER_LOCATION = 'initPlayerLocation',
 }
 
 export const possibleTransitions = [
@@ -26,6 +29,7 @@ export const possibleTransitions = [
 
 export const enum ContractsAPIEvent {
   TileUpdated = 'TileUpdated',
+  PlayerUpdated = 'TileUpdated',
 
   TxInitFailed = 'TxInitFailed',
   TxSubmitted = 'TxSubmitted',
@@ -67,4 +71,17 @@ export function isUnconfirmedTransitionTile(
   txIntent: TxIntent
 ): txIntent is UnconfirmedTransitionTile {
   return possibleTransitions.includes(txIntent.methodName);
+}
+
+export type UnconfirmedMovePlayer = TxIntent & {
+  methodName: ContractMethodName.MOVE_PLAYER | ContractMethodName.INIT_PLAYER_LOCATION;
+  coords: WorldCoords;
+};
+
+export type SubmittedMovePlayer = UnconfirmedMovePlayer & SubmittedTx;
+
+export function isUnconfirmedMovePlayer(txIntent: TxIntent): txIntent is UnconfirmedMovePlayer {
+  return [ContractMethodName.MOVE_PLAYER, ContractMethodName.INIT_PLAYER_LOCATION].includes(
+    txIntent.methodName
+  );
 }
