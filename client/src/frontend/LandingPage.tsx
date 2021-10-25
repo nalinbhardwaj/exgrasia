@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import tinycolor from 'tinycolor2';
 import { CORE_CONTRACT_ADDRESS } from 'common-contracts';
 import GameManager from '../backend/GameManager';
 import { EthConnection } from '@darkforest_eth/network';
@@ -86,10 +87,38 @@ export default function LandingPage() {
     return await gameManager.transitionTile(tile);
   };
 
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (!gameManager || queryingBlockchain) return;
+
+    console.debug('Key event', event);
+    const keyToDirection: any = {
+      w: [-1, 0],
+      a: [0, -1],
+      s: [1, 0],
+      d: [0, 1],
+    };
+
+    if (event.key in keyToDirection) {
+      console.log({
+        x: location.value.x + keyToDirection[event.key][0],
+        y: location.value.y + keyToDirection[event.key][1],
+      });
+      gameManager.movePlayer({
+        x: location.value.x + keyToDirection[event.key][0],
+        y: location.value.y + keyToDirection[event.key][1],
+      });
+    }
+  };
+
   useEffect(() => {
     if (gameManager) {
       gameManager.tileUpdated$.publish();
+      gameManager.playerUpdated$.publish();
     }
+    document.addEventListener('keydown', handleKeyDown);
+    return function cleanup() {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [gameManager]);
 
   return (
@@ -123,7 +152,11 @@ export default function LandingPage() {
                       <GridSquare
                         key={100 * i + j}
                         onClick={proveOrTransition(tile)}
-                        style={{ backgroundColor: tileTypeToColor[tile.currentTileType] }}
+                        style={{
+                          backgroundColor: tinycolor(tileTypeToColor[tile.currentTileType])
+                            .darken(tile.isPrepped ? -10 : 0)
+                            .toHexString(),
+                        }}
                       >
                         {i == location.value.x && j == location.value.y && (
                           <span style={{ fontSize: '20px', zIndex: 10 }}>👨‍🎨</span>

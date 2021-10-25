@@ -5,6 +5,7 @@
   "dependencies": {
     "@darkforest_eth/network": "^6.6.6",
     "@hot-loader/react-dom": "^17.0.1",
+    "@types/tinycolor2": "^1.4.3",
     "big-integer": "^1.6.48",
     "ethers": "^5.0.7",
     "events": "^3.0.0",
@@ -13,7 +14,8 @@
     "react-hot-loader": "^4.13.0",
     "react-icons": "^3.9.0",
     "react-router-dom": "^5.1.2",
-    "styled-components": "^5.3.3"
+    "styled-components": "^5.3.3",
+    "tinycolor2": "^1.4.2"
   },
   "scripts": {
     "prepare": "exit 0",

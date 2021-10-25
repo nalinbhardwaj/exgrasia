@@ -39,13 +39,11 @@ export const getRaritySeed = (coords: WorldCoords, seed: number, scale: number) 
 
 export const getTileEmoji = (tile: Tile, isPrepped: boolean, width: number) => {
   if (tile.currentTileType == TileType.TREE) {
-    if (isPrepped) return '🌿';
+    if (isPrepped) return '🪵';
     else return getRandomTree(tile.coords, width);
-  } else if (tile.currentTileType == TileType.GRASS) {
-    if (isPrepped) return '🚜';
   } else if (tile.currentTileType == TileType.FARM) return '🌾';
   else if (tile.currentTileType == TileType.WINDMILL) return '🏭';
-  else if (tile.currentTileType == TileType.STUMP) return '🪵';
+  else if (tile.currentTileType == TileType.STUMP) return '🪵🌿';
   return '';
 };
 
