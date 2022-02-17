@@ -75,30 +75,6 @@
     "type": "event"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "breadScore",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "coords",
-        "type": "tuple"
-      }
-    ],
-    "name": "buildFarm",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       { "internalType": "uint256", "name": "", "type": "uint256" },
       { "internalType": "uint256", "name": "", "type": "uint256" }
@@ -126,30 +102,14 @@
   },
   {
     "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "coords",
-        "type": "tuple"
-      }
+      { "internalType": "uint32", "name": "x", "type": "uint32" },
+      { "internalType": "uint32", "name": "y", "type": "uint32" },
+      { "internalType": "uint32", "name": "seed", "type": "uint32" },
+      { "internalType": "uint32", "name": "scale", "type": "uint32" }
     ],
-    "name": "collectWood",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "enum TileType", "name": "from", "type": "uint8" },
-      { "internalType": "enum TileType", "name": "to", "type": "uint8" },
-      { "internalType": "bool", "name": "isValid", "type": "bool" }
-    ],
-    "name": "editTransition",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "computePerlin",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -202,37 +162,53 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getTouchedTiles",
-    "outputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords[]",
-        "name": "",
-        "type": "tuple[]"
-      }
+    "inputs": [
+      { "internalType": "uint32", "name": "x", "type": "uint32" },
+      { "internalType": "uint32", "name": "y", "type": "uint32" },
+      { "internalType": "uint32", "name": "scale", "type": "uint32" }
     ],
+    "name": "getCorners",
+    "outputs": [
+      { "internalType": "uint32[2][4]", "name": "", "type": "uint32[2][4]" }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint32", "name": "x", "type": "uint32" },
+      { "internalType": "uint32", "name": "y", "type": "uint32" },
+      { "internalType": "uint32", "name": "scale", "type": "uint32" },
+      { "internalType": "uint32", "name": "seed", "type": "uint32" }
+    ],
+    "name": "getGradientAt",
+    "outputs": [{ "internalType": "int16[2]", "name": "", "type": "int16[2]" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "coords",
-        "type": "tuple"
-      }
+      { "internalType": "uint32", "name": "x", "type": "uint32" },
+      { "internalType": "uint32", "name": "y", "type": "uint32" },
+      { "internalType": "uint32", "name": "scale", "type": "uint32" },
+      { "internalType": "uint32", "name": "seed", "type": "uint32" }
     ],
-    "name": "harvestWheat",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "getSingleScalePerlin",
+    "outputs": [{ "internalType": "int128", "name": "", "type": "int128" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint32", "name": "cornerX", "type": "uint32" },
+      { "internalType": "uint32", "name": "cornerY", "type": "uint32" },
+      { "internalType": "uint32", "name": "x", "type": "uint32" },
+      { "internalType": "uint32", "name": "y", "type": "uint32" },
+      { "internalType": "uint32", "name": "scale", "type": "uint32" }
+    ],
+    "name": "getWeight",
+    "outputs": [{ "internalType": "uint64", "name": "", "type": "uint64" }],
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -265,50 +241,6 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "", "type": "uint256" },
-      { "internalType": "uint256", "name": "", "type": "uint256" }
-    ],
-    "name": "lastHarvested",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "coords",
-        "type": "tuple"
-      }
-    ],
-    "name": "makeBread",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "coords",
-        "type": "tuple"
-      }
-    ],
-    "name": "makeWindmill",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
       {
         "components": [
           { "internalType": "uint256", "name": "x", "type": "uint256" },
@@ -332,6 +264,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "perlinMax",
+    "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "name": "playerInited",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
@@ -350,16 +289,18 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256[2]", "name": "a", "type": "uint256[2]" },
-      { "internalType": "uint256[2][2]", "name": "b", "type": "uint256[2][2]" },
-      { "internalType": "uint256[2]", "name": "c", "type": "uint256[2]" },
       {
-        "internalType": "uint256[7]",
-        "name": "publicSignals",
-        "type": "uint256[7]"
-      }
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "coords",
+        "type": "tuple"
+      },
+      { "internalType": "uint256", "name": "tsbase", "type": "uint256" }
     ],
-    "name": "proveTile",
+    "name": "processTile",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -379,13 +320,10 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "name": "touchedTiles",
-    "outputs": [
-      { "internalType": "uint256", "name": "x", "type": "uint256" },
-      { "internalType": "uint256", "name": "y", "type": "uint256" }
-    ],
-    "stateMutability": "view",
+    "inputs": [{ "internalType": "int128", "name": "x", "type": "int128" }],
+    "name": "smoothStep",
+    "outputs": [{ "internalType": "int128", "name": "", "type": "int128" }],
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -399,43 +337,18 @@
   },
   {
     "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "coords",
-        "type": "tuple"
-      },
-      { "internalType": "enum TileType", "name": "toTileType", "type": "uint8" }
+      { "internalType": "uint256", "name": "", "type": "uint256" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
     ],
-    "name": "transitionTile",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "enum TileType", "name": "", "type": "uint8" },
-      { "internalType": "enum TileType", "name": "", "type": "uint8" }
-    ],
-    "name": "transitions",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "name": "vecs",
+    "outputs": [{ "internalType": "int16", "name": "", "type": "int16" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "wheatScore",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "woodScore",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "inputs": [],
+    "name": "vecsDenom",
+    "outputs": [{ "internalType": "int16", "name": "", "type": "int16" }],
     "stateMutability": "view",
     "type": "function"
   },

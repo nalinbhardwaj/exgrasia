@@ -6,26 +6,10 @@ export const enum ContractEvent {
 }
 
 export enum ContractMethodName {
-  GET_WHEAT_SCORE = 'wheatScore',
-  GET_WOOD_SCORE = 'woodScore',
-  PROVE_TILE = 'proveTile',
-  TRANSITION_TILE = 'transitionTile',
-  BUILD_FARM = 'buildFarm',
-  COLLECT_WOOD = 'collectWood',
-  HARVEST_WHEAT = 'harvestWheat',
-  MAKE_WINDMILL = 'makeWindmill',
-  MAKE_BREAD = 'makeBread',
   MOVE_PLAYER = 'movePlayer',
   INIT_PLAYER_LOCATION = 'initPlayerLocation',
+  PROCESS_TILE = 'processTile',
 }
-
-export const possibleTransitions = [
-  ContractMethodName.TRANSITION_TILE,
-  ContractMethodName.COLLECT_WOOD,
-  ContractMethodName.HARVEST_WHEAT,
-  ContractMethodName.BUILD_FARM,
-  ContractMethodName.MAKE_WINDMILL,
-];
 
 export const enum ContractsAPIEvent {
   TileUpdated = 'TileUpdated',
@@ -49,30 +33,6 @@ export type SubmittedTx = TxIntent & {
   sentAtTimestamp: number;
 };
 
-export type UnconfirmedProveTile = TxIntent & {
-  methodName: ContractMethodName.PROVE_TILE;
-  tile: Tile;
-};
-
-export type SubmittedProveTile = UnconfirmedProveTile & SubmittedTx;
-
-export function isUnconfirmedProveTile(txIntent: TxIntent): txIntent is UnconfirmedProveTile {
-  return txIntent.methodName === ContractMethodName.PROVE_TILE;
-}
-
-export type UnconfirmedTransitionTile = TxIntent & {
-  tile: Tile;
-  toTileType: TileType;
-};
-
-export type SubmittedTransitionTile = UnconfirmedTransitionTile & SubmittedTx;
-
-export function isUnconfirmedTransitionTile(
-  txIntent: TxIntent
-): txIntent is UnconfirmedTransitionTile {
-  return possibleTransitions.includes(txIntent.methodName);
-}
-
 export type UnconfirmedMovePlayer = TxIntent & {
   methodName: ContractMethodName.MOVE_PLAYER | ContractMethodName.INIT_PLAYER_LOCATION;
   coords: WorldCoords;
@@ -84,4 +44,16 @@ export function isUnconfirmedMovePlayer(txIntent: TxIntent): txIntent is Unconfi
   return [ContractMethodName.MOVE_PLAYER, ContractMethodName.INIT_PLAYER_LOCATION].includes(
     txIntent.methodName
   );
+}
+
+export type UnconfirmedProcessTile = TxIntent & {
+  methodName: ContractMethodName.PROCESS_TILE;
+  coords: WorldCoords;
+  tsbase: number;
+};
+
+export type SubmittedProcessTile = UnconfirmedProcessTile & SubmittedTx;
+
+export function isUnconfirmedProcessTile(txIntent: TxIntent): txIntent is UnconfirmedProcessTile {
+  return txIntent.methodName == ContractMethodName.PROCESS_TILE;
 }

@@ -7,13 +7,7 @@ import { EthConnection } from '@darkforest_eth/network';
 import { getEthConnection } from '../backend/Blockchain';
 import { DEV_TEST_PRIVATE_KEY, Tile, TileType, WorldCoords } from 'common-types';
 import { tileTypeToColor, getTileEmoji } from '../utils';
-import {
-  useBreadScore,
-  useLocation,
-  useTiles,
-  useWheatScore,
-  useWoodScore,
-} from './Utils/AppHooks';
+import { useLocation, useTiles } from './Utils/AppHooks';
 
 const enum LoadingStep {
   NONE,
@@ -30,9 +24,6 @@ export default function LandingPage() {
   const [queryingBlockchain, setQueryingBlockchain] = useState<boolean>(false);
   const [lastQueryResult, setLastQueryResult] = useState<TileType | undefined>();
   const tiles = useTiles(gameManager);
-  const wheatScore = useWheatScore(gameManager);
-  const woodScore = useWoodScore(gameManager);
-  const breadScore = useBreadScore(gameManager);
   const location = useLocation(gameManager);
 
   useEffect(() => {
@@ -51,41 +42,6 @@ export default function LandingPage() {
         setError(e.message);
       });
   }, []);
-
-  const onGridClick = (i: number, j: number) => async () => {
-    if (gameManager && !queryingBlockchain) {
-      const coords = { x: i, y: j };
-      console.log('here');
-      setQueryCoords(coords);
-      setQueryingBlockchain(true);
-      const tileType = await gameManager.getCachedTileType(coords);
-      setLastQueryResult(tileType);
-      console.log('there', tileType);
-      setQueryingBlockchain(false);
-    }
-  };
-
-  const generateAndCheckProof = (i: number, j: number) => async () => {
-    if (gameManager && !queryingBlockchain) {
-      const coords = { x: i, y: j };
-      setQueryingBlockchain(true);
-      const tileType = await gameManager.getCachedTileType(coords);
-      setQueryingBlockchain(false);
-      if (tileType !== 0) {
-        return;
-      }
-      const tile = gameManager.getTile(coords);
-      const check = await gameManager.checkProof(tile);
-      console.log(check);
-    }
-  };
-
-  const proveOrTransition = (tile: Tile) => async () => {
-    if (!gameManager || queryingBlockchain) return;
-    console.log('proveOrTransition');
-    if (!tile.isPrepped) return gameManager.proveTile(tile.coords);
-    return await gameManager.transitionTile(tile);
-  };
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (!gameManager || queryingBlockchain) return;
@@ -132,9 +88,6 @@ export default function LandingPage() {
         {gameManager && (
           <p>{`world seed: ${gameManager.getWorldSeed()}. world width: ${gameManager.getWorldWidth()}`}</p>
         )}
-        {gameManager && (
-          <p>{`wood score: ${woodScore.value}. wheat score: ${wheatScore.value}. bread score: ${breadScore.value}`}</p>
-        )}
         {gameManager && <p>{`location.x: ${location.value.x}, location.y: ${location.value.y}`}</p>}
         <p>{`errors: ${error}`}</p>
         {lastQueryResult !== undefined ? (
@@ -146,12 +99,9 @@ export default function LandingPage() {
               return (
                 <GridRow key={i}>
                   {coordRow.map((tile, j) => {
-                    const content = getTileEmoji(tile, tile.isPrepped, coordRow.length);
-
                     return (
                       <GridSquare
                         key={100 * i + j}
-                        onClick={proveOrTransition(tile)}
                         style={{
                           backgroundColor: tinycolor(tileTypeToColor[tile.currentTileType])
                             .darken(tile.isPrepped ? -10 : 0)
@@ -161,7 +111,6 @@ export default function LandingPage() {
                         {i === location.value.x && j === location.value.y && (
                           <span style={{ fontSize: '15px', zIndex: 10 }}>👨‍🎨</span>
                         )}
-                        <span style={{ fontSize: '20px' }}>{content}</span>
                       </GridSquare>
                     );
                   })}

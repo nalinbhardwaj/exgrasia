@@ -6,24 +6,17 @@ import "./Types.sol";
 contract TinyWorldStorage {
     uint256 public seed;
     uint256 public worldWidth;
-    mapping(uint256 => mapping(uint256 => Tile)) public cachedTiles;
-    mapping(TileType => mapping(TileType => bool)) public transitions; // Stores tree > stump as 1 (valid transition)
-    Coords[] public touchedTiles;
     uint256 public worldScale;
-    mapping(address => uint256) public wheatScore;
-    mapping(address => uint256) public woodScore;
-    mapping(address => uint256) public breadScore;
+    int16[2][16] public vecs;
+    int16 public vecsDenom;
+    uint16 public perlinMax;
 
-    mapping(uint256 => mapping(uint256 => uint256)) public lastHarvested;
+    mapping(uint256 => mapping(uint256 => Tile)) public cachedTiles;
 
     mapping(address => Coords) public playerLocation;
     mapping(address => bool) public playerInited;
 
     function getCachedTile(Coords memory coords) public view returns (Tile memory) {
         return cachedTiles[coords.x][coords.y];
-    }
-
-    function getTouchedTiles() public view returns (Coords[] memory) {
-        return touchedTiles;
     }
 }

@@ -26,12 +26,10 @@ import {
   ContractMethodName,
   ContractsAPIEvent,
   SubmittedMovePlayer,
-  SubmittedProveTile,
-  SubmittedTransitionTile,
+  SubmittedProcessTile,
   SubmittedTx,
   UnconfirmedMovePlayer,
-  UnconfirmedProveTile,
-  UnconfirmedTransitionTile,
+  UnconfirmedProcessTile,
 } from '../_types/ContractAPITypes';
 import { loadCoreContract, loadGettersContract } from './Blockchain';
 
@@ -145,36 +143,6 @@ export class ContractsAPI extends EventEmitter {
     return (await this.makeCall<EthersBN>(this.coreContract.seed)).toNumber();
   }
 
-  public async getWheatScore(): Promise<number> {
-    if (!this.txExecutor) {
-      throw new Error('no signer, cannot execute tx');
-    }
-
-    const addr = this.ethConnection.getAddress();
-
-    return (await this.makeCall<EthersBN>(this.coreContract.wheatScore, [addr])).toNumber();
-  }
-
-  public async getWoodScore(): Promise<number> {
-    if (!this.txExecutor) {
-      throw new Error('no signer, cannot execute tx');
-    }
-
-    const addr = this.ethConnection.getAddress();
-
-    return (await this.makeCall<EthersBN>(this.coreContract.woodScore, [addr])).toNumber();
-  }
-
-  public async getBreadScore(): Promise<number> {
-    if (!this.txExecutor) {
-      throw new Error('no signer, cannot execute tx');
-    }
-
-    const addr = this.ethConnection.getAddress();
-
-    return (await this.makeCall<EthersBN>(this.coreContract.breadScore, [addr])).toNumber();
-  }
-
   public async getLocation(): Promise<WorldCoords> {
     if (!this.txExecutor) {
       throw new Error('no signer, cannot execute tx');
@@ -229,14 +197,7 @@ export class ContractsAPI extends EventEmitter {
     return this.waitFor(unminedMovePlayerTx, tx.confirmed);
   }
 
-  // public async doRandomTileUpdate(coords: WorldCoords, tileType: TileType) {
-  //   await this.makeCall(this.coreContract.randomTileUpdate, [coords.x, coords.y, tileType]);
-  // }
-
-  public async transitionTile(
-    args: TransitionTileContractCallArgs,
-    action: UnconfirmedTransitionTile
-  ): Promise<providers.TransactionReceipt> {
+  public async processTile(action: UnconfirmedProcessTile) {
     if (!this.txExecutor) {
       throw new Error('no signer, cannot execute tx');
     }
@@ -245,15 +206,15 @@ export class ContractsAPI extends EventEmitter {
       action.actionId,
       this.coreContract,
       action.methodName,
-      args
+      [action.coords, action.tsbase]
     );
-    const unminedTransitionTileTx: SubmittedTransitionTile = {
+    const unminedProcessTileTx: SubmittedProcessTile = {
       ...action,
       txHash: (await tx.submitted).hash,
       sentAtTimestamp: Math.floor(Date.now() / 1000),
     };
 
-    return this.waitFor(unminedTransitionTileTx, tx.confirmed);
+    return this.waitFor(unminedProcessTileTx, tx.confirmed);
   }
 
   public async getWorldScale(): Promise<number> {
@@ -262,11 +223,6 @@ export class ContractsAPI extends EventEmitter {
 
   public async getWorldWidth(): Promise<number> {
     return (await this.makeCall<EthersBN>(this.coreContract.worldWidth)).toNumber();
-  }
-
-  public async getCachedTile(coords: WorldCoords): Promise<Tile> {
-    const rawTile = await this.makeCall<RawTile>(this.coreContract.getCachedTile, [coords]);
-    return decodeTile(rawTile);
   }
 
   public async getTouchedCoords(): Promise<WorldCoords[]> {
@@ -296,29 +252,6 @@ export class ContractsAPI extends EventEmitter {
         this.emit(ContractsAPIEvent.TxReverted, submitted);
         throw e;
       });
-  }
-
-  async proveTile(
-    args: ProveTileContractCallArgs,
-    action: UnconfirmedProveTile
-  ): Promise<providers.TransactionReceipt> {
-    if (!this.txExecutor) {
-      throw new Error('no signer, cannot execute tx');
-    }
-
-    const tx = this.txExecutor.queueTransaction(
-      action.actionId,
-      this.coreContract,
-      ContractMethodName.PROVE_TILE,
-      args
-    );
-    const unminedProveTileTx: SubmittedProveTile = {
-      ...action,
-      txHash: (await tx.submitted).hash,
-      sentAtTimestamp: Math.floor(Date.now() / 1000),
-    };
-
-    return this.waitFor(unminedProveTileTx, tx.confirmed);
   }
 }
 

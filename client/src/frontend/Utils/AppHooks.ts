@@ -26,45 +26,6 @@ export function useTiles(gameManager: GameManager | undefined): Wrapper<Tile[][]
   return tiles;
 }
 
-export function useWoodScore(gameManager: GameManager | undefined): Wrapper<number> {
-  const [woodScore, setWoodScore] = useState<Wrapper<number>>(() => new Wrapper(0));
-
-  const onUpdate = useCallback(async () => {
-    console.log('onUpdate');
-    setWoodScore(new Wrapper(gameManager ? await gameManager.getWoodScore() : 0));
-  }, [gameManager]);
-
-  useEmitterSubscribe(gameManager?.tileUpdated$, onUpdate);
-
-  return woodScore;
-}
-
-export function useWheatScore(gameManager: GameManager | undefined): Wrapper<number> {
-  const [wheatScore, setWheatScore] = useState<Wrapper<number>>(() => new Wrapper(0));
-
-  const onUpdate = useCallback(async () => {
-    console.log('onUpdate');
-    setWheatScore(new Wrapper(gameManager ? await gameManager.getWheatScore() : 0));
-  }, [gameManager]);
-
-  useEmitterSubscribe(gameManager?.tileUpdated$, onUpdate);
-
-  return wheatScore;
-}
-
-export function useBreadScore(gameManager: GameManager | undefined): Wrapper<number> {
-  const [breadScore, setBreadScore] = useState<Wrapper<number>>(() => new Wrapper(0));
-
-  const onUpdate = useCallback(async () => {
-    console.log('onUpdate');
-    setBreadScore(new Wrapper(gameManager ? await gameManager.getBreadScore() : 0));
-  }, [gameManager]);
-
-  useEmitterSubscribe(gameManager?.tileUpdated$, onUpdate);
-
-  return breadScore;
-}
-
 export function useLocation(gameManager: GameManager | undefined): Wrapper<WorldCoords> {
   const [coords, setCoords] = useState<Wrapper<WorldCoords>>(() => new Wrapper({ x: -1, y: -1 }));
 

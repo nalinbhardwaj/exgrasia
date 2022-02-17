@@ -1,28 +1,18 @@
 import { EthConnection } from '@darkforest_eth/network';
 import { monomitter, Monomitter, Subscription } from '@darkforest_eth/events';
 import { perlin, PerlinConfig } from 'common-procgen-utils';
-import {
-  EthAddress,
-  Tile,
-  TileType,
-  TransitionTileContractCallArgs,
-  WorldCoords,
-} from 'common-types';
+import { EthAddress, Tile, WorldCoords } from 'common-types';
 import { EventEmitter } from 'events';
 import { ContractsAPI, makeContractsAPI, RawTile, decodeTile } from './ContractsAPI';
-import SnarkHelper from './SnarkHelper';
 import { getRandomActionId, getRandomTree, getRaritySeed, seedToTileType } from '../utils';
 import {
   ContractMethodName,
   ContractsAPIEvent,
   isUnconfirmedMovePlayer,
-  isUnconfirmedProveTile,
-  isUnconfirmedTransitionTile,
   SubmittedTx,
   TxIntent,
   UnconfirmedMovePlayer,
-  UnconfirmedProveTile,
-  UnconfirmedTransitionTile,
+  UnconfirmedProcessTile,
 } from '../_types/ContractAPITypes';
 
 class GameManager extends EventEmitter {
@@ -50,11 +40,6 @@ class GameManager extends EventEmitter {
   private readonly contractsAPI: ContractsAPI;
 
   /**
-   * Responsible for generating snark proofs.
-   */
-  private readonly snarkHelper: SnarkHelper;
-
-  /**
    * An interface to the blockchain that is a little bit lower-level than {@link ContractsAPI}. It
    * allows us to do basic operations such as wait for a transaction to complete, check the player's
    * address and balance, etc.
@@ -80,9 +65,7 @@ class GameManager extends EventEmitter {
     contractsAPI: ContractsAPI,
     worldSeed: number,
     worldWidth: number,
-    touchedTiles: Tile[],
-    worldScale: number,
-    snarkHelper: SnarkHelper
+    worldScale: number
   ) {
     super();
 
@@ -92,18 +75,17 @@ class GameManager extends EventEmitter {
     this.worldSeed = worldSeed;
     this.worldWidth = worldWidth;
     this.worldScale = worldScale;
-    this.snarkHelper = snarkHelper;
     this.tiles = [];
     this.playerCoords = { x: -1, y: -1 };
     this.perlinConfig1 = {
-      key: worldSeed,
+      seed: worldSeed,
       scale: worldScale,
       mirrorX: false,
       mirrorY: false,
       floor: true,
     };
     this.perlinConfig2 = {
-      key: worldSeed + 1,
+      seed: worldSeed + 1,
       scale: worldScale,
       mirrorX: false,
       mirrorY: false,
@@ -119,6 +101,7 @@ class GameManager extends EventEmitter {
         const coords = { x: i, y: j };
         const perl1 = perlin(coords, this.perlinConfig1);
         const perl2 = perlin(coords, this.perlinConfig2);
+        console.log('v', { coords, perl1, perl2 });
         const raritySeed = getRaritySeed(coords, this.worldSeed, this.worldScale);
         const originalTileType = seedToTileType(coords, perl1, perl2, raritySeed);
         this.tiles[i].push({
@@ -129,12 +112,6 @@ class GameManager extends EventEmitter {
           isPrepped: false,
         });
       }
-    }
-
-    for (const touchedTile of touchedTiles) {
-      this.tiles[touchedTile.coords.x][touchedTile.coords.y] = touchedTile;
-      console.log('loaded touched tile from contract:');
-      console.log(touchedTile);
     }
   }
 
@@ -148,14 +125,7 @@ class GameManager extends EventEmitter {
     const contractsAPI = await makeContractsAPI(ethConnection);
     const worldSeed = await contractsAPI.getSeed();
     const worldWidth = await contractsAPI.getWorldWidth();
-    const touchedCoords = await contractsAPI.getTouchedCoords();
-    const touchedTiles: Tile[] = [];
-    for (const touchedCoord of touchedCoords) {
-      touchedTiles.push(await contractsAPI.getCachedTile(touchedCoord));
-    }
     const worldScale = await contractsAPI.getWorldScale();
-
-    const snarkHelper = new SnarkHelper(worldSeed, worldWidth, worldScale);
 
     const gameManager = new GameManager(
       account,
@@ -163,9 +133,7 @@ class GameManager extends EventEmitter {
       contractsAPI,
       worldSeed,
       worldWidth,
-      touchedTiles,
-      worldScale,
-      snarkHelper
+      worldScale
     );
 
     // important that this happens AFTER we load the game state from the blockchain. Otherwise our
@@ -200,19 +168,6 @@ class GameManager extends EventEmitter {
       })
       .on(ContractsAPIEvent.TxConfirmed, async (unconfirmedTx: SubmittedTx) => {
         // todo: remove the tx from localstorage
-        if (isUnconfirmedProveTile(unconfirmedTx)) {
-          const tile = unconfirmedTx.tile;
-          tile.isPrepped = true;
-
-          gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
-          gameManager.tileUpdated$.publish();
-        }
-        if (isUnconfirmedTransitionTile(unconfirmedTx)) {
-          const tile = unconfirmedTx.tile;
-          tile.currentTileType = unconfirmedTx.toTileType;
-          gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
-          gameManager.tileUpdated$.publish();
-        }
         if (isUnconfirmedMovePlayer(unconfirmedTx)) {
           gameManager.playerCoords = unconfirmedTx.coords;
           gameManager.playerUpdated$.publish();
@@ -275,142 +230,6 @@ class GameManager extends EventEmitter {
     return this.worldWidth;
   }
 
-  getTiles(): Tile[][] {
-    return this.tiles;
-  }
-
-  getTile(coords: WorldCoords): Tile {
-    return this.tiles[coords.x][coords.y];
-  }
-
-  async getCachedTileType(coords: WorldCoords): Promise<TileType> {
-    return (await this.contractsAPI.getCachedTile(coords)).currentTileType;
-  }
-
-  // async doRandomTileUpdate(coords: WorldCoords, tileType: TileType) {
-  //   await this.contractsAPI.doRandomTileUpdate(coords, tileType);
-  // }
-
-  async checkProof(tile: Tile): Promise<boolean> {
-    return this.snarkHelper
-      .getBasicProof(tile)
-      .then((snarkArgs) => {
-        console.log('got snark args: ', JSON.stringify(snarkArgs));
-        return true;
-      })
-      .catch((err) => {
-        console.error(err);
-        return false;
-      });
-  }
-
-  public proveTile(coords: WorldCoords): GameManager {
-    if (!this.account) {
-      throw new Error('no account set');
-    }
-
-    const tile = this.tiles[coords.x][coords.y];
-
-    const actionId = getRandomActionId();
-    const txIntent: UnconfirmedProveTile = {
-      actionId,
-      methodName: ContractMethodName.PROVE_TILE,
-      tile,
-    };
-    this.onTxIntent(txIntent);
-
-    this.snarkHelper
-      .getBasicProof(tile)
-      .then((callArgs) => {
-        return this.contractsAPI.proveTile(callArgs, txIntent);
-      })
-      .catch((err) => {
-        this.onTxIntentFail(txIntent, err);
-      });
-
-    return this;
-  }
-
-  tileTypeToSimpleTransition = {
-    [TileType.UNKNOWN]: {
-      methodName: ContractMethodName.TRANSITION_TILE,
-      toTileType: TileType.UNKNOWN,
-    },
-    [TileType.WATER]: {
-      methodName: ContractMethodName.TRANSITION_TILE,
-      toTileType: TileType.UNKNOWN,
-    },
-    [TileType.SAND]: {
-      methodName: ContractMethodName.TRANSITION_TILE,
-      toTileType: TileType.UNKNOWN,
-    },
-    [TileType.TREE]: { methodName: ContractMethodName.COLLECT_WOOD, toTileType: TileType.STUMP },
-    [TileType.STUMP]: {
-      methodName: ContractMethodName.TRANSITION_TILE,
-      toTileType: TileType.UNKNOWN,
-    },
-    [TileType.CHEST]: {
-      methodName: ContractMethodName.TRANSITION_TILE,
-      toTileType: TileType.UNKNOWN,
-    },
-    [TileType.FARM]: { methodName: ContractMethodName.HARVEST_WHEAT, toTileType: TileType.GRASS },
-    [TileType.WINDMILL]: {
-      methodName: ContractMethodName.MAKE_BREAD,
-      toTileType: TileType.WINDMILL,
-    },
-    [TileType.GRASS]: {
-      methodName: ContractMethodName.TRANSITION_TILE,
-      toTileType: TileType.UNKNOWN,
-    }, // lives in decideTransitionMethod
-    [TileType.SNOW]: {
-      methodName: ContractMethodName.TRANSITION_TILE,
-      toTileType: TileType.UNKNOWN,
-    },
-    [TileType.STONE]: {
-      methodName: ContractMethodName.TRANSITION_TILE,
-      toTileType: TileType.UNKNOWN,
-    },
-    [TileType.ICE]: {
-      methodName: ContractMethodName.TRANSITION_TILE,
-      toTileType: TileType.UNKNOWN,
-    },
-  };
-
-  public async decideTransitionMethod(tileType: TileType) {
-    if (tileType === TileType.GRASS) {
-      if ((await this.getWoodScore()) >= 10)
-        return { methodName: ContractMethodName.MAKE_WINDMILL, toTileType: TileType.WINDMILL };
-      return { methodName: ContractMethodName.BUILD_FARM, toTileType: TileType.FARM };
-    }
-    return this.tileTypeToSimpleTransition[tileType];
-  }
-
-  public async transitionTile(tile: Tile) {
-    if (!this.account) {
-      throw new Error('no account set');
-    }
-
-    if (!tile.isPrepped) {
-      throw new Error('tile not prepped');
-    }
-
-    const actionId = getRandomActionId();
-    const transition = await this.decideTransitionMethod(tile.currentTileType);
-    const txIntent: UnconfirmedTransitionTile = {
-      actionId,
-      methodName: transition.methodName,
-      tile,
-      toTileType: transition.toTileType,
-    };
-    this.onTxIntent(txIntent);
-    const callArgs: TransitionTileContractCallArgs = [tile.coords];
-    this.contractsAPI.transitionTile(callArgs, txIntent).catch((err) => {
-      this.onTxIntentFail(txIntent, err);
-    });
-
-    return this;
-  }
-
   public async movePlayer(coords: WorldCoords) {
     if (!this.account) {
       throw new Error('no account set');
@@ -430,16 +249,24 @@ class GameManager extends EventEmitter {
     return this;
   }
 
-  public async getWoodScore() {
-    return this.contractsAPI.getWoodScore();
-  }
+  public async processTile(coords: WorldCoords) {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
 
-  public async getWheatScore() {
-    return this.contractsAPI.getWheatScore();
-  }
+    const actionId = getRandomActionId();
+    const txIntent: UnconfirmedProcessTile = {
+      actionId,
+      methodName: ContractMethodName.PROCESS_TILE,
+      coords,
+      tsbase: this.tiles[coords.x][coords.y].perl[1],
+    };
+    this.onTxIntent(txIntent);
+    this.contractsAPI.processTile(txIntent).catch((err) => {
+      this.onTxIntentFail(txIntent, err);
+    });
 
-  public async getBreadScore() {
-    return this.contractsAPI.getBreadScore();
+    return this;
   }
 
   public async getLocation() {
@@ -463,6 +290,10 @@ class GameManager extends EventEmitter {
     });
 
     return this;
+  }
+
+  getTiles(): Tile[][] {
+    return this.tiles;
   }
 }
 

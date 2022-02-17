@@ -22,64 +22,64 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface TinyWorldInterface extends ethers.utils.Interface {
   functions: {
-    "breadScore(address)": FunctionFragment;
-    "buildFarm(tuple)": FunctionFragment;
     "cachedTiles(uint256,uint256)": FunctionFragment;
-    "collectWood(tuple)": FunctionFragment;
-    "editTransition(uint8,uint8,bool)": FunctionFragment;
+    "computePerlin(uint32,uint32,uint32,uint32)": FunctionFragment;
     "getCachedTile(tuple)": FunctionFragment;
-    "getTouchedTiles()": FunctionFragment;
-    "harvestWheat(tuple)": FunctionFragment;
+    "getCorners(uint32,uint32,uint32)": FunctionFragment;
+    "getGradientAt(uint32,uint32,uint32,uint32)": FunctionFragment;
+    "getSingleScalePerlin(uint32,uint32,uint32,uint32)": FunctionFragment;
+    "getWeight(uint32,uint32,uint32,uint32,uint32)": FunctionFragment;
     "initPlayerLocation(tuple)": FunctionFragment;
     "initialize(uint256,uint256,uint256)": FunctionFragment;
-    "lastHarvested(uint256,uint256)": FunctionFragment;
-    "makeBread(tuple)": FunctionFragment;
-    "makeWindmill(tuple)": FunctionFragment;
     "movePlayer(tuple)": FunctionFragment;
     "owner()": FunctionFragment;
+    "perlinMax()": FunctionFragment;
     "playerInited(address)": FunctionFragment;
     "playerLocation(address)": FunctionFragment;
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])": FunctionFragment;
+    "processTile(tuple,uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "seed()": FunctionFragment;
-    "touchedTiles(uint256)": FunctionFragment;
+    "smoothStep(int128)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "transitionTile(tuple,uint8)": FunctionFragment;
-    "transitions(uint8,uint8)": FunctionFragment;
-    "wheatScore(address)": FunctionFragment;
-    "woodScore(address)": FunctionFragment;
+    "vecs(uint256,uint256)": FunctionFragment;
+    "vecsDenom()": FunctionFragment;
     "worldScale()": FunctionFragment;
     "worldWidth()": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "breadScore", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "buildFarm",
-    values: [{ x: BigNumberish; y: BigNumberish }]
-  ): string;
   encodeFunctionData(
     functionFragment: "cachedTiles",
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "collectWood",
-    values: [{ x: BigNumberish; y: BigNumberish }]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "editTransition",
-    values: [BigNumberish, BigNumberish, boolean]
+    functionFragment: "computePerlin",
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getCachedTile",
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(
-    functionFragment: "getTouchedTiles",
-    values?: undefined
+    functionFragment: "getCorners",
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "harvestWheat",
-    values: [{ x: BigNumberish; y: BigNumberish }]
+    functionFragment: "getGradientAt",
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSingleScalePerlin",
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getWeight",
+    values: [
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "initPlayerLocation",
@@ -90,22 +90,11 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "lastHarvested",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "makeBread",
-    values: [{ x: BigNumberish; y: BigNumberish }]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "makeWindmill",
-    values: [{ x: BigNumberish; y: BigNumberish }]
-  ): string;
-  encodeFunctionData(
     functionFragment: "movePlayer",
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "perlinMax", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "playerInited",
     values: [string]
@@ -115,21 +104,8 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "proveTile",
-    values: [
-      [BigNumberish, BigNumberish],
-      [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-      [BigNumberish, BigNumberish],
-      [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ]
-    ]
+    functionFragment: "processTile",
+    values: [{ x: BigNumberish; y: BigNumberish }, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -137,7 +113,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "seed", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "touchedTiles",
+    functionFragment: "smoothStep",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -145,15 +121,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "transitionTile",
-    values: [{ x: BigNumberish; y: BigNumberish }, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transitions",
+    functionFragment: "vecs",
     values: [BigNumberish, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "wheatScore", values: [string]): string;
-  encodeFunctionData(functionFragment: "woodScore", values: [string]): string;
+  encodeFunctionData(functionFragment: "vecsDenom", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "worldScale",
     values?: undefined
@@ -163,48 +134,36 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
 
-  decodeFunctionResult(functionFragment: "breadScore", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "buildFarm", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "cachedTiles",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "collectWood",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "editTransition",
+    functionFragment: "computePerlin",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "getCachedTile",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getCorners", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getTouchedTiles",
+    functionFragment: "getGradientAt",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "harvestWheat",
+    functionFragment: "getSingleScalePerlin",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getWeight", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "initPlayerLocation",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "lastHarvested",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "makeBread", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "makeWindmill",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "movePlayer", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "perlinMax", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "playerInited",
     data: BytesLike
@@ -213,30 +172,22 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     functionFragment: "playerLocation",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "proveTile", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "processTile",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "seed", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "touchedTiles",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "smoothStep", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "transitionTile",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transitions",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "wheatScore", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "woodScore", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "vecs", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "vecsDenom", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "worldScale", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "worldWidth", data: BytesLike): Result;
 
@@ -265,30 +216,6 @@ export class TinyWorld extends Contract {
   interface: TinyWorldInterface;
 
   functions: {
-    breadScore(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "breadScore(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    buildFarm(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "buildFarm(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     cachedTiles(
       arg0: BigNumberish,
       arg1: BigNumberish,
@@ -315,29 +242,25 @@ export class TinyWorld extends Contract {
       2: number;
     }>;
 
-    collectWood(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    computePerlin(
+      x: BigNumberish,
+      y: BigNumberish,
+      seed: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
-    "collectWood(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    editTransition(
-      from: BigNumberish,
-      to: BigNumberish,
-      isValid: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "editTransition(uint8,uint8,bool)"(
-      from: BigNumberish,
-      to: BigNumberish,
-      isValid: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    "computePerlin(uint32,uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      seed: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
@@ -371,23 +294,95 @@ export class TinyWorld extends Contract {
       };
     }>;
 
-    getTouchedTiles(overrides?: CallOverrides): Promise<{
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
+    getCorners(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: [
+        [number, number],
+        [number, number],
+        [number, number],
+        [number, number]
+      ];
     }>;
 
-    "getTouchedTiles()"(overrides?: CallOverrides): Promise<{
-      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
+    "getCorners(uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: [
+        [number, number],
+        [number, number],
+        [number, number],
+        [number, number]
+      ];
     }>;
 
-    harvestWheat(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    getGradientAt(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: [number, number];
+    }>;
 
-    "harvestWheat(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    "getGradientAt(uint32,uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: [number, number];
+    }>;
+
+    getSingleScalePerlin(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getSingleScalePerlin(uint32,uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    getWeight(
+      cornerX: BigNumberish,
+      cornerY: BigNumberish,
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getWeight(uint32,uint32,uint32,uint32,uint32)"(
+      cornerX: BigNumberish,
+      cornerY: BigNumberish,
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
     initPlayerLocation(
       coords: { x: BigNumberish; y: BigNumberish },
@@ -413,42 +408,6 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    lastHarvested(
-      arg0: BigNumberish,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "lastHarvested(uint256,uint256)"(
-      arg0: BigNumberish,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    makeBread(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "makeBread(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    makeWindmill(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "makeWindmill(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     movePlayer(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
@@ -465,6 +424,14 @@ export class TinyWorld extends Contract {
 
     "owner()"(overrides?: CallOverrides): Promise<{
       0: string;
+    }>;
+
+    perlinMax(overrides?: CallOverrides): Promise<{
+      0: number;
+    }>;
+
+    "perlinMax()"(overrides?: CallOverrides): Promise<{
+      0: number;
     }>;
 
     playerInited(
@@ -501,35 +468,15 @@ export class TinyWorld extends Contract {
       1: BigNumber;
     }>;
 
-    proveTile(
-      a: [BigNumberish, BigNumberish],
-      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-      c: [BigNumberish, BigNumberish],
-      publicSignals: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    processTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      tsbase: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
-      a: [BigNumberish, BigNumberish],
-      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-      c: [BigNumberish, BigNumberish],
-      publicSignals: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    "processTile(tuple,uint256)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      tsbase: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -545,24 +492,18 @@ export class TinyWorld extends Contract {
       0: BigNumber;
     }>;
 
-    touchedTiles(
-      arg0: BigNumberish,
+    smoothStep(
+      x: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      x: BigNumber;
-      y: BigNumber;
       0: BigNumber;
-      1: BigNumber;
     }>;
 
-    "touchedTiles(uint256)"(
-      arg0: BigNumberish,
+    "smoothStep(int128)"(
+      x: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      x: BigNumber;
-      y: BigNumber;
       0: BigNumber;
-      1: BigNumber;
     }>;
 
     transferOwnership(
@@ -575,60 +516,28 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    transitionTile(
-      coords: { x: BigNumberish; y: BigNumberish },
-      toTileType: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "transitionTile(tuple,uint8)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      toTileType: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    transitions(
+    vecs(
       arg0: BigNumberish,
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      0: boolean;
+      0: number;
     }>;
 
-    "transitions(uint8,uint8)"(
+    "vecs(uint256,uint256)"(
       arg0: BigNumberish,
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      0: boolean;
+      0: number;
     }>;
 
-    wheatScore(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
+    vecsDenom(overrides?: CallOverrides): Promise<{
+      0: number;
     }>;
 
-    "wheatScore(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    woodScore(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "woodScore(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
+    "vecsDenom()"(overrides?: CallOverrides): Promise<{
+      0: number;
     }>;
 
     worldScale(overrides?: CallOverrides): Promise<{
@@ -647,23 +556,6 @@ export class TinyWorld extends Contract {
       0: BigNumber;
     }>;
   };
-
-  breadScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  "breadScore(address)"(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  buildFarm(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "buildFarm(tuple)"(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
 
   cachedTiles(
     arg0: BigNumberish,
@@ -691,29 +583,21 @@ export class TinyWorld extends Contract {
     2: number;
   }>;
 
-  collectWood(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  computePerlin(
+    x: BigNumberish,
+    y: BigNumberish,
+    seed: BigNumberish,
+    scale: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
-  "collectWood(tuple)"(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  editTransition(
-    from: BigNumberish,
-    to: BigNumberish,
-    isValid: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "editTransition(uint8,uint8,bool)"(
-    from: BigNumberish,
-    to: BigNumberish,
-    isValid: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  "computePerlin(uint32,uint32,uint32,uint32)"(
+    x: BigNumberish,
+    y: BigNumberish,
+    seed: BigNumberish,
+    scale: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getCachedTile(
     coords: { x: BigNumberish; y: BigNumberish },
@@ -743,23 +627,73 @@ export class TinyWorld extends Contract {
     3: number;
   }>;
 
-  getTouchedTiles(
+  getCorners(
+    x: BigNumberish,
+    y: BigNumberish,
+    scale: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
+  ): Promise<
+    [[number, number], [number, number], [number, number], [number, number]]
+  >;
 
-  "getTouchedTiles()"(
+  "getCorners(uint32,uint32,uint32)"(
+    x: BigNumberish,
+    y: BigNumberish,
+    scale: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
+  ): Promise<
+    [[number, number], [number, number], [number, number], [number, number]]
+  >;
 
-  harvestWheat(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  getGradientAt(
+    x: BigNumberish,
+    y: BigNumberish,
+    scale: BigNumberish,
+    seed: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<[number, number]>;
 
-  "harvestWheat(tuple)"(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  "getGradientAt(uint32,uint32,uint32,uint32)"(
+    x: BigNumberish,
+    y: BigNumberish,
+    scale: BigNumberish,
+    seed: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<[number, number]>;
+
+  getSingleScalePerlin(
+    x: BigNumberish,
+    y: BigNumberish,
+    scale: BigNumberish,
+    seed: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getSingleScalePerlin(uint32,uint32,uint32,uint32)"(
+    x: BigNumberish,
+    y: BigNumberish,
+    scale: BigNumberish,
+    seed: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getWeight(
+    cornerX: BigNumberish,
+    cornerY: BigNumberish,
+    x: BigNumberish,
+    y: BigNumberish,
+    scale: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getWeight(uint32,uint32,uint32,uint32,uint32)"(
+    cornerX: BigNumberish,
+    cornerY: BigNumberish,
+    x: BigNumberish,
+    y: BigNumberish,
+    scale: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   initPlayerLocation(
     coords: { x: BigNumberish; y: BigNumberish },
@@ -785,38 +719,6 @@ export class TinyWorld extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  lastHarvested(
-    arg0: BigNumberish,
-    arg1: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "lastHarvested(uint256,uint256)"(
-    arg0: BigNumberish,
-    arg1: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  makeBread(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "makeBread(tuple)"(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  makeWindmill(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "makeWindmill(tuple)"(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   movePlayer(
     coords: { x: BigNumberish; y: BigNumberish },
     overrides?: Overrides
@@ -830,6 +732,10 @@ export class TinyWorld extends Contract {
   owner(overrides?: CallOverrides): Promise<string>;
 
   "owner()"(overrides?: CallOverrides): Promise<string>;
+
+  perlinMax(overrides?: CallOverrides): Promise<number>;
+
+  "perlinMax()"(overrides?: CallOverrides): Promise<number>;
 
   playerInited(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
@@ -858,35 +764,15 @@ export class TinyWorld extends Contract {
     1: BigNumber;
   }>;
 
-  proveTile(
-    a: [BigNumberish, BigNumberish],
-    b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-    c: [BigNumberish, BigNumberish],
-    publicSignals: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
+  processTile(
+    coords: { x: BigNumberish; y: BigNumberish },
+    tsbase: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
-    a: [BigNumberish, BigNumberish],
-    b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-    c: [BigNumberish, BigNumberish],
-    publicSignals: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
+  "processTile(tuple,uint256)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    tsbase: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -898,25 +784,12 @@ export class TinyWorld extends Contract {
 
   "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  touchedTiles(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{
-    x: BigNumber;
-    y: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-  }>;
+  smoothStep(x: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-  "touchedTiles(uint256)"(
-    arg0: BigNumberish,
+  "smoothStep(int128)"(
+    x: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<{
-    x: BigNumber;
-    y: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-  }>;
+  ): Promise<BigNumber>;
 
   transferOwnership(
     newOwner: string,
@@ -928,43 +801,21 @@ export class TinyWorld extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  transitionTile(
-    coords: { x: BigNumberish; y: BigNumberish },
-    toTileType: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "transitionTile(tuple,uint8)"(
-    coords: { x: BigNumberish; y: BigNumberish },
-    toTileType: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  transitions(
+  vecs(
     arg0: BigNumberish,
     arg1: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<boolean>;
+  ): Promise<number>;
 
-  "transitions(uint8,uint8)"(
+  "vecs(uint256,uint256)"(
     arg0: BigNumberish,
     arg1: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<boolean>;
+  ): Promise<number>;
 
-  wheatScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+  vecsDenom(overrides?: CallOverrides): Promise<number>;
 
-  "wheatScore(address)"(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  woodScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  "woodScore(address)"(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  "vecsDenom()"(overrides?: CallOverrides): Promise<number>;
 
   worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -975,23 +826,6 @@ export class TinyWorld extends Contract {
   "worldWidth()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
-    breadScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "breadScore(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    buildFarm(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "buildFarm(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     cachedTiles(
       arg0: BigNumberish,
       arg1: BigNumberish,
@@ -1018,29 +852,21 @@ export class TinyWorld extends Contract {
       2: number;
     }>;
 
-    collectWood(
-      coords: { x: BigNumberish; y: BigNumberish },
+    computePerlin(
+      x: BigNumberish,
+      y: BigNumberish,
+      seed: BigNumberish,
+      scale: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
-    "collectWood(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
+    "computePerlin(uint32,uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      seed: BigNumberish,
+      scale: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
-
-    editTransition(
-      from: BigNumberish,
-      to: BigNumberish,
-      isValid: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "editTransition(uint8,uint8,bool)"(
-      from: BigNumberish,
-      to: BigNumberish,
-      isValid: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
@@ -1070,23 +896,73 @@ export class TinyWorld extends Contract {
       3: number;
     }>;
 
-    getTouchedTiles(
+    getCorners(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
+    ): Promise<
+      [[number, number], [number, number], [number, number], [number, number]]
+    >;
 
-    "getTouchedTiles()"(
+    "getCorners(uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
+    ): Promise<
+      [[number, number], [number, number], [number, number], [number, number]]
+    >;
 
-    harvestWheat(
-      coords: { x: BigNumberish; y: BigNumberish },
+    getGradientAt(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<[number, number]>;
 
-    "harvestWheat(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
+    "getGradientAt(uint32,uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<[number, number]>;
+
+    getSingleScalePerlin(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getSingleScalePerlin(uint32,uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getWeight(
+      cornerX: BigNumberish,
+      cornerY: BigNumberish,
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getWeight(uint32,uint32,uint32,uint32,uint32)"(
+      cornerX: BigNumberish,
+      cornerY: BigNumberish,
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     initPlayerLocation(
       coords: { x: BigNumberish; y: BigNumberish },
@@ -1112,38 +988,6 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    lastHarvested(
-      arg0: BigNumberish,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "lastHarvested(uint256,uint256)"(
-      arg0: BigNumberish,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    makeBread(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "makeBread(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    makeWindmill(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "makeWindmill(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     movePlayer(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -1157,6 +1001,10 @@ export class TinyWorld extends Contract {
     owner(overrides?: CallOverrides): Promise<string>;
 
     "owner()"(overrides?: CallOverrides): Promise<string>;
+
+    perlinMax(overrides?: CallOverrides): Promise<number>;
+
+    "perlinMax()"(overrides?: CallOverrides): Promise<number>;
 
     playerInited(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
@@ -1185,35 +1033,15 @@ export class TinyWorld extends Contract {
       1: BigNumber;
     }>;
 
-    proveTile(
-      a: [BigNumberish, BigNumberish],
-      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-      c: [BigNumberish, BigNumberish],
-      publicSignals: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    processTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      tsbase: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
-      a: [BigNumberish, BigNumberish],
-      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-      c: [BigNumberish, BigNumberish],
-      publicSignals: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    "processTile(tuple,uint256)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      tsbase: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1225,25 +1053,12 @@ export class TinyWorld extends Contract {
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    touchedTiles(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      x: BigNumber;
-      y: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-    }>;
+    smoothStep(x: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "touchedTiles(uint256)"(
-      arg0: BigNumberish,
+    "smoothStep(int128)"(
+      x: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<{
-      x: BigNumber;
-      y: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-    }>;
+    ): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: string,
@@ -1255,43 +1070,21 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    transitionTile(
-      coords: { x: BigNumberish; y: BigNumberish },
-      toTileType: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "transitionTile(tuple,uint8)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      toTileType: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    transitions(
+    vecs(
       arg0: BigNumberish,
       arg1: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<number>;
 
-    "transitions(uint8,uint8)"(
+    "vecs(uint256,uint256)"(
       arg0: BigNumberish,
       arg1: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<number>;
 
-    wheatScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    vecsDenom(overrides?: CallOverrides): Promise<number>;
 
-    "wheatScore(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    woodScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "woodScore(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    "vecsDenom()"(overrides?: CallOverrides): Promise<number>;
 
     worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1314,23 +1107,6 @@ export class TinyWorld extends Contract {
   };
 
   estimateGas: {
-    breadScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "breadScore(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    buildFarm(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "buildFarm(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     cachedTiles(
       arg0: BigNumberish,
       arg1: BigNumberish,
@@ -1343,28 +1119,20 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    collectWood(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
+    computePerlin(
+      x: BigNumberish,
+      y: BigNumberish,
+      seed: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "collectWood(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    editTransition(
-      from: BigNumberish,
-      to: BigNumberish,
-      isValid: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "editTransition(uint8,uint8,bool)"(
-      from: BigNumberish,
-      to: BigNumberish,
-      isValid: boolean,
-      overrides?: Overrides
+    "computePerlin(uint32,uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      seed: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getCachedTile(
@@ -1377,18 +1145,68 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getTouchedTiles(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getTouchedTiles()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    harvestWheat(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
+    getCorners(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "harvestWheat(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
+    "getCorners(uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getGradientAt(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getGradientAt(uint32,uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getSingleScalePerlin(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getSingleScalePerlin(uint32,uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getWeight(
+      cornerX: BigNumberish,
+      cornerY: BigNumberish,
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getWeight(uint32,uint32,uint32,uint32,uint32)"(
+      cornerX: BigNumberish,
+      cornerY: BigNumberish,
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     initPlayerLocation(
@@ -1412,38 +1230,6 @@ export class TinyWorld extends Contract {
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    lastHarvested(
-      arg0: BigNumberish,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "lastHarvested(uint256,uint256)"(
-      arg0: BigNumberish,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    makeBread(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "makeBread(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    makeWindmill(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "makeWindmill(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1461,6 +1247,10 @@ export class TinyWorld extends Contract {
 
     "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    perlinMax(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "perlinMax()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     playerInited(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "playerInited(address)"(
@@ -1475,35 +1265,15 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    proveTile(
-      a: [BigNumberish, BigNumberish],
-      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-      c: [BigNumberish, BigNumberish],
-      publicSignals: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    processTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      tsbase: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
-      a: [BigNumberish, BigNumberish],
-      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-      c: [BigNumberish, BigNumberish],
-      publicSignals: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    "processTile(tuple,uint256)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      tsbase: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1515,13 +1285,10 @@ export class TinyWorld extends Contract {
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    touchedTiles(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    smoothStep(x: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "touchedTiles(uint256)"(
-      arg0: BigNumberish,
+    "smoothStep(int128)"(
+      x: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1535,43 +1302,21 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    transitionTile(
-      coords: { x: BigNumberish; y: BigNumberish },
-      toTileType: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "transitionTile(tuple,uint8)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      toTileType: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    transitions(
+    vecs(
       arg0: BigNumberish,
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "transitions(uint8,uint8)"(
+    "vecs(uint256,uint256)"(
       arg0: BigNumberish,
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    wheatScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    vecsDenom(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "wheatScore(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    woodScore(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "woodScore(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    "vecsDenom()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1583,26 +1328,6 @@ export class TinyWorld extends Contract {
   };
 
   populateTransaction: {
-    breadScore(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "breadScore(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    buildFarm(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "buildFarm(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     cachedTiles(
       arg0: BigNumberish,
       arg1: BigNumberish,
@@ -1615,28 +1340,20 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    collectWood(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
+    computePerlin(
+      x: BigNumberish,
+      y: BigNumberish,
+      seed: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "collectWood(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    editTransition(
-      from: BigNumberish,
-      to: BigNumberish,
-      isValid: boolean,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "editTransition(uint8,uint8,bool)"(
-      from: BigNumberish,
-      to: BigNumberish,
-      isValid: boolean,
-      overrides?: Overrides
+    "computePerlin(uint32,uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      seed: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getCachedTile(
@@ -1649,20 +1366,68 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getTouchedTiles(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "getTouchedTiles()"(
+    getCorners(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    harvestWheat(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
+    "getCorners(uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "harvestWheat(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
+    getGradientAt(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getGradientAt(uint32,uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getSingleScalePerlin(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getSingleScalePerlin(uint32,uint32,uint32,uint32)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      seed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getWeight(
+      cornerX: BigNumberish,
+      cornerY: BigNumberish,
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getWeight(uint32,uint32,uint32,uint32,uint32)"(
+      cornerX: BigNumberish,
+      cornerY: BigNumberish,
+      x: BigNumberish,
+      y: BigNumberish,
+      scale: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     initPlayerLocation(
@@ -1689,38 +1454,6 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    lastHarvested(
-      arg0: BigNumberish,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "lastHarvested(uint256,uint256)"(
-      arg0: BigNumberish,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    makeBread(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "makeBread(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    makeWindmill(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "makeWindmill(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     movePlayer(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
@@ -1734,6 +1467,10 @@ export class TinyWorld extends Contract {
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    perlinMax(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "perlinMax()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     playerInited(
       arg0: string,
@@ -1755,35 +1492,15 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    proveTile(
-      a: [BigNumberish, BigNumberish],
-      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-      c: [BigNumberish, BigNumberish],
-      publicSignals: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    processTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      tsbase: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "proveTile(uint256[2],uint256[2][2],uint256[2],uint256[7])"(
-      a: [BigNumberish, BigNumberish],
-      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-      c: [BigNumberish, BigNumberish],
-      publicSignals: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    "processTile(tuple,uint256)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      tsbase: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1795,13 +1512,13 @@ export class TinyWorld extends Contract {
 
     "seed()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    touchedTiles(
-      arg0: BigNumberish,
+    smoothStep(
+      x: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "touchedTiles(uint256)"(
-      arg0: BigNumberish,
+    "smoothStep(int128)"(
+      x: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1815,49 +1532,21 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    transitionTile(
-      coords: { x: BigNumberish; y: BigNumberish },
-      toTileType: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "transitionTile(tuple,uint8)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      toTileType: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    transitions(
+    vecs(
       arg0: BigNumberish,
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "transitions(uint8,uint8)"(
+    "vecs(uint256,uint256)"(
       arg0: BigNumberish,
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    wheatScore(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    vecsDenom(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "wheatScore(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    woodScore(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "woodScore(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    "vecsDenom()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     worldScale(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

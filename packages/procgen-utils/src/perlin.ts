@@ -1,6 +1,6 @@
 import BigInt, { BigInteger } from 'big-integer';
 import { Fraction } from './fractions/bigFraction.js';
-import { perlinRandHash } from './mimc';
+import { soliditySha3, toBN } from 'web3-utils';
 
 const TRACK_LCM = false;
 
@@ -29,9 +29,9 @@ interface GradientAtPoint {
  */
 export interface PerlinConfig {
   /**
-   * The key being used for the perlin calculation. Will be `SPACETYPE_KEY` or `BIOMEBASE_KEY`.
+   * The seed being used for the perlin calculation.
    */
-  key: number;
+  seed: number;
   /**
    * The `PERLIN_LENGTH_SCALE` being used to calculate perlin.
    */
@@ -58,10 +58,17 @@ export interface PerlinConfig {
 
 type HashFn = (...inputs: number[]) => number;
 
-export const rand = (key: number) => (...args: number[]) => {
-  return perlinRandHash(key)(...args)
-    .remainder(16)
-    .toJSNumber();
+export const rand = (seed: number) => (x: number, y: number, scale: number) => {
+  return toBN(
+    soliditySha3(
+      { t: 'uint32', v: x },
+      { t: 'uint32', v: y },
+      { t: 'uint32', v: scale },
+      { t: 'uint32', v: seed }
+    )!
+  )
+    .mod(toBN(16))
+    .toNumber();
 };
 
 /*
@@ -242,7 +249,7 @@ export function perlin(coords: IntegerVector, options: PerlinConfig) {
   const pValues: Fraction[] = [];
   for (let i = 0; i < 3; i += 1) {
     // scale must be a power of two, up to 8192
-    pValues.push(valueAt(fractionalP, new Fraction(options.scale * 2 ** i), rand(options.key)));
+    pValues.push(valueAt(fractionalP, new Fraction(options.scale * 2 ** i), rand(options.seed)));
   }
   ret = ret.add(pValues[0]);
   ret = ret.add(pValues[0]);

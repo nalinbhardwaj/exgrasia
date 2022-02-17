@@ -142,9 +142,9 @@ async function deployCore(
   const tinyWorldCore = await deployProxyWithRetry<TinyWorld>({
     contractName: 'TinyWorld',
     signerOrOptions: {
-      libraries: {
-        Verifier: args.verifierAddress,
-      },
+      // libraries: {
+      //   Verifier: args.verifierAddress,
+      // },
     },
     contractArgs: [
       hre.initializers.SEED_1,
