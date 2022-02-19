@@ -7,7 +7,7 @@ import { EthConnection } from '@darkforest_eth/network';
 import { getEthConnection } from '../backend/Blockchain';
 import { DEV_TEST_PRIVATE_KEY, Tile, TileType, WorldCoords } from 'common-types';
 import { tileTypeToColor, getTileEmoji } from '../utils';
-import { useLocation, useTiles } from './Utils/AppHooks';
+import { useInitted, useLocation, useTiles } from './Utils/AppHooks';
 
 const enum LoadingStep {
   NONE,
@@ -25,6 +25,7 @@ export default function LandingPage() {
   const [lastQueryResult, setLastQueryResult] = useState<TileType | undefined>();
   const tiles = useTiles(gameManager);
   const location = useLocation(gameManager);
+  const initted = useInitted(gameManager);
 
   useEffect(() => {
     getEthConnection()
@@ -45,25 +46,7 @@ export default function LandingPage() {
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (!gameManager || queryingBlockchain) return;
-
-    console.debug('Key event', event);
-    const keyToDirection: any = {
-      w: [-1, 0],
-      a: [0, -1],
-      s: [1, 0],
-      d: [0, 1],
-    };
-
-    if (event.key in keyToDirection) {
-      console.log({
-        x: location.value.x + keyToDirection[event.key][0],
-        y: location.value.y + keyToDirection[event.key][1],
-      });
-      gameManager.movePlayer({
-        x: location.value.x + keyToDirection[event.key][0],
-        y: location.value.y + keyToDirection[event.key][1],
-      });
-    }
+    gameManager.movePlayer(event.key.toLowerCase());
   };
 
   useEffect(() => {
@@ -89,6 +72,7 @@ export default function LandingPage() {
           <p>{`world seed: ${gameManager.getWorldSeed()}. world width: ${gameManager.getWorldWidth()}`}</p>
         )}
         {gameManager && <p>{`location.x: ${location.value.x}, location.y: ${location.value.y}`}</p>}
+        {gameManager && <p>{`initted: ${initted.value}`}</p>}
         <p>{`errors: ${error}`}</p>
         {lastQueryResult !== undefined ? (
           <p>{`last queried for (${queryCoords?.x}, ${queryCoords?.y}): cached tile type is ${lastQueryResult}`}</p>
@@ -103,9 +87,7 @@ export default function LandingPage() {
                       <GridSquare
                         key={100 * i + j}
                         style={{
-                          backgroundColor: tinycolor(tileTypeToColor[tile.currentTileType])
-                            .darken(tile.isPrepped ? -10 : 0)
-                            .toHexString(),
+                          backgroundColor: tinycolor(tileTypeToColor[tile.tileType]).toHexString(),
                         }}
                       >
                         {i === location.value.x && j === location.value.y && (

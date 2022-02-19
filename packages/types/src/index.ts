@@ -24,7 +24,23 @@ export enum TileType {
   SNOW,
   STONE,
   ICE,
-  MAX = ICE, // NOTE: This MAX is hardcoded as 'divisor' in fake_perlin.circom!
+  MAX = ICE,
+}
+
+export enum TemperatureType {
+  COLD,
+  NORMAL,
+  HOT,
+  MAX = HOT,
+}
+
+export enum AltitudeType {
+  SEA,
+  BEACH,
+  LAND,
+  MOUNTAIN,
+  MOUNTAINTOP,
+  MAX = MOUNTAINTOP,
 }
 
 export type WorldCoords = {
@@ -34,10 +50,15 @@ export type WorldCoords = {
 
 export type Tile = {
   coords: WorldCoords;
-  currentTileType: TileType;
-  perl: [number, number];
+  perlin: [number, number];
   raritySeed: number;
-  isPrepped: boolean;
+  tileType: TileType;
+  temperatureType: TemperatureType;
+  altitudeType: AltitudeType;
+  emoji: string;
+  name: string;
+  owner: EthAddress;
+  smartContract: EthAddress;
 };
 
 /**
@@ -141,7 +162,3 @@ export function buildContractCallArgs(
  */
 export const DEV_TEST_PRIVATE_KEY =
   '0x044C7963E9A89D4F8B64AB23E02E97B2E00DD57FCB60F316AC69B77135003AEF';
-
-export function fakePerlin(x: number, y: number, seed: number): TileType {
-  return 1 + ((x + y + seed) % TileType.MAX);
-}

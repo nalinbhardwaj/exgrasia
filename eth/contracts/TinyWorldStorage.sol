@@ -12,11 +12,16 @@ contract TinyWorldStorage {
     uint16 public perlinMax;
 
     mapping(uint256 => mapping(uint256 => Tile)) public cachedTiles;
+    Tile[] public touchedTiles;
 
     mapping(address => Coords) public playerLocation;
     mapping(address => bool) public playerInited;
 
     function getCachedTile(Coords memory coords) public view returns (Tile memory) {
         return cachedTiles[coords.x][coords.y];
+    }
+
+    function getTouchedTiles() public view returns (Tile[] memory) {
+        return touchedTiles;
     }
 }

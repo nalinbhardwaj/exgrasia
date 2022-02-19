@@ -61,8 +61,26 @@
           },
           {
             "internalType": "enum TileType",
-            "name": "currentTileType",
+            "name": "tileType",
             "type": "uint8"
+          },
+          {
+            "internalType": "enum TemperatureType",
+            "name": "temperatureType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum AltitudeType",
+            "name": "altitudeType",
+            "type": "uint8"
+          },
+          { "internalType": "string", "name": "emoji", "type": "string" },
+          { "internalType": "string", "name": "name", "type": "string" },
+          { "internalType": "address", "name": "owner", "type": "address" },
+          {
+            "internalType": "address",
+            "name": "smartContract",
+            "type": "address"
           }
         ],
         "indexed": false,
@@ -91,11 +109,21 @@
         "type": "tuple"
       },
       { "internalType": "uint256", "name": "raritySeed", "type": "uint256" },
+      { "internalType": "enum TileType", "name": "tileType", "type": "uint8" },
       {
-        "internalType": "enum TileType",
-        "name": "currentTileType",
+        "internalType": "enum TemperatureType",
+        "name": "temperatureType",
         "type": "uint8"
-      }
+      },
+      {
+        "internalType": "enum AltitudeType",
+        "name": "altitudeType",
+        "type": "uint8"
+      },
+      { "internalType": "string", "name": "emoji", "type": "string" },
+      { "internalType": "string", "name": "name", "type": "string" },
+      { "internalType": "address", "name": "owner", "type": "address" },
+      { "internalType": "address", "name": "smartContract", "type": "address" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -110,6 +138,32 @@
     "name": "computePerlin",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "a",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "b",
+        "type": "tuple"
+      }
+    ],
+    "name": "dist",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -149,8 +203,26 @@
           },
           {
             "internalType": "enum TileType",
-            "name": "currentTileType",
+            "name": "tileType",
             "type": "uint8"
+          },
+          {
+            "internalType": "enum TemperatureType",
+            "name": "temperatureType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum AltitudeType",
+            "name": "altitudeType",
+            "type": "uint8"
+          },
+          { "internalType": "string", "name": "emoji", "type": "string" },
+          { "internalType": "string", "name": "name", "type": "string" },
+          { "internalType": "address", "name": "owner", "type": "address" },
+          {
+            "internalType": "address",
+            "name": "smartContract",
+            "type": "address"
           }
         ],
         "internalType": "struct Tile",
@@ -200,6 +272,130 @@
   },
   {
     "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "coords",
+        "type": "tuple"
+      }
+    ],
+    "name": "getTile",
+    "outputs": [
+      {
+        "components": [
+          {
+            "components": [
+              { "internalType": "uint256", "name": "x", "type": "uint256" },
+              { "internalType": "uint256", "name": "y", "type": "uint256" }
+            ],
+            "internalType": "struct Coords",
+            "name": "coords",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint256[2]",
+            "name": "perlin",
+            "type": "uint256[2]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "raritySeed",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum TileType",
+            "name": "tileType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum TemperatureType",
+            "name": "temperatureType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum AltitudeType",
+            "name": "altitudeType",
+            "type": "uint8"
+          },
+          { "internalType": "string", "name": "emoji", "type": "string" },
+          { "internalType": "string", "name": "name", "type": "string" },
+          { "internalType": "address", "name": "owner", "type": "address" },
+          {
+            "internalType": "address",
+            "name": "smartContract",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct Tile",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTouchedTiles",
+    "outputs": [
+      {
+        "components": [
+          {
+            "components": [
+              { "internalType": "uint256", "name": "x", "type": "uint256" },
+              { "internalType": "uint256", "name": "y", "type": "uint256" }
+            ],
+            "internalType": "struct Coords",
+            "name": "coords",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint256[2]",
+            "name": "perlin",
+            "type": "uint256[2]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "raritySeed",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum TileType",
+            "name": "tileType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum TemperatureType",
+            "name": "temperatureType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum AltitudeType",
+            "name": "altitudeType",
+            "type": "uint8"
+          },
+          { "internalType": "string", "name": "emoji", "type": "string" },
+          { "internalType": "string", "name": "name", "type": "string" },
+          { "internalType": "address", "name": "owner", "type": "address" },
+          {
+            "internalType": "address",
+            "name": "smartContract",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct Tile[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       { "internalType": "uint32", "name": "cornerX", "type": "uint32" },
       { "internalType": "uint32", "name": "cornerY", "type": "uint32" },
       { "internalType": "uint32", "name": "x", "type": "uint32" },
@@ -212,17 +408,7 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "coords",
-        "type": "tuple"
-      }
-    ],
+    "inputs": [],
     "name": "initPlayerLocation",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -288,24 +474,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "coords",
-        "type": "tuple"
-      },
-      { "internalType": "uint256", "name": "tsbase", "type": "uint256" }
-    ],
-    "name": "processTile",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
@@ -324,6 +492,39 @@
     "name": "smoothStep",
     "outputs": [{ "internalType": "int128", "name": "", "type": "int128" }],
     "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "touchedTiles",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "coords",
+        "type": "tuple"
+      },
+      { "internalType": "uint256", "name": "raritySeed", "type": "uint256" },
+      { "internalType": "enum TileType", "name": "tileType", "type": "uint8" },
+      {
+        "internalType": "enum TemperatureType",
+        "name": "temperatureType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum AltitudeType",
+        "name": "altitudeType",
+        "type": "uint8"
+      },
+      { "internalType": "string", "name": "emoji", "type": "string" },
+      { "internalType": "string", "name": "name", "type": "string" },
+      { "internalType": "address", "name": "owner", "type": "address" },
+      { "internalType": "address", "name": "smartContract", "type": "address" }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

@@ -1,6 +1,6 @@
 import { rand } from 'common-procgen-utils';
 import { mimcWithRounds } from 'common-procgen-utils/dist/mimc';
-import { TileType, WorldCoords, Tile } from 'common-types';
+import { TileType, WorldCoords, Tile, AltitudeType, TemperatureType } from 'common-types';
 
 export const tileTypeToColor = {
   [TileType.UNKNOWN]: 'grey',
@@ -23,110 +23,77 @@ export const getRandomTree = (coords: WorldCoords, width: number) => {
   return trees[random];
 };
 
-export const getRaritySeed = (coords: WorldCoords, seed: number, scale: number) => {
-  const hash = mimcWithRounds(4, seed)(coords.x, coords.y, scale).toString(2);
-  const extracted = parseInt(hash.slice(-4), 2);
-  return extracted;
-};
-
 export const getTileEmoji = (tile: Tile, width: number) => {
   return '';
 };
 
-enum ALTITUDE {
-  SEA,
-  BEACH,
-  LAND,
-  MOUNTAIN,
-  MOUNTAINTOP,
-}
-
-enum TEMPERATURE {
-  COLD,
-  NORMAL,
-  HOT,
-}
-
-export const seedToTileType = (
+export const seedToTileAttrs = (
   coords: WorldCoords,
   perlin1: number,
-  perlin2: number,
-  raritySeed: number
-): number => {
+  perlin2: number
+): { tileType: TileType; altitudeType: AltitudeType; temperatureType: TemperatureType } => {
   const height = perlin1;
   let temperature = perlin2;
   temperature += Math.floor((coords.x - 50) / 2);
 
-  let altitudeType = ALTITUDE.SEA;
+  let altitudeType = AltitudeType.SEA;
   if (height > 40) {
-    altitudeType = ALTITUDE.MOUNTAINTOP;
+    altitudeType = AltitudeType.MOUNTAINTOP;
   } else if (height > 37) {
-    altitudeType = ALTITUDE.MOUNTAIN;
+    altitudeType = AltitudeType.MOUNTAIN;
   } else if (height > 32) {
-    altitudeType = ALTITUDE.LAND;
+    altitudeType = AltitudeType.LAND;
   } else if (height > 30) {
-    altitudeType = ALTITUDE.BEACH;
+    altitudeType = AltitudeType.BEACH;
   }
 
-  let temperatureType = TEMPERATURE.COLD;
+  let temperatureType = TemperatureType.COLD;
   if (temperature > 42) {
-    temperatureType = TEMPERATURE.HOT;
+    temperatureType = TemperatureType.HOT;
   } else if (temperature > 22) {
-    temperatureType = TEMPERATURE.NORMAL;
+    temperatureType = TemperatureType.NORMAL;
   }
 
-  if (temperatureType === TEMPERATURE.COLD) {
-    if (altitudeType === ALTITUDE.MOUNTAINTOP) {
-      return TileType.SNOW;
-    } else if (altitudeType === ALTITUDE.MOUNTAIN) {
-      return TileType.SNOW;
-    } else if (altitudeType === ALTITUDE.LAND) {
-      return TileType.SNOW;
-    } else if (altitudeType === ALTITUDE.BEACH) {
-      if (raritySeed < 12) {
-        return TileType.ICE;
-      }
-      return TileType.SNOW;
+  let tileType = TileType.UNKNOWN;
+
+  if (temperatureType === TemperatureType.COLD) {
+    if (altitudeType === AltitudeType.MOUNTAINTOP) {
+      tileType = TileType.SNOW;
+    } else if (altitudeType === AltitudeType.MOUNTAIN) {
+      tileType = TileType.SNOW;
+    } else if (altitudeType === AltitudeType.LAND) {
+      tileType = TileType.SNOW;
+    } else if (altitudeType === AltitudeType.BEACH) {
+      tileType = TileType.SNOW;
     } else {
-      if (raritySeed < 2) {
-        return TileType.ICE;
-      }
-      return TileType.WATER;
+      tileType = TileType.WATER;
     }
-  } else if (temperatureType === TEMPERATURE.NORMAL) {
-    if (altitudeType === ALTITUDE.MOUNTAINTOP) {
-      return TileType.SNOW;
-    } else if (altitudeType === ALTITUDE.MOUNTAIN) {
-      return TileType.STONE;
-    } else if (altitudeType === ALTITUDE.LAND) {
-      if (raritySeed < 1) {
-        return TileType.TREE;
-      }
-      return TileType.GRASS;
-    } else if (altitudeType === ALTITUDE.BEACH) {
-      return TileType.SAND;
+  } else if (temperatureType === TemperatureType.NORMAL) {
+    if (altitudeType === AltitudeType.MOUNTAINTOP) {
+      tileType = TileType.SNOW;
+    } else if (altitudeType === AltitudeType.MOUNTAIN) {
+      tileType = TileType.STONE;
+    } else if (altitudeType === AltitudeType.LAND) {
+      tileType = TileType.GRASS;
+    } else if (altitudeType === AltitudeType.BEACH) {
+      tileType = TileType.SAND;
     } else {
-      return TileType.WATER;
+      tileType = TileType.WATER;
     }
   } else {
-    if (altitudeType === ALTITUDE.MOUNTAINTOP) {
-      return TileType.STONE;
-    } else if (altitudeType === ALTITUDE.MOUNTAIN) {
-      if (raritySeed < 8) {
-        return TileType.STONE;
-      }
-      return TileType.SAND;
-    } else if (altitudeType === ALTITUDE.LAND) {
-      return TileType.SAND;
-    } else if (altitudeType === ALTITUDE.BEACH) {
-      if (raritySeed < 6) {
-        return TileType.GRASS;
-      }
-      return TileType.SAND;
+    if (altitudeType === AltitudeType.MOUNTAINTOP) {
+      tileType = TileType.STONE;
+    } else if (altitudeType === AltitudeType.MOUNTAIN) {
+      tileType = TileType.SAND;
+    } else if (altitudeType === AltitudeType.LAND) {
+      tileType = TileType.SAND;
+    } else if (altitudeType === AltitudeType.BEACH) {
+      tileType = TileType.SAND;
     } else {
-      return TileType.WATER;
+      tileType = TileType.WATER;
     }
   }
+  return { tileType, temperatureType, altitudeType };
 };
 
 export const getRandomActionId = () => {

@@ -6,6 +6,7 @@ import {
   TileType,
   WorldCoords,
   Awaited,
+  address,
 } from 'common-types';
 import type { TinyWorld, TinyWorldGetters } from 'common-contracts/typechain';
 import {
@@ -25,27 +26,36 @@ import {
   ContractEvent,
   ContractMethodName,
   ContractsAPIEvent,
+  SubmittedInitPlayer,
   SubmittedMovePlayer,
-  SubmittedProcessTile,
   SubmittedTx,
+  UnconfirmedInitPlayer,
   UnconfirmedMovePlayer,
-  UnconfirmedProcessTile,
 } from '../_types/ContractAPITypes';
 import { loadCoreContract, loadGettersContract } from './Blockchain';
 
-export type RawTile = Awaited<ReturnType<TinyWorld['getCachedTile']>>;
+export type RawTile = Awaited<ReturnType<TinyWorld['getCachedTile(tuple)']>>;
 export type RawCoords = Awaited<ReturnType<TinyWorld['playerLocation']>>;
+
+export function decodeCoords(rawCoords: RawCoords): WorldCoords {
+  return {
+    x: rawCoords.x.toNumber(),
+    y: rawCoords.y.toNumber(),
+  };
+}
 
 export function decodeTile(rawTile: RawTile): Tile {
   return {
-    coords: {
-      x: rawTile.coords.x.toNumber(),
-      y: rawTile.coords.y.toNumber(),
-    },
-    currentTileType: rawTile.currentTileType,
-    perl: [rawTile.perlin[0].toNumber(), rawTile.perlin[1].toNumber()],
+    coords: decodeCoords(rawTile.coords),
+    perlin: [rawTile.perlin[0].toNumber(), rawTile.perlin[1].toNumber()],
     raritySeed: rawTile.raritySeed.toNumber(),
-    isPrepped: true,
+    tileType: rawTile.tileType,
+    temperatureType: rawTile.temperatureType,
+    altitudeType: rawTile.altitudeType,
+    emoji: rawTile.emoji,
+    name: rawTile.name,
+    owner: address(rawTile.owner),
+    smartContract: address(rawTile.smartContract),
   };
 }
 
@@ -122,10 +132,7 @@ export class ContractsAPI extends EventEmitter {
         this.emit(ContractsAPIEvent.TileUpdated, decodeTile(rawTile));
       },
       [ContractEvent.PlayerUpdated]: (coords: RawCoords) => {
-        this.emit(ContractsAPIEvent.PlayerUpdated, {
-          x: coords.x.toNumber(),
-          y: coords.y.toNumber(),
-        });
+        this.emit(ContractsAPIEvent.PlayerUpdated, decodeCoords(coords));
       },
     };
 
@@ -143,6 +150,30 @@ export class ContractsAPI extends EventEmitter {
     return (await this.makeCall<EthersBN>(this.coreContract.seed)).toNumber();
   }
 
+  public async getWorldScale(): Promise<number> {
+    return (await this.makeCall<EthersBN>(this.coreContract.worldScale)).toNumber();
+  }
+
+  public async getWorldWidth(): Promise<number> {
+    return (await this.makeCall<EthersBN>(this.coreContract.worldWidth)).toNumber();
+  }
+
+  public async getTouchedTiles(): Promise<Tile[]> {
+    const touchedTiles = await this.makeCall<RawTile[]>(this.coreContract.getTouchedTiles);
+    return touchedTiles.map((rawTile) => decodeTile(rawTile));
+  }
+
+  public async getInitted(): Promise<boolean> {
+    if (!this.txExecutor) {
+      throw new Error('no signer, cannot execute tx');
+    }
+
+    const addr = this.ethConnection.getAddress();
+
+    const initted = await this.makeCall<boolean>(this.coreContract.playerInited, [addr]);
+    return initted;
+  }
+
   public async getLocation(): Promise<WorldCoords> {
     if (!this.txExecutor) {
       throw new Error('no signer, cannot execute tx');
@@ -151,13 +182,10 @@ export class ContractsAPI extends EventEmitter {
     const addr = this.ethConnection.getAddress();
 
     const rawCoords = await this.makeCall<RawCoords>(this.coreContract.playerLocation, [addr]);
-    return {
-      x: rawCoords.x.toNumber(),
-      y: rawCoords.y.toNumber(),
-    };
+    return decodeCoords(rawCoords);
   }
 
-  public async initPlayerLocation(action: UnconfirmedMovePlayer) {
+  public async initPlayerLocation(action: UnconfirmedInitPlayer) {
     if (!this.txExecutor) {
       throw new Error('no signer, cannot execute tx');
     }
@@ -166,15 +194,15 @@ export class ContractsAPI extends EventEmitter {
       action.actionId,
       this.coreContract,
       action.methodName,
-      [action.coords]
+      []
     );
-    const unminedMovePlayerTx: SubmittedMovePlayer = {
+    const unminedInitPlayerTx: SubmittedInitPlayer = {
       ...action,
       txHash: (await tx.submitted).hash,
       sentAtTimestamp: Math.floor(Date.now() / 1000),
     };
 
-    return this.waitFor(unminedMovePlayerTx, tx.confirmed);
+    return this.waitFor(unminedInitPlayerTx, tx.confirmed);
   }
 
   public async movePlayer(action: UnconfirmedMovePlayer) {
@@ -195,45 +223,6 @@ export class ContractsAPI extends EventEmitter {
     };
 
     return this.waitFor(unminedMovePlayerTx, tx.confirmed);
-  }
-
-  public async processTile(action: UnconfirmedProcessTile) {
-    if (!this.txExecutor) {
-      throw new Error('no signer, cannot execute tx');
-    }
-
-    const tx = this.txExecutor.queueTransaction(
-      action.actionId,
-      this.coreContract,
-      action.methodName,
-      [action.coords, action.tsbase]
-    );
-    const unminedProcessTileTx: SubmittedProcessTile = {
-      ...action,
-      txHash: (await tx.submitted).hash,
-      sentAtTimestamp: Math.floor(Date.now() / 1000),
-    };
-
-    return this.waitFor(unminedProcessTileTx, tx.confirmed);
-  }
-
-  public async getWorldScale(): Promise<number> {
-    return (await this.makeCall<EthersBN>(this.coreContract.worldScale)).toNumber();
-  }
-
-  public async getWorldWidth(): Promise<number> {
-    return (await this.makeCall<EthersBN>(this.coreContract.worldWidth)).toNumber();
-  }
-
-  public async getTouchedCoords(): Promise<WorldCoords[]> {
-    const touchedRawCoords = await this.makeCall<RawCoords[]>(
-      this.coreContract.getTouchedTiles,
-      []
-    );
-    const touchedCoords = touchedRawCoords.map((coords) => {
-      return { x: coords.x.toNumber(), y: coords.y.toNumber() };
-    });
-    return touchedCoords;
   }
 
   /**

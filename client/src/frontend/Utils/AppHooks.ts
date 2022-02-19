@@ -31,10 +31,25 @@ export function useLocation(gameManager: GameManager | undefined): Wrapper<World
 
   const onUpdate = useCallback(async () => {
     console.log('onUpdate useLocation');
-    setCoords(new Wrapper(gameManager ? await gameManager.getLocation() : { x: -1, y: -1 }));
+    const newCoords = gameManager ? await gameManager.getLocation() : { x: -2, y: -2 };
+    console.log('useLocation coords', newCoords);
+    setCoords(new Wrapper(newCoords));
   }, [gameManager]);
 
   useEmitterSubscribe(gameManager?.playerUpdated$, onUpdate);
 
   return coords;
+}
+
+export function useInitted(gameManager: GameManager | undefined): Wrapper<boolean> {
+  const [initted, setinitted] = useState<Wrapper<boolean>>(() => new Wrapper(false));
+
+  const onUpdate = useCallback(async () => {
+    const newInitted = gameManager ? await gameManager.getInitted() : false;
+    setinitted(new Wrapper(newInitted));
+  }, [gameManager]);
+
+  useEmitterSubscribe(gameManager?.playerUpdated$, onUpdate);
+
+  return initted;
 }

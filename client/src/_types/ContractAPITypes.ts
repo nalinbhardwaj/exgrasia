@@ -8,7 +8,6 @@ export const enum ContractEvent {
 export enum ContractMethodName {
   MOVE_PLAYER = 'movePlayer',
   INIT_PLAYER_LOCATION = 'initPlayerLocation',
-  PROCESS_TILE = 'processTile',
 }
 
 export const enum ContractsAPIEvent {
@@ -34,26 +33,22 @@ export type SubmittedTx = TxIntent & {
 };
 
 export type UnconfirmedMovePlayer = TxIntent & {
-  methodName: ContractMethodName.MOVE_PLAYER | ContractMethodName.INIT_PLAYER_LOCATION;
+  methodName: ContractMethodName.MOVE_PLAYER;
   coords: WorldCoords;
 };
 
 export type SubmittedMovePlayer = UnconfirmedMovePlayer & SubmittedTx;
 
 export function isUnconfirmedMovePlayer(txIntent: TxIntent): txIntent is UnconfirmedMovePlayer {
-  return [ContractMethodName.MOVE_PLAYER, ContractMethodName.INIT_PLAYER_LOCATION].includes(
-    txIntent.methodName
-  );
+  return ContractMethodName.MOVE_PLAYER == txIntent.methodName;
 }
 
-export type UnconfirmedProcessTile = TxIntent & {
-  methodName: ContractMethodName.PROCESS_TILE;
-  coords: WorldCoords;
-  tsbase: number;
+export type UnconfirmedInitPlayer = TxIntent & {
+  methodName: ContractMethodName.INIT_PLAYER_LOCATION;
 };
 
-export type SubmittedProcessTile = UnconfirmedProcessTile & SubmittedTx;
+export type SubmittedInitPlayer = UnconfirmedInitPlayer & SubmittedTx;
 
-export function isUnconfirmedProcessTile(txIntent: TxIntent): txIntent is UnconfirmedProcessTile {
-  return txIntent.methodName == ContractMethodName.PROCESS_TILE;
+export function isUnconfirmedInitPlayer(txIntent: TxIntent): txIntent is UnconfirmedInitPlayer {
+  return ContractMethodName.INIT_PLAYER_LOCATION == txIntent.methodName;
 }

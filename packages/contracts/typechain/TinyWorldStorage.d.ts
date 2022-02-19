@@ -23,10 +23,12 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
   functions: {
     "cachedTiles(uint256,uint256)": FunctionFragment;
     "getCachedTile(tuple)": FunctionFragment;
+    "getTouchedTiles()": FunctionFragment;
     "perlinMax()": FunctionFragment;
     "playerInited(address)": FunctionFragment;
     "playerLocation(address)": FunctionFragment;
     "seed()": FunctionFragment;
+    "touchedTiles(uint256)": FunctionFragment;
     "vecs(uint256,uint256)": FunctionFragment;
     "vecsDenom()": FunctionFragment;
     "worldScale()": FunctionFragment;
@@ -41,6 +43,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     functionFragment: "getCachedTile",
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getTouchedTiles",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "perlinMax", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "playerInited",
@@ -51,6 +57,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "seed", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "touchedTiles",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "vecs",
     values: [BigNumberish, BigNumberish]
@@ -73,6 +83,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     functionFragment: "getCachedTile",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTouchedTiles",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "perlinMax", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "playerInited",
@@ -83,6 +97,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "seed", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "touchedTiles",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "vecs", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "vecsDenom", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "worldScale", data: BytesLike): Result;
@@ -112,10 +130,22 @@ export class TinyWorldStorage extends Contract {
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       raritySeed: BigNumber;
-      currentTileType: number;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
       2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
     }>;
 
     "cachedTiles(uint256,uint256)"(
@@ -125,10 +155,22 @@ export class TinyWorldStorage extends Contract {
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       raritySeed: BigNumber;
-      currentTileType: number;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
       2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
     }>;
 
     getCachedTile(
@@ -139,11 +181,23 @@ export class TinyWorldStorage extends Contract {
         coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         perlin: [BigNumber, BigNumber];
         raritySeed: BigNumber;
-        currentTileType: number;
+        tileType: number;
+        temperatureType: number;
+        altitudeType: number;
+        emoji: string;
+        name: string;
+        owner: string;
+        smartContract: string;
         0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         1: [BigNumber, BigNumber];
         2: BigNumber;
         3: number;
+        4: number;
+        5: number;
+        6: string;
+        7: string;
+        8: string;
+        9: string;
       };
     }>;
 
@@ -155,12 +209,74 @@ export class TinyWorldStorage extends Contract {
         coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         perlin: [BigNumber, BigNumber];
         raritySeed: BigNumber;
-        currentTileType: number;
+        tileType: number;
+        temperatureType: number;
+        altitudeType: number;
+        emoji: string;
+        name: string;
+        owner: string;
+        smartContract: string;
         0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         1: [BigNumber, BigNumber];
         2: BigNumber;
         3: number;
+        4: number;
+        5: number;
+        6: string;
+        7: string;
+        8: string;
+        9: string;
       };
+    }>;
+
+    getTouchedTiles(overrides?: CallOverrides): Promise<{
+      0: {
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
+        tileType: number;
+        temperatureType: number;
+        altitudeType: number;
+        emoji: string;
+        name: string;
+        owner: string;
+        smartContract: string;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        1: [BigNumber, BigNumber];
+        2: BigNumber;
+        3: number;
+        4: number;
+        5: number;
+        6: string;
+        7: string;
+        8: string;
+        9: string;
+      }[];
+    }>;
+
+    "getTouchedTiles()"(overrides?: CallOverrides): Promise<{
+      0: {
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
+        tileType: number;
+        temperatureType: number;
+        altitudeType: number;
+        emoji: string;
+        name: string;
+        owner: string;
+        smartContract: string;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        1: [BigNumber, BigNumber];
+        2: BigNumber;
+        3: number;
+        4: number;
+        5: number;
+        6: string;
+        7: string;
+        8: string;
+        9: string;
+      }[];
     }>;
 
     perlinMax(overrides?: CallOverrides): Promise<{
@@ -213,6 +329,54 @@ export class TinyWorldStorage extends Contract {
       0: BigNumber;
     }>;
 
+    touchedTiles(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: BigNumber;
+      2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
+    }>;
+
+    "touchedTiles(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: BigNumber;
+      2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
+    }>;
+
     vecs(
       arg0: BigNumberish,
       arg1: BigNumberish,
@@ -261,10 +425,22 @@ export class TinyWorldStorage extends Contract {
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     raritySeed: BigNumber;
-    currentTileType: number;
+    tileType: number;
+    temperatureType: number;
+    altitudeType: number;
+    emoji: string;
+    name: string;
+    owner: string;
+    smartContract: string;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
     2: number;
+    3: number;
+    4: number;
+    5: string;
+    6: string;
+    7: string;
+    8: string;
   }>;
 
   "cachedTiles(uint256,uint256)"(
@@ -274,10 +450,22 @@ export class TinyWorldStorage extends Contract {
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     raritySeed: BigNumber;
-    currentTileType: number;
+    tileType: number;
+    temperatureType: number;
+    altitudeType: number;
+    emoji: string;
+    name: string;
+    owner: string;
+    smartContract: string;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
     2: number;
+    3: number;
+    4: number;
+    5: string;
+    6: string;
+    7: string;
+    8: string;
   }>;
 
   getCachedTile(
@@ -287,11 +475,23 @@ export class TinyWorldStorage extends Contract {
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     perlin: [BigNumber, BigNumber];
     raritySeed: BigNumber;
-    currentTileType: number;
+    tileType: number;
+    temperatureType: number;
+    altitudeType: number;
+    emoji: string;
+    name: string;
+    owner: string;
+    smartContract: string;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: [BigNumber, BigNumber];
     2: BigNumber;
     3: number;
+    4: number;
+    5: number;
+    6: string;
+    7: string;
+    8: string;
+    9: string;
   }>;
 
   "getCachedTile(tuple)"(
@@ -301,12 +501,78 @@ export class TinyWorldStorage extends Contract {
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     perlin: [BigNumber, BigNumber];
     raritySeed: BigNumber;
-    currentTileType: number;
+    tileType: number;
+    temperatureType: number;
+    altitudeType: number;
+    emoji: string;
+    name: string;
+    owner: string;
+    smartContract: string;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: [BigNumber, BigNumber];
     2: BigNumber;
     3: number;
+    4: number;
+    5: number;
+    6: string;
+    7: string;
+    8: string;
+    9: string;
   }>;
+
+  getTouchedTiles(
+    overrides?: CallOverrides
+  ): Promise<
+    {
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      perlin: [BigNumber, BigNumber];
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: [BigNumber, BigNumber];
+      2: BigNumber;
+      3: number;
+      4: number;
+      5: number;
+      6: string;
+      7: string;
+      8: string;
+      9: string;
+    }[]
+  >;
+
+  "getTouchedTiles()"(
+    overrides?: CallOverrides
+  ): Promise<
+    {
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      perlin: [BigNumber, BigNumber];
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: [BigNumber, BigNumber];
+      2: BigNumber;
+      3: number;
+      4: number;
+      5: number;
+      6: string;
+      7: string;
+      8: string;
+      9: string;
+    }[]
+  >;
 
   perlinMax(overrides?: CallOverrides): Promise<number>;
 
@@ -343,6 +609,54 @@ export class TinyWorldStorage extends Contract {
 
   "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+  touchedTiles(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{
+    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    raritySeed: BigNumber;
+    tileType: number;
+    temperatureType: number;
+    altitudeType: number;
+    emoji: string;
+    name: string;
+    owner: string;
+    smartContract: string;
+    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    1: BigNumber;
+    2: number;
+    3: number;
+    4: number;
+    5: string;
+    6: string;
+    7: string;
+    8: string;
+  }>;
+
+  "touchedTiles(uint256)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{
+    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    raritySeed: BigNumber;
+    tileType: number;
+    temperatureType: number;
+    altitudeType: number;
+    emoji: string;
+    name: string;
+    owner: string;
+    smartContract: string;
+    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    1: BigNumber;
+    2: number;
+    3: number;
+    4: number;
+    5: string;
+    6: string;
+    7: string;
+    8: string;
+  }>;
+
   vecs(
     arg0: BigNumberish,
     arg1: BigNumberish,
@@ -375,10 +689,22 @@ export class TinyWorldStorage extends Contract {
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       raritySeed: BigNumber;
-      currentTileType: number;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
       2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
     }>;
 
     "cachedTiles(uint256,uint256)"(
@@ -388,10 +714,22 @@ export class TinyWorldStorage extends Contract {
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       raritySeed: BigNumber;
-      currentTileType: number;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
       2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
     }>;
 
     getCachedTile(
@@ -401,11 +739,23 @@ export class TinyWorldStorage extends Contract {
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       perlin: [BigNumber, BigNumber];
       raritySeed: BigNumber;
-      currentTileType: number;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: [BigNumber, BigNumber];
       2: BigNumber;
       3: number;
+      4: number;
+      5: number;
+      6: string;
+      7: string;
+      8: string;
+      9: string;
     }>;
 
     "getCachedTile(tuple)"(
@@ -415,12 +765,78 @@ export class TinyWorldStorage extends Contract {
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       perlin: [BigNumber, BigNumber];
       raritySeed: BigNumber;
-      currentTileType: number;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: [BigNumber, BigNumber];
       2: BigNumber;
       3: number;
+      4: number;
+      5: number;
+      6: string;
+      7: string;
+      8: string;
+      9: string;
     }>;
+
+    getTouchedTiles(
+      overrides?: CallOverrides
+    ): Promise<
+      {
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
+        tileType: number;
+        temperatureType: number;
+        altitudeType: number;
+        emoji: string;
+        name: string;
+        owner: string;
+        smartContract: string;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        1: [BigNumber, BigNumber];
+        2: BigNumber;
+        3: number;
+        4: number;
+        5: number;
+        6: string;
+        7: string;
+        8: string;
+        9: string;
+      }[]
+    >;
+
+    "getTouchedTiles()"(
+      overrides?: CallOverrides
+    ): Promise<
+      {
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
+        tileType: number;
+        temperatureType: number;
+        altitudeType: number;
+        emoji: string;
+        name: string;
+        owner: string;
+        smartContract: string;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        1: [BigNumber, BigNumber];
+        2: BigNumber;
+        3: number;
+        4: number;
+        5: number;
+        6: string;
+        7: string;
+        8: string;
+        9: string;
+      }[]
+    >;
 
     perlinMax(overrides?: CallOverrides): Promise<number>;
 
@@ -456,6 +872,54 @@ export class TinyWorldStorage extends Contract {
     seed(overrides?: CallOverrides): Promise<BigNumber>;
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    touchedTiles(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: BigNumber;
+      2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
+    }>;
+
+    "touchedTiles(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: BigNumber;
+      2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
+    }>;
 
     vecs(
       arg0: BigNumberish,
@@ -507,6 +971,10 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getTouchedTiles(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTouchedTiles()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     perlinMax(overrides?: CallOverrides): Promise<BigNumber>;
 
     "perlinMax()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -528,6 +996,16 @@ export class TinyWorldStorage extends Contract {
     seed(overrides?: CallOverrides): Promise<BigNumber>;
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    touchedTiles(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "touchedTiles(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     vecs(
       arg0: BigNumberish,
@@ -577,6 +1055,12 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getTouchedTiles(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getTouchedTiles()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     perlinMax(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "perlinMax()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -604,6 +1088,16 @@ export class TinyWorldStorage extends Contract {
     seed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "seed()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    touchedTiles(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "touchedTiles(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     vecs(
       arg0: BigNumberish,

@@ -24,22 +24,25 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   functions: {
     "cachedTiles(uint256,uint256)": FunctionFragment;
     "computePerlin(uint32,uint32,uint32,uint32)": FunctionFragment;
+    "dist(tuple,tuple)": FunctionFragment;
     "getCachedTile(tuple)": FunctionFragment;
     "getCorners(uint32,uint32,uint32)": FunctionFragment;
     "getGradientAt(uint32,uint32,uint32,uint32)": FunctionFragment;
     "getSingleScalePerlin(uint32,uint32,uint32,uint32)": FunctionFragment;
+    "getTile(tuple)": FunctionFragment;
+    "getTouchedTiles()": FunctionFragment;
     "getWeight(uint32,uint32,uint32,uint32,uint32)": FunctionFragment;
-    "initPlayerLocation(tuple)": FunctionFragment;
+    "initPlayerLocation()": FunctionFragment;
     "initialize(uint256,uint256,uint256)": FunctionFragment;
     "movePlayer(tuple)": FunctionFragment;
     "owner()": FunctionFragment;
     "perlinMax()": FunctionFragment;
     "playerInited(address)": FunctionFragment;
     "playerLocation(address)": FunctionFragment;
-    "processTile(tuple,uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "seed()": FunctionFragment;
     "smoothStep(int128)": FunctionFragment;
+    "touchedTiles(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "vecs(uint256,uint256)": FunctionFragment;
     "vecsDenom()": FunctionFragment;
@@ -54,6 +57,13 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "computePerlin",
     values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "dist",
+    values: [
+      { x: BigNumberish; y: BigNumberish },
+      { x: BigNumberish; y: BigNumberish }
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "getCachedTile",
@@ -72,6 +82,14 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getTile",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTouchedTiles",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getWeight",
     values: [
       BigNumberish,
@@ -83,7 +101,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initPlayerLocation",
-    values: [{ x: BigNumberish; y: BigNumberish }]
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
@@ -104,16 +122,16 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "processTile",
-    values: [{ x: BigNumberish; y: BigNumberish }, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "seed", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "smoothStep",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "touchedTiles",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -142,6 +160,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     functionFragment: "computePerlin",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "dist", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getCachedTile",
     data: BytesLike
@@ -153,6 +172,11 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getSingleScalePerlin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getTile", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getTouchedTiles",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getWeight", data: BytesLike): Result;
@@ -173,15 +197,15 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "processTile",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "seed", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "smoothStep", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "touchedTiles",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -223,10 +247,22 @@ export class TinyWorld extends Contract {
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       raritySeed: BigNumber;
-      currentTileType: number;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
       2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
     }>;
 
     "cachedTiles(uint256,uint256)"(
@@ -236,10 +272,22 @@ export class TinyWorld extends Contract {
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       raritySeed: BigNumber;
-      currentTileType: number;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
       2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
     }>;
 
     computePerlin(
@@ -262,6 +310,22 @@ export class TinyWorld extends Contract {
       0: BigNumber;
     }>;
 
+    dist(
+      a: { x: BigNumberish; y: BigNumberish },
+      b: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "dist(tuple,tuple)"(
+      a: { x: BigNumberish; y: BigNumberish },
+      b: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -270,11 +334,23 @@ export class TinyWorld extends Contract {
         coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         perlin: [BigNumber, BigNumber];
         raritySeed: BigNumber;
-        currentTileType: number;
+        tileType: number;
+        temperatureType: number;
+        altitudeType: number;
+        emoji: string;
+        name: string;
+        owner: string;
+        smartContract: string;
         0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         1: [BigNumber, BigNumber];
         2: BigNumber;
         3: number;
+        4: number;
+        5: number;
+        6: string;
+        7: string;
+        8: string;
+        9: string;
       };
     }>;
 
@@ -286,11 +362,23 @@ export class TinyWorld extends Contract {
         coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         perlin: [BigNumber, BigNumber];
         raritySeed: BigNumber;
-        currentTileType: number;
+        tileType: number;
+        temperatureType: number;
+        altitudeType: number;
+        emoji: string;
+        name: string;
+        owner: string;
+        smartContract: string;
         0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
         1: [BigNumber, BigNumber];
         2: BigNumber;
         3: number;
+        4: number;
+        5: number;
+        6: string;
+        7: string;
+        8: string;
+        9: string;
       };
     }>;
 
@@ -362,6 +450,66 @@ export class TinyWorld extends Contract {
       0: BigNumber;
     }>;
 
+    getTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "getTile(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    getTouchedTiles(overrides?: CallOverrides): Promise<{
+      0: {
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
+        tileType: number;
+        temperatureType: number;
+        altitudeType: number;
+        emoji: string;
+        name: string;
+        owner: string;
+        smartContract: string;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        1: [BigNumber, BigNumber];
+        2: BigNumber;
+        3: number;
+        4: number;
+        5: number;
+        6: string;
+        7: string;
+        8: string;
+        9: string;
+      }[];
+    }>;
+
+    "getTouchedTiles()"(overrides?: CallOverrides): Promise<{
+      0: {
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
+        tileType: number;
+        temperatureType: number;
+        altitudeType: number;
+        emoji: string;
+        name: string;
+        owner: string;
+        smartContract: string;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        1: [BigNumber, BigNumber];
+        2: BigNumber;
+        3: number;
+        4: number;
+        5: number;
+        6: string;
+        7: string;
+        8: string;
+        9: string;
+      }[];
+    }>;
+
     getWeight(
       cornerX: BigNumberish,
       cornerY: BigNumberish,
@@ -384,15 +532,9 @@ export class TinyWorld extends Contract {
       0: BigNumber;
     }>;
 
-    initPlayerLocation(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    initPlayerLocation(overrides?: Overrides): Promise<ContractTransaction>;
 
-    "initPlayerLocation(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    "initPlayerLocation()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     initialize(
       _seed: BigNumberish,
@@ -468,18 +610,6 @@ export class TinyWorld extends Contract {
       1: BigNumber;
     }>;
 
-    processTile(
-      coords: { x: BigNumberish; y: BigNumberish },
-      tsbase: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "processTile(tuple,uint256)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      tsbase: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -504,6 +634,54 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
+    }>;
+
+    touchedTiles(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: BigNumber;
+      2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
+    }>;
+
+    "touchedTiles(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: BigNumber;
+      2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
     }>;
 
     transferOwnership(
@@ -564,10 +742,22 @@ export class TinyWorld extends Contract {
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     raritySeed: BigNumber;
-    currentTileType: number;
+    tileType: number;
+    temperatureType: number;
+    altitudeType: number;
+    emoji: string;
+    name: string;
+    owner: string;
+    smartContract: string;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
     2: number;
+    3: number;
+    4: number;
+    5: string;
+    6: string;
+    7: string;
+    8: string;
   }>;
 
   "cachedTiles(uint256,uint256)"(
@@ -577,10 +767,22 @@ export class TinyWorld extends Contract {
   ): Promise<{
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     raritySeed: BigNumber;
-    currentTileType: number;
+    tileType: number;
+    temperatureType: number;
+    altitudeType: number;
+    emoji: string;
+    name: string;
+    owner: string;
+    smartContract: string;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: BigNumber;
     2: number;
+    3: number;
+    4: number;
+    5: string;
+    6: string;
+    7: string;
+    8: string;
   }>;
 
   computePerlin(
@@ -599,6 +801,18 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  dist(
+    a: { x: BigNumberish; y: BigNumberish },
+    b: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "dist(tuple,tuple)"(
+    a: { x: BigNumberish; y: BigNumberish },
+    b: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getCachedTile(
     coords: { x: BigNumberish; y: BigNumberish },
     overrides?: CallOverrides
@@ -606,11 +820,23 @@ export class TinyWorld extends Contract {
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     perlin: [BigNumber, BigNumber];
     raritySeed: BigNumber;
-    currentTileType: number;
+    tileType: number;
+    temperatureType: number;
+    altitudeType: number;
+    emoji: string;
+    name: string;
+    owner: string;
+    smartContract: string;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: [BigNumber, BigNumber];
     2: BigNumber;
     3: number;
+    4: number;
+    5: number;
+    6: string;
+    7: string;
+    8: string;
+    9: string;
   }>;
 
   "getCachedTile(tuple)"(
@@ -620,11 +846,23 @@ export class TinyWorld extends Contract {
     coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     perlin: [BigNumber, BigNumber];
     raritySeed: BigNumber;
-    currentTileType: number;
+    tileType: number;
+    temperatureType: number;
+    altitudeType: number;
+    emoji: string;
+    name: string;
+    owner: string;
+    smartContract: string;
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     1: [BigNumber, BigNumber];
     2: BigNumber;
     3: number;
+    4: number;
+    5: number;
+    6: string;
+    7: string;
+    8: string;
+    9: string;
   }>;
 
   getCorners(
@@ -677,6 +915,70 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getTile(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "getTile(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  getTouchedTiles(
+    overrides?: CallOverrides
+  ): Promise<
+    {
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      perlin: [BigNumber, BigNumber];
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: [BigNumber, BigNumber];
+      2: BigNumber;
+      3: number;
+      4: number;
+      5: number;
+      6: string;
+      7: string;
+      8: string;
+      9: string;
+    }[]
+  >;
+
+  "getTouchedTiles()"(
+    overrides?: CallOverrides
+  ): Promise<
+    {
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      perlin: [BigNumber, BigNumber];
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: [BigNumber, BigNumber];
+      2: BigNumber;
+      3: number;
+      4: number;
+      5: number;
+      6: string;
+      7: string;
+      8: string;
+      9: string;
+    }[]
+  >;
+
   getWeight(
     cornerX: BigNumberish,
     cornerY: BigNumberish,
@@ -695,15 +997,9 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  initPlayerLocation(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  initPlayerLocation(overrides?: Overrides): Promise<ContractTransaction>;
 
-  "initPlayerLocation(tuple)"(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  "initPlayerLocation()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   initialize(
     _seed: BigNumberish,
@@ -764,18 +1060,6 @@ export class TinyWorld extends Contract {
     1: BigNumber;
   }>;
 
-  processTile(
-    coords: { x: BigNumberish; y: BigNumberish },
-    tsbase: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "processTile(tuple,uint256)"(
-    coords: { x: BigNumberish; y: BigNumberish },
-    tsbase: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
   "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -790,6 +1074,54 @@ export class TinyWorld extends Contract {
     x: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  touchedTiles(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{
+    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    raritySeed: BigNumber;
+    tileType: number;
+    temperatureType: number;
+    altitudeType: number;
+    emoji: string;
+    name: string;
+    owner: string;
+    smartContract: string;
+    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    1: BigNumber;
+    2: number;
+    3: number;
+    4: number;
+    5: string;
+    6: string;
+    7: string;
+    8: string;
+  }>;
+
+  "touchedTiles(uint256)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{
+    coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    raritySeed: BigNumber;
+    tileType: number;
+    temperatureType: number;
+    altitudeType: number;
+    emoji: string;
+    name: string;
+    owner: string;
+    smartContract: string;
+    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    1: BigNumber;
+    2: number;
+    3: number;
+    4: number;
+    5: string;
+    6: string;
+    7: string;
+    8: string;
+  }>;
 
   transferOwnership(
     newOwner: string,
@@ -833,10 +1165,22 @@ export class TinyWorld extends Contract {
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       raritySeed: BigNumber;
-      currentTileType: number;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
       2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
     }>;
 
     "cachedTiles(uint256,uint256)"(
@@ -846,10 +1190,22 @@ export class TinyWorld extends Contract {
     ): Promise<{
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       raritySeed: BigNumber;
-      currentTileType: number;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: BigNumber;
       2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
     }>;
 
     computePerlin(
@@ -868,6 +1224,18 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    dist(
+      a: { x: BigNumberish; y: BigNumberish },
+      b: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "dist(tuple,tuple)"(
+      a: { x: BigNumberish; y: BigNumberish },
+      b: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -875,11 +1243,23 @@ export class TinyWorld extends Contract {
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       perlin: [BigNumber, BigNumber];
       raritySeed: BigNumber;
-      currentTileType: number;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: [BigNumber, BigNumber];
       2: BigNumber;
       3: number;
+      4: number;
+      5: number;
+      6: string;
+      7: string;
+      8: string;
+      9: string;
     }>;
 
     "getCachedTile(tuple)"(
@@ -889,11 +1269,23 @@ export class TinyWorld extends Contract {
       coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       perlin: [BigNumber, BigNumber];
       raritySeed: BigNumber;
-      currentTileType: number;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
       1: [BigNumber, BigNumber];
       2: BigNumber;
       3: number;
+      4: number;
+      5: number;
+      6: string;
+      7: string;
+      8: string;
+      9: string;
     }>;
 
     getCorners(
@@ -946,6 +1338,112 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      perlin: [BigNumber, BigNumber];
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: [BigNumber, BigNumber];
+      2: BigNumber;
+      3: number;
+      4: number;
+      5: number;
+      6: string;
+      7: string;
+      8: string;
+      9: string;
+    }>;
+
+    "getTile(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      perlin: [BigNumber, BigNumber];
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: [BigNumber, BigNumber];
+      2: BigNumber;
+      3: number;
+      4: number;
+      5: number;
+      6: string;
+      7: string;
+      8: string;
+      9: string;
+    }>;
+
+    getTouchedTiles(
+      overrides?: CallOverrides
+    ): Promise<
+      {
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
+        tileType: number;
+        temperatureType: number;
+        altitudeType: number;
+        emoji: string;
+        name: string;
+        owner: string;
+        smartContract: string;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        1: [BigNumber, BigNumber];
+        2: BigNumber;
+        3: number;
+        4: number;
+        5: number;
+        6: string;
+        7: string;
+        8: string;
+        9: string;
+      }[]
+    >;
+
+    "getTouchedTiles()"(
+      overrides?: CallOverrides
+    ): Promise<
+      {
+        coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        perlin: [BigNumber, BigNumber];
+        raritySeed: BigNumber;
+        tileType: number;
+        temperatureType: number;
+        altitudeType: number;
+        emoji: string;
+        name: string;
+        owner: string;
+        smartContract: string;
+        0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+        1: [BigNumber, BigNumber];
+        2: BigNumber;
+        3: number;
+        4: number;
+        5: number;
+        6: string;
+        7: string;
+        8: string;
+        9: string;
+      }[]
+    >;
+
     getWeight(
       cornerX: BigNumberish,
       cornerY: BigNumberish,
@@ -964,15 +1462,9 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    initPlayerLocation(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<void>;
+    initPlayerLocation(overrides?: CallOverrides): Promise<void>;
 
-    "initPlayerLocation(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<void>;
+    "initPlayerLocation()"(overrides?: CallOverrides): Promise<void>;
 
     initialize(
       _seed: BigNumberish,
@@ -1033,18 +1525,6 @@ export class TinyWorld extends Contract {
       1: BigNumber;
     }>;
 
-    processTile(
-      coords: { x: BigNumberish; y: BigNumberish },
-      tsbase: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "processTile(tuple,uint256)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      tsbase: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
@@ -1059,6 +1539,54 @@ export class TinyWorld extends Contract {
       x: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    touchedTiles(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: BigNumber;
+      2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
+    }>;
+
+    "touchedTiles(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      coords: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      raritySeed: BigNumber;
+      tileType: number;
+      temperatureType: number;
+      altitudeType: number;
+      emoji: string;
+      name: string;
+      owner: string;
+      smartContract: string;
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: BigNumber;
+      2: number;
+      3: number;
+      4: number;
+      5: string;
+      6: string;
+      7: string;
+      8: string;
+    }>;
 
     transferOwnership(
       newOwner: string,
@@ -1135,6 +1663,18 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    dist(
+      a: { x: BigNumberish; y: BigNumberish },
+      b: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "dist(tuple,tuple)"(
+      a: { x: BigNumberish; y: BigNumberish },
+      b: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -1191,6 +1731,20 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "getTile(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    getTouchedTiles(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTouchedTiles()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getWeight(
       cornerX: BigNumberish,
       cornerY: BigNumberish,
@@ -1209,15 +1763,9 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    initPlayerLocation(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    initPlayerLocation(overrides?: Overrides): Promise<BigNumber>;
 
-    "initPlayerLocation(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    "initPlayerLocation()"(overrides?: Overrides): Promise<BigNumber>;
 
     initialize(
       _seed: BigNumberish,
@@ -1265,18 +1813,6 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    processTile(
-      coords: { x: BigNumberish; y: BigNumberish },
-      tsbase: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "processTile(tuple,uint256)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      tsbase: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     renounceOwnership(overrides?: Overrides): Promise<BigNumber>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
@@ -1289,6 +1825,16 @@ export class TinyWorld extends Contract {
 
     "smoothStep(int128)"(
       x: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    touchedTiles(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "touchedTiles(uint256)"(
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1356,6 +1902,18 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    dist(
+      a: { x: BigNumberish; y: BigNumberish },
+      b: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "dist(tuple,tuple)"(
+      a: { x: BigNumberish; y: BigNumberish },
+      b: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -1412,6 +1970,22 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "getTile(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    getTouchedTiles(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getTouchedTiles()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getWeight(
       cornerX: BigNumberish,
       cornerY: BigNumberish,
@@ -1430,13 +2004,9 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    initPlayerLocation(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
+    initPlayerLocation(overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    "initPlayerLocation(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
+    "initPlayerLocation()"(
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1492,18 +2062,6 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    processTile(
-      coords: { x: BigNumberish; y: BigNumberish },
-      tsbase: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "processTile(tuple,uint256)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      tsbase: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     renounceOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
@@ -1519,6 +2077,16 @@ export class TinyWorld extends Contract {
 
     "smoothStep(int128)"(
       x: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    touchedTiles(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "touchedTiles(uint256)"(
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

@@ -1,10 +1,10 @@
 import { EthConnection } from '@darkforest_eth/network';
 import { monomitter, Monomitter, Subscription } from '@darkforest_eth/events';
-import { perlin, PerlinConfig } from 'common-procgen-utils';
-import { EthAddress, Tile, WorldCoords } from 'common-types';
+import { perlin, PerlinConfig, getRaritySeed } from 'common-procgen-utils';
+import { address, EthAddress, Tile, WorldCoords } from 'common-types';
 import { EventEmitter } from 'events';
 import { ContractsAPI, makeContractsAPI, RawTile, decodeTile } from './ContractsAPI';
-import { getRandomActionId, getRandomTree, getRaritySeed, seedToTileType } from '../utils';
+import { getRandomActionId, getRandomTree, seedToTileAttrs } from '../utils';
 import {
   ContractMethodName,
   ContractsAPIEvent,
@@ -12,7 +12,7 @@ import {
   SubmittedTx,
   TxIntent,
   UnconfirmedMovePlayer,
-  UnconfirmedProcessTile,
+  UnconfirmedInitPlayer,
 } from '../_types/ContractAPITypes';
 
 class GameManager extends EventEmitter {
@@ -65,7 +65,8 @@ class GameManager extends EventEmitter {
     contractsAPI: ContractsAPI,
     worldSeed: number,
     worldWidth: number,
-    worldScale: number
+    worldScale: number,
+    touchedTiles: Tile[]
   ) {
     super();
 
@@ -101,17 +102,25 @@ class GameManager extends EventEmitter {
         const coords = { x: i, y: j };
         const perl1 = perlin(coords, this.perlinConfig1);
         const perl2 = perlin(coords, this.perlinConfig2);
-        console.log('v', { coords, perl1, perl2 });
-        const raritySeed = getRaritySeed(coords, this.worldSeed, this.worldScale);
-        const originalTileType = seedToTileType(coords, perl1, perl2, raritySeed);
+        const raritySeed = getRaritySeed(coords.x, coords.y);
+        const tileAttrs = seedToTileAttrs(coords, perl1, perl2);
         this.tiles[i].push({
           coords: coords,
-          currentTileType: originalTileType,
-          perl: [perl1, perl2],
-          raritySeed,
-          isPrepped: false,
+          perlin: [perl1, perl2],
+          raritySeed: raritySeed,
+          tileType: tileAttrs.tileType,
+          temperatureType: tileAttrs.temperatureType,
+          altitudeType: tileAttrs.altitudeType,
+          emoji: '',
+          name: '',
+          owner: address('0x0000000000000000000000000000000000000000'),
+          smartContract: address('0x0000000000000000000000000000000000000000'),
         });
       }
+    }
+
+    for (let touchedTile of touchedTiles) {
+      this.tiles[touchedTile.coords.x][touchedTile.coords.y] = touchedTile;
     }
   }
 
@@ -126,6 +135,7 @@ class GameManager extends EventEmitter {
     const worldSeed = await contractsAPI.getSeed();
     const worldWidth = await contractsAPI.getWorldWidth();
     const worldScale = await contractsAPI.getWorldScale();
+    const touchedTiles = await contractsAPI.getTouchedTiles();
 
     const gameManager = new GameManager(
       account,
@@ -133,7 +143,8 @@ class GameManager extends EventEmitter {
       contractsAPI,
       worldSeed,
       worldWidth,
-      worldScale
+      worldScale,
+      touchedTiles
     );
 
     // important that this happens AFTER we load the game state from the blockchain. Otherwise our
@@ -153,14 +164,13 @@ class GameManager extends EventEmitter {
         gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
         gameManager.tileUpdated$.publish();
       })
-      .on(ContractsAPIEvent.PlayerUpdated, async (tile: Tile) => {
+      .on(ContractsAPIEvent.PlayerUpdated, async (coords: WorldCoords) => {
         // todo: update in memory data store
         // todo: emit event to UI
         // TODO: do something???
-        console.log('event player', tile);
+        console.log('event player', coords);
 
-        gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
-        gameManager.tileUpdated$.publish();
+        gameManager.playerUpdated$.publish();
       })
       .on(ContractsAPIEvent.TxSubmitted, (unconfirmedTx: SubmittedTx) => {
         // todo: save the tx to localstorage
@@ -230,7 +240,28 @@ class GameManager extends EventEmitter {
     return this.worldWidth;
   }
 
-  public async movePlayer(coords: WorldCoords) {
+  public async movePlayer(key: string) {
+    console.debug('Key event', key);
+    const keyToDirection: any = {
+      w: [-1, 0],
+      a: [0, -1],
+      s: [1, 0],
+      d: [0, 1],
+    };
+
+    const location = await this.getLocation();
+
+    if (!(key in keyToDirection)) {
+      return;
+    }
+
+    const coords = {
+      x: location.x + keyToDirection[key][0],
+      y: location.y + keyToDirection[key][1],
+    };
+
+    console.log('motionCoords', coords);
+
     if (!this.account) {
       throw new Error('no account set');
     }
@@ -249,28 +280,12 @@ class GameManager extends EventEmitter {
     return this;
   }
 
-  public async processTile(coords: WorldCoords) {
-    if (!this.account) {
-      throw new Error('no account set');
-    }
-
-    const actionId = getRandomActionId();
-    const txIntent: UnconfirmedProcessTile = {
-      actionId,
-      methodName: ContractMethodName.PROCESS_TILE,
-      coords,
-      tsbase: this.tiles[coords.x][coords.y].perl[1],
-    };
-    this.onTxIntent(txIntent);
-    this.contractsAPI.processTile(txIntent).catch((err) => {
-      this.onTxIntentFail(txIntent, err);
-    });
-
-    return this;
-  }
-
   public async getLocation() {
     return this.contractsAPI.getLocation();
+  }
+
+  public async getInitted() {
+    return this.contractsAPI.getInitted();
   }
 
   public async initPlayerLocation(coords: WorldCoords) {
@@ -279,10 +294,9 @@ class GameManager extends EventEmitter {
     }
 
     const actionId = getRandomActionId();
-    const txIntent: UnconfirmedMovePlayer = {
+    const txIntent: UnconfirmedInitPlayer = {
       actionId,
       methodName: ContractMethodName.INIT_PLAYER_LOCATION,
-      coords,
     };
     this.onTxIntent(txIntent);
     this.contractsAPI.initPlayerLocation(txIntent).catch((err) => {
