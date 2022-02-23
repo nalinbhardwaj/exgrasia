@@ -37,10 +37,9 @@ struct Tile {
     TileType tileType;
     TemperatureType temperatureType;
     AltitudeType altitudeType;
-    string emoji;
-    string name;
     address owner;
     address smartContract;
+    uint256 lastPurchased;
 }
 
 struct Coords {

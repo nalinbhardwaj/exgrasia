@@ -31,9 +31,11 @@ import {
   ContractsAPIEvent,
   SubmittedInitPlayer,
   SubmittedMovePlayer,
+  SubmittedOwnTile,
   SubmittedTx,
   UnconfirmedInitPlayer,
   UnconfirmedMovePlayer,
+  UnconfirmedOwnTile,
 } from '../_types/ContractAPITypes';
 import { loadCoreContract, loadGettersContract } from './Blockchain';
 
@@ -55,8 +57,6 @@ export function decodeTile(rawTile: RawTile): Tile {
     tileType: rawTile.tileType,
     temperatureType: rawTile.temperatureType,
     altitudeType: rawTile.altitudeType,
-    emoji: rawTile.emoji,
-    name: rawTile.name,
     owner: address(rawTile.owner),
     smartContract: address(rawTile.smartContract),
   };
@@ -121,15 +121,19 @@ export class ContractsAPI extends EventEmitter {
     const filter = {
       address: coreContract.address,
       topics: [
-        [coreContract.filters.PlayerUpdated(null, null).topics].map(
-          (topicsOrUndefined) => (topicsOrUndefined || [])[0]
-        ),
+        [
+          coreContract.filters.PlayerUpdated(null, null).topics,
+          coreContract.filters.TileUpdated(null).topics,
+        ].map((topicsOrUndefined) => (topicsOrUndefined || [])[0]),
       ] as Array<string | Array<string>>,
     };
 
     const eventHandlers = {
       [ContractEvent.PlayerUpdated]: (rawAddress: string, coords: RawCoords) => {
         this.emit(ContractsAPIEvent.PlayerUpdated, address(rawAddress), decodeCoords(coords));
+      },
+      [ContractEvent.TileUpdated]: (rawTile: RawTile) => {
+        this.emit(ContractsAPIEvent.TileUpdated, decodeTile(rawTile));
       },
     };
 
@@ -140,6 +144,7 @@ export class ContractsAPI extends EventEmitter {
     const { coreContract } = this;
 
     coreContract.removeAllListeners(ContractEvent.PlayerUpdated);
+    coreContract.removeAllListeners(ContractEvent.TileUpdated);
   }
 
   public async getSeed(): Promise<number> {
@@ -236,6 +241,26 @@ export class ContractsAPI extends EventEmitter {
     };
 
     return this.waitFor(unminedMovePlayerTx, tx.confirmed);
+  }
+
+  public async ownTile(action: UnconfirmedOwnTile) {
+    if (!this.txExecutor) {
+      throw new Error('no signer, cannot execute tx');
+    }
+
+    const tx = this.txExecutor.queueTransaction(
+      action.actionId,
+      this.coreContract,
+      action.methodName,
+      [action.coords, action.smartContract]
+    );
+    const unminedOwnTileTx: SubmittedOwnTile = {
+      ...action,
+      txHash: (await tx.submitted).hash,
+      sentAtTimestamp: Math.floor(Date.now() / 1000),
+    };
+
+    return this.waitFor(unminedOwnTileTx, tx.confirmed);
   }
 
   /**

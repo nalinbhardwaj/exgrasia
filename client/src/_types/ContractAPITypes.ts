@@ -1,4 +1,4 @@
-import { Tile, TileType, WorldCoords } from 'common-types';
+import { EthAddress, Tile, TileType, WorldCoords } from 'common-types';
 
 export const enum ContractEvent {
   TileUpdated = 'TileUpdated',
@@ -8,6 +8,7 @@ export const enum ContractEvent {
 export enum ContractMethodName {
   MOVE_PLAYER = 'movePlayer',
   INIT_PLAYER_LOCATION = 'initPlayerLocation',
+  OWN_TILE = 'ownTile',
 }
 
 export const enum ContractsAPIEvent {
@@ -52,4 +53,16 @@ export type SubmittedInitPlayer = UnconfirmedInitPlayer & SubmittedTx;
 
 export function isUnconfirmedInitPlayer(txIntent: TxIntent): txIntent is UnconfirmedInitPlayer {
   return ContractMethodName.INIT_PLAYER_LOCATION == txIntent.methodName;
+}
+
+export type UnconfirmedOwnTile = TxIntent & {
+  methodName: ContractMethodName.OWN_TILE;
+  coords: WorldCoords;
+  smartContract: EthAddress;
+};
+
+export type SubmittedOwnTile = UnconfirmedOwnTile & SubmittedTx;
+
+export function isUnconfirmedOwnTile(txIntent: TxIntent): txIntent is UnconfirmedOwnTile {
+  return ContractMethodName.OWN_TILE == txIntent.methodName;
 }

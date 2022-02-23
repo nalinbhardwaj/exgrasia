@@ -10,6 +10,7 @@ import "./FPMath.sol";
 
 contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     event PlayerUpdated(address, Coords);
+    event TileUpdated(Tile);
 
     function initialize(
         uint256 _seed,
@@ -247,10 +248,9 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
                 tileType: tileType,
                 temperatureType: temperatureType,
                 altitudeType: altitudeType,
-                emoji: "",
-                name: "",
                 owner: address(0),
-                smartContract: address(0)
+                smartContract: address(0),
+                lastPurchased: 0
             });
     }
 
@@ -258,7 +258,7 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     function getTile(Coords memory coords) public returns (Tile memory) {
         if (cachedTiles[coords.x][coords.y].tileType == TileType.UNKNOWN) {
             cachedTiles[coords.x][coords.y] = coordsToTile(coords);
-            touchedTiles.push(cachedTiles[coords.x][coords.y]);
+            touchedCoords.push(coords);
         }
         return cachedTiles[coords.x][coords.y];
     }
@@ -322,5 +322,22 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     function movePlayer(Coords memory coords) public isClose(coords) isInBounds(coords) {
         playerLocation[msg.sender] = coords;
         emit PlayerUpdated(msg.sender, coords);
+    }
+
+    function ownTile(Coords memory coords, address smartContract)
+        public
+        isClose(coords)
+        isInBounds(coords)
+    {
+        Tile memory tile = getTile(coords);
+        require(
+            block.timestamp - tile.lastPurchased > 1 days || tile.owner == msg.sender,
+            "Tile already owned"
+        );
+        tile.smartContract = smartContract;
+        tile.lastPurchased = block.timestamp;
+        tile.owner = msg.sender;
+        cachedTiles[coords.x][coords.y] = tile;
+        emit TileUpdated(tile);
     }
 }

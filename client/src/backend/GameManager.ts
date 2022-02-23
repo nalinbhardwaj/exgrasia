@@ -4,7 +4,7 @@ import { perlin, PerlinConfig, getRaritySeed } from 'common-procgen-utils';
 import { address, EthAddress, PlayerInfo, Tile, WorldCoords } from 'common-types';
 import { EventEmitter } from 'events';
 import { ContractsAPI, makeContractsAPI, RawTile, decodeTile } from './ContractsAPI';
-import { getRandomActionId, getRandomTree, seedToTileAttrs } from '../utils';
+import { getRandomActionId, getRandomTree, nullAddress, seedToTileAttrs } from '../utils';
 import {
   ContractMethodName,
   ContractsAPIEvent,
@@ -14,6 +14,7 @@ import {
   UnconfirmedMovePlayer,
   UnconfirmedInitPlayer,
   isUnconfirmedInitPlayer,
+  UnconfirmedOwnTile,
 } from '../_types/ContractAPITypes';
 
 class GameManager extends EventEmitter {
@@ -116,10 +117,8 @@ class GameManager extends EventEmitter {
           tileType: tileAttrs.tileType,
           temperatureType: tileAttrs.temperatureType,
           altitudeType: tileAttrs.altitudeType,
-          emoji: '',
-          name: '',
-          owner: address('0x0000000000000000000000000000000000000000'),
-          smartContract: address('0x0000000000000000000000000000000000000000'),
+          owner: nullAddress,
+          smartContract: nullAddress,
         });
       }
     }
@@ -178,6 +177,18 @@ class GameManager extends EventEmitter {
           gameManager.selfInfo = await gameManager.getSelfInfoLive();
         }
         gameManager.playerUpdated$.publish();
+      })
+      .on(ContractsAPIEvent.TileUpdated, async (tile: Tile) => {
+        // todo: update in memory data store
+        // todo: emit event to UI
+        // TODO: do something???
+        console.log('event tile', tile);
+
+        if (!gameManager.account) {
+          throw new Error('no account set');
+        }
+        gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
+        gameManager.tileUpdated$.publish();
       })
       .on(ContractsAPIEvent.TxSubmitted, (unconfirmedTx: SubmittedTx) => {
         // todo: save the tx to localstorage
@@ -323,6 +334,26 @@ class GameManager extends EventEmitter {
     };
     this.onTxIntent(txIntent);
     this.contractsAPI.initPlayerLocation(txIntent).catch((err) => {
+      this.onTxIntentFail(txIntent, err);
+    });
+
+    return this;
+  }
+
+  public async ownTile(coords: WorldCoords, smartContract: EthAddress) {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+
+    const actionId = getRandomActionId();
+    const txIntent: UnconfirmedOwnTile = {
+      actionId,
+      methodName: ContractMethodName.OWN_TILE,
+      coords,
+      smartContract,
+    };
+    this.onTxIntent(txIntent);
+    this.contractsAPI.ownTile(txIntent).catch((err) => {
       this.onTxIntentFail(txIntent, err);
     });
 

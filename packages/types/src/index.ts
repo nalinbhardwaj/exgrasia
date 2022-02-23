@@ -55,8 +55,6 @@ export type Tile = {
   tileType: TileType;
   temperatureType: TemperatureType;
   altitudeType: AltitudeType;
-  emoji: string;
-  name: string;
   owner: EthAddress;
   smartContract: EthAddress;
 };

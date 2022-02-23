@@ -13,7 +13,7 @@ contract TinyWorldStorage {
     address[] public playerIds;
 
     mapping(uint256 => mapping(uint256 => Tile)) public cachedTiles;
-    Tile[] public touchedTiles;
+    Coords[] public touchedCoords;
 
     mapping(address => Coords) public playerLocation;
     mapping(address => bool) public playerInited;
@@ -26,6 +26,10 @@ contract TinyWorldStorage {
     }
 
     function getTouchedTiles() public view returns (Tile[] memory) {
+        Tile[] memory touchedTiles = new Tile[](touchedCoords.length);
+        for (uint256 i = 0; i < touchedCoords.length; i++) {
+            touchedTiles[i] = getCachedTile(touchedCoords[i]);
+        }
         return touchedTiles;
     }
 

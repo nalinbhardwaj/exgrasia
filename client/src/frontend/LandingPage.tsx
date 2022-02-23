@@ -5,8 +5,8 @@ import { CORE_CONTRACT_ADDRESS } from 'common-contracts';
 import GameManager from '../backend/GameManager';
 import { EthConnection } from '@darkforest_eth/network';
 import { getEthConnection } from '../backend/Blockchain';
-import { DEV_TEST_PRIVATE_KEY, Tile, TileType, WorldCoords } from 'common-types';
-import { tileTypeToColor, getTileEmoji } from '../utils';
+import { address, DEV_TEST_PRIVATE_KEY, Tile, TileType, WorldCoords } from 'common-types';
+import { tileTypeToColor, getTileEmoji, nullAddress } from '../utils';
 import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
 import { useParams } from 'react-router-dom';
 
@@ -46,6 +46,11 @@ export default function LandingPage() {
         setError(e.message);
       });
   }, []);
+
+  const onGridClick = (coords: WorldCoords) => async () => {
+    if (!gameManager || queryingBlockchain) return;
+    await gameManager.ownTile(coords, nullAddress);
+  };
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (!gameManager || queryingBlockchain) return;
@@ -96,6 +101,7 @@ export default function LandingPage() {
                         style={{
                           backgroundColor: tinycolor(tileTypeToColor[tile.tileType]).toHexString(),
                         }}
+                        onClick={onGridClick({ x: i, y: j })}
                       >
                         {[...playerInfos.value.keys()].map((addr) => {
                           const playerInfo = playerInfos.value.get(addr);
@@ -111,6 +117,10 @@ export default function LandingPage() {
                             );
                           }
                         })}
+                        {tile.owner === ethConnection?.getAddress() && 'o'}
+                        {tile.owner !== ethConnection?.getAddress() &&
+                          tile.owner !== nullAddress &&
+                          'y'}
                       </GridSquare>
                     );
                   })}

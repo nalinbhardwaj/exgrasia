@@ -1,6 +1,6 @@
 import { rand } from 'common-procgen-utils';
 import { mimcWithRounds } from 'common-procgen-utils/dist/mimc';
-import { TileType, WorldCoords, Tile, AltitudeType, TemperatureType } from 'common-types';
+import { TileType, WorldCoords, Tile, AltitudeType, TemperatureType, address } from 'common-types';
 
 export const tileTypeToColor = {
   [TileType.UNKNOWN]: 'grey',
@@ -105,3 +105,5 @@ export const getRandomActionId = () => {
   }
   return ret;
 };
+
+export const nullAddress = address('0x0000000000000000000000000000000000000000');
