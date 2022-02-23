@@ -26,19 +26,23 @@ export function useTiles(gameManager: GameManager | undefined): Wrapper<Tile[][]
   return tiles;
 }
 
-export function useLocation(gameManager: GameManager | undefined): Wrapper<WorldCoords> {
-  const [coords, setCoords] = useState<Wrapper<WorldCoords>>(() => new Wrapper({ x: -1, y: -1 }));
+export function useLocation(
+  gameManager: GameManager | undefined
+): Wrapper<Map<EthAddress, WorldCoords>> {
+  const [playerCoords, setPlayerCoords] = useState<Wrapper<Map<EthAddress, WorldCoords>>>(
+    () => new Wrapper(new Map())
+  );
 
   const onUpdate = useCallback(async () => {
     console.log('onUpdate useLocation');
-    const newCoords = gameManager ? await gameManager.getLocation() : { x: -2, y: -2 };
+    const newCoords = gameManager ? await gameManager.getPlayerLocations() : new Map();
     console.log('useLocation coords', newCoords);
-    setCoords(new Wrapper(newCoords));
+    setPlayerCoords(new Wrapper(newCoords));
   }, [gameManager]);
 
   useEmitterSubscribe(gameManager?.playerUpdated$, onUpdate);
 
-  return coords;
+  return playerCoords;
 }
 
 export function useInitted(gameManager: GameManager | undefined): Wrapper<boolean> {

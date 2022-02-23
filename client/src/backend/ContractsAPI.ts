@@ -7,6 +7,7 @@ import {
   WorldCoords,
   Awaited,
   address,
+  EthAddress,
 } from 'common-types';
 import type { TinyWorld, TinyWorldGetters } from 'common-contracts/typechain';
 import {
@@ -21,6 +22,7 @@ import {
   BigNumber as EthersBN,
   ContractFunction /*, ethers, Event, providers*/,
   providers,
+  Wordlist,
 } from 'ethers';
 import {
   ContractEvent,
@@ -118,21 +120,15 @@ export class ContractsAPI extends EventEmitter {
     const filter = {
       address: coreContract.address,
       topics: [
-        [coreContract.filters.TileUpdated(null).topics].map(
-          (topicsOrUndefined) => (topicsOrUndefined || [])[0]
-        ),
-        [coreContract.filters.PlayerUpdated(null).topics].map(
+        [coreContract.filters.PlayerUpdated(null, null).topics].map(
           (topicsOrUndefined) => (topicsOrUndefined || [])[0]
         ),
       ] as Array<string | Array<string>>,
     };
 
     const eventHandlers = {
-      [ContractEvent.TileUpdated]: (rawTile: RawTile) => {
-        this.emit(ContractsAPIEvent.TileUpdated, decodeTile(rawTile));
-      },
-      [ContractEvent.PlayerUpdated]: (coords: RawCoords) => {
-        this.emit(ContractsAPIEvent.PlayerUpdated, decodeCoords(coords));
+      [ContractEvent.PlayerUpdated]: (rawAddress: string, coords: RawCoords) => {
+        this.emit(ContractsAPIEvent.PlayerUpdated, address(rawAddress), decodeCoords(coords));
       },
     };
 
@@ -142,7 +138,6 @@ export class ContractsAPI extends EventEmitter {
   public removeEventListeners(): void {
     const { coreContract } = this;
 
-    coreContract.removeAllListeners(ContractEvent.TileUpdated);
     coreContract.removeAllListeners(ContractEvent.PlayerUpdated);
   }
 
@@ -161,6 +156,17 @@ export class ContractsAPI extends EventEmitter {
   public async getTouchedTiles(): Promise<Tile[]> {
     const touchedTiles = await this.makeCall<RawTile[]>(this.coreContract.getTouchedTiles);
     return touchedTiles.map((rawTile) => decodeTile(rawTile));
+  }
+
+  public async getPlayerLocations(): Promise<Map<EthAddress, WorldCoords>> {
+    const playerLocs = await this.makeCall<RawCoords[]>(this.coreContract.getPlayerLocations);
+    const playerIds = await this.makeCall<string[]>(this.coreContract.getPlayerIds);
+
+    const playerMap: Map<EthAddress, WorldCoords> = new Map();
+    for (let i = 0; i < playerIds.length; i++) {
+      playerMap.set(address(playerIds[i]), decodeCoords(playerLocs[i]));
+    }
+    return playerMap;
   }
 
   public async getInitted(): Promise<boolean> {

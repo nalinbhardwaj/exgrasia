@@ -12,7 +12,7 @@ export enum ContractMethodName {
 
 export const enum ContractsAPIEvent {
   TileUpdated = 'TileUpdated',
-  PlayerUpdated = 'TileUpdated',
+  PlayerUpdated = 'PlayerUpdated',
 
   TxInitFailed = 'TxInitFailed',
   TxSubmitted = 'TxSubmitted',

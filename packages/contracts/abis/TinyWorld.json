@@ -22,6 +22,12 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
         "components": [
           { "internalType": "uint256", "name": "x", "type": "uint256" },
           { "internalType": "uint256", "name": "y", "type": "uint256" }
@@ -33,63 +39,6 @@
       }
     ],
     "name": "PlayerUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "components": [
-          {
-            "components": [
-              { "internalType": "uint256", "name": "x", "type": "uint256" },
-              { "internalType": "uint256", "name": "y", "type": "uint256" }
-            ],
-            "internalType": "struct Coords",
-            "name": "coords",
-            "type": "tuple"
-          },
-          {
-            "internalType": "uint256[2]",
-            "name": "perlin",
-            "type": "uint256[2]"
-          },
-          {
-            "internalType": "uint256",
-            "name": "raritySeed",
-            "type": "uint256"
-          },
-          {
-            "internalType": "enum TileType",
-            "name": "tileType",
-            "type": "uint8"
-          },
-          {
-            "internalType": "enum TemperatureType",
-            "name": "temperatureType",
-            "type": "uint8"
-          },
-          {
-            "internalType": "enum AltitudeType",
-            "name": "altitudeType",
-            "type": "uint8"
-          },
-          { "internalType": "string", "name": "emoji", "type": "string" },
-          { "internalType": "string", "name": "name", "type": "string" },
-          { "internalType": "address", "name": "owner", "type": "address" },
-          {
-            "internalType": "address",
-            "name": "smartContract",
-            "type": "address"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct Tile",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "name": "TileUpdated",
     "type": "event"
   },
   {
@@ -255,6 +204,32 @@
     ],
     "name": "getGradientAt",
     "outputs": [{ "internalType": "int16[2]", "name": "", "type": "int16[2]" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPlayerIds",
+    "outputs": [
+      { "internalType": "address[]", "name": "", "type": "address[]" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPlayerLocations",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -453,6 +428,13 @@
     "inputs": [],
     "name": "perlinMax",
     "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "playerIds",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },

@@ -9,8 +9,7 @@ import "hardhat/console.sol";
 import "./FPMath.sol";
 
 contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
-    event TileUpdated(Tile);
-    event PlayerUpdated(Coords);
+    event PlayerUpdated(address, Coords);
 
     function initialize(
         uint256 _seed,
@@ -300,11 +299,12 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         Coords memory coords = getInitSeedCoords();
         playerLocation[msg.sender] = coords;
         playerInited[msg.sender] = true;
-        emit PlayerUpdated(coords);
+        playerIds.push(msg.sender);
+        emit PlayerUpdated(msg.sender, coords);
     }
 
     function movePlayer(Coords memory coords) public isClose(coords) {
         playerLocation[msg.sender] = coords;
-        emit PlayerUpdated(coords);
+        emit PlayerUpdated(msg.sender, coords);
     }
 }

@@ -51,7 +51,8 @@ class GameManager extends EventEmitter {
   private readonly worldScale: number;
 
   private readonly tiles: Tile[][];
-  public playerCoords: WorldCoords;
+  public selfCoords: WorldCoords;
+  public playerLocations: Map<EthAddress, WorldCoords>;
 
   private readonly perlinConfig1: PerlinConfig;
   private readonly perlinConfig2: PerlinConfig;
@@ -66,7 +67,9 @@ class GameManager extends EventEmitter {
     worldSeed: number,
     worldWidth: number,
     worldScale: number,
-    touchedTiles: Tile[]
+    touchedTiles: Tile[],
+    selfCoords: WorldCoords,
+    playerLocations: Map<EthAddress, WorldCoords>
   ) {
     super();
 
@@ -77,7 +80,8 @@ class GameManager extends EventEmitter {
     this.worldWidth = worldWidth;
     this.worldScale = worldScale;
     this.tiles = [];
-    this.playerCoords = { x: -1, y: -1 };
+    this.selfCoords = selfCoords;
+    this.playerLocations = playerLocations;
     this.perlinConfig1 = {
       seed: worldSeed,
       scale: worldScale,
@@ -136,6 +140,8 @@ class GameManager extends EventEmitter {
     const worldWidth = await contractsAPI.getWorldWidth();
     const worldScale = await contractsAPI.getWorldScale();
     const touchedTiles = await contractsAPI.getTouchedTiles();
+    const selfCoords = await contractsAPI.getLocation();
+    const playerLocations = await contractsAPI.getPlayerLocations();
 
     const gameManager = new GameManager(
       account,
@@ -144,7 +150,9 @@ class GameManager extends EventEmitter {
       worldSeed,
       worldWidth,
       worldScale,
-      touchedTiles
+      touchedTiles,
+      selfCoords,
+      playerLocations
     );
 
     // important that this happens AFTER we load the game state from the blockchain. Otherwise our
@@ -156,20 +164,15 @@ class GameManager extends EventEmitter {
     // do some logic
     // also, handle state updates for locally-initialized txIntents
     gameManager.contractsAPI
-      .on(ContractsAPIEvent.TileUpdated, async (tile: Tile) => {
-        // todo: update in memory data store
-        // todo: emit event to UI
-        console.log('event tile', tile);
-
-        gameManager.tiles[tile.coords.x][tile.coords.y] = tile;
-        gameManager.tileUpdated$.publish();
-      })
-      .on(ContractsAPIEvent.PlayerUpdated, async (coords: WorldCoords) => {
+      .on(ContractsAPIEvent.PlayerUpdated, async (moverAddr: EthAddress, coords: WorldCoords) => {
         // todo: update in memory data store
         // todo: emit event to UI
         // TODO: do something???
         console.log('event player', coords);
 
+        if (!gameManager.account) {
+          throw new Error('no account set');
+        }
         gameManager.playerUpdated$.publish();
       })
       .on(ContractsAPIEvent.TxSubmitted, (unconfirmedTx: SubmittedTx) => {
@@ -179,7 +182,7 @@ class GameManager extends EventEmitter {
       .on(ContractsAPIEvent.TxConfirmed, async (unconfirmedTx: SubmittedTx) => {
         // todo: remove the tx from localstorage
         if (isUnconfirmedMovePlayer(unconfirmedTx)) {
-          gameManager.playerCoords = unconfirmedTx.coords;
+          gameManager.selfCoords = unconfirmedTx.coords;
           gameManager.playerUpdated$.publish();
         }
         gameManager.onTxConfirmed(unconfirmedTx);
@@ -281,14 +284,25 @@ class GameManager extends EventEmitter {
   }
 
   public async getLocation() {
-    return this.contractsAPI.getLocation();
+    return this.selfCoords;
+  }
+
+  public async getPlayerLocations() {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+
+    const ret = await this.contractsAPI.getPlayerLocations();
+    ret.set(this.account, this.selfCoords); // optimistically override self location for speed
+
+    return ret;
   }
 
   public async getInitted() {
     return this.contractsAPI.getInitted();
   }
 
-  public async initPlayerLocation(coords: WorldCoords) {
+  public async initPlayerLocation() {
     if (!this.account) {
       throw new Error('no account set');
     }

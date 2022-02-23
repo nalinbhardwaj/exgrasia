@@ -24,7 +24,7 @@ export default function LandingPage() {
   const [queryingBlockchain, setQueryingBlockchain] = useState<boolean>(false);
   const [lastQueryResult, setLastQueryResult] = useState<TileType | undefined>();
   const tiles = useTiles(gameManager);
-  const location = useLocation(gameManager);
+  const playerLocations = useLocation(gameManager);
   const initted = useInitted(gameManager);
 
   useEffect(() => {
@@ -71,7 +71,9 @@ export default function LandingPage() {
         {gameManager && (
           <p>{`world seed: ${gameManager.getWorldSeed()}. world width: ${gameManager.getWorldWidth()}`}</p>
         )}
-        {gameManager && <p>{`location.x: ${location.value.x}, location.y: ${location.value.y}`}</p>}
+        {gameManager && (
+          <p>{`selfCoords.x: ${gameManager.selfCoords.x}, selfCoords.y: ${gameManager.selfCoords.x}`}</p>
+        )}
         {gameManager && <p>{`initted: ${initted.value}`}</p>}
         <p>{`errors: ${error}`}</p>
         {lastQueryResult !== undefined ? (
@@ -90,9 +92,16 @@ export default function LandingPage() {
                           backgroundColor: tinycolor(tileTypeToColor[tile.tileType]).toHexString(),
                         }}
                       >
-                        {i === location.value.x && j === location.value.y && (
-                          <span style={{ fontSize: '15px', zIndex: 10 }}>👨‍🎨</span>
-                        )}
+                        {[...playerLocations.value.keys()].map((addr) => {
+                          const playerLocation = playerLocations.value.get(addr);
+                          if (playerLocation && playerLocation.x === i && playerLocation.y === j) {
+                            return (
+                              <span key={addr} style={{ fontSize: '15px', zIndex: 10 }}>
+                                👨‍🎨
+                              </span>
+                            );
+                          }
+                        })}
                       </GridSquare>
                     );
                   })}
