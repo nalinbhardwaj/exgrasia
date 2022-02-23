@@ -49,6 +49,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "smoothStep(int128)": FunctionFragment;
     "touchedCoords(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "transferTile(tuple,address)": FunctionFragment;
     "validPlayerEmoji(string)": FunctionFragment;
     "vecs(uint256,uint256)": FunctionFragment;
     "vecsDenom()": FunctionFragment;
@@ -162,6 +163,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "transferTile",
+    values: [{ x: BigNumberish; y: BigNumberish }, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "validPlayerEmoji",
     values: [string]
   ): string;
@@ -249,6 +254,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferTile",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -763,6 +772,18 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    transferTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      newOwner: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "transferTile(tuple,address)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      newOwner: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     validPlayerEmoji(
       arg0: string,
       overrides?: CallOverrides
@@ -1218,6 +1239,18 @@ export class TinyWorld extends Contract {
   ): Promise<ContractTransaction>;
 
   "transferOwnership(address)"(
+    newOwner: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  transferTile(
+    coords: { x: BigNumberish; y: BigNumberish },
+    newOwner: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "transferTile(tuple,address)"(
+    coords: { x: BigNumberish; y: BigNumberish },
     newOwner: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1693,6 +1726,18 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    transferTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "transferTile(tuple,address)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     validPlayerEmoji(arg0: string, overrides?: CallOverrides): Promise<string>;
 
     "validPlayerEmoji(string)"(
@@ -1986,6 +2031,18 @@ export class TinyWorld extends Contract {
     ): Promise<BigNumber>;
 
     "transferOwnership(address)"(
+      newOwner: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    transferTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      newOwner: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "transferTile(tuple,address)"(
+      coords: { x: BigNumberish; y: BigNumberish },
       newOwner: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -2294,6 +2351,18 @@ export class TinyWorld extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "transferOwnership(address)"(
+      newOwner: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    transferTile(
+      coords: { x: BigNumberish; y: BigNumberish },
+      newOwner: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "transferTile(tuple,address)"(
+      coords: { x: BigNumberish; y: BigNumberish },
       newOwner: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

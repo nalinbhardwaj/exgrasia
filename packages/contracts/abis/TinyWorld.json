@@ -590,6 +590,24 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "coords",
+        "type": "tuple"
+      },
+      { "internalType": "address", "name": "newOwner", "type": "address" }
+    ],
+    "name": "transferTile",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "name": "validPlayerEmoji",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],

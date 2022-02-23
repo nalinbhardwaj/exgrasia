@@ -331,12 +331,27 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     {
         Tile memory tile = getTile(coords);
         require(
-            block.timestamp - tile.lastPurchased > 1 days || tile.owner == msg.sender,
+            block.timestamp - tile.lastPurchased > 3 hours || tile.owner == msg.sender,
             "Tile already owned"
         );
         tile.smartContract = smartContract;
         tile.lastPurchased = block.timestamp;
         tile.owner = msg.sender;
+        cachedTiles[coords.x][coords.y] = tile;
+        emit TileUpdated(tile);
+    }
+
+    function transferTile(Coords memory coords, address newOwner)
+        public
+        isClose(coords)
+        isInBounds(coords)
+    {
+        Tile memory tile = getTile(coords);
+        require(
+            block.timestamp - tile.lastPurchased <= 3 hours && tile.owner == msg.sender,
+            "Tile not owned"
+        );
+        tile.owner = newOwner;
         cachedTiles[coords.x][coords.y] = tile;
         emit TileUpdated(tile);
     }
