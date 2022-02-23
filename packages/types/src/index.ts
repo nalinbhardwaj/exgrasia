@@ -48,6 +48,12 @@ export type WorldCoords = {
   y: number;
 };
 
+export type TileContractMetaData = {
+  emoji: string;
+  name: string;
+  description: string;
+};
+
 export type Tile = {
   coords: WorldCoords;
   perlin: [number, number];
@@ -57,6 +63,7 @@ export type Tile = {
   altitudeType: AltitudeType;
   owner: EthAddress;
   smartContract: EthAddress;
+  smartContractMetaData: TileContractMetaData;
 };
 
 export type PlayerInfo = {

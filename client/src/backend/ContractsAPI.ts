@@ -9,8 +9,9 @@ import {
   address,
   EthAddress,
   PlayerInfo,
+  TileContractMetaData,
 } from 'common-types';
-import type { TinyWorld, TinyWorldGetters } from 'common-contracts/typechain';
+import type { TinyWorld, TinyWorldGetters, TestTileContract } from 'common-contracts/typechain';
 import {
   ContractCaller,
   EthConnection,
@@ -23,7 +24,6 @@ import {
   BigNumber as EthersBN,
   ContractFunction /*, ethers, Event, providers*/,
   providers,
-  Wordlist,
 } from 'ethers';
 import {
   ContractEvent,
@@ -37,7 +37,8 @@ import {
   UnconfirmedMovePlayer,
   UnconfirmedOwnTile,
 } from '../_types/ContractAPITypes';
-import { loadCoreContract, loadGettersContract } from './Blockchain';
+import { loadCoreContract, loadGettersContract, loadTileContract } from './Blockchain';
+import { nullAddress } from '../utils';
 
 export type RawTile = Awaited<ReturnType<TinyWorld['getCachedTile(tuple)']>>;
 export type RawCoords = Awaited<ReturnType<TinyWorld['playerLocation']>>;
@@ -46,19 +47,6 @@ export function decodeCoords(rawCoords: RawCoords): WorldCoords {
   return {
     x: rawCoords.x.toNumber(),
     y: rawCoords.y.toNumber(),
-  };
-}
-
-export function decodeTile(rawTile: RawTile): Tile {
-  return {
-    coords: decodeCoords(rawTile.coords),
-    perlin: [rawTile.perlin[0].toNumber(), rawTile.perlin[1].toNumber()],
-    raritySeed: rawTile.raritySeed.toNumber(),
-    tileType: rawTile.tileType,
-    temperatureType: rawTile.temperatureType,
-    altitudeType: rawTile.altitudeType,
-    owner: address(rawTile.owner),
-    smartContract: address(rawTile.smartContract),
   };
 }
 
@@ -98,6 +86,10 @@ export class ContractsAPI extends EventEmitter {
     return this.ethConnection.getContract<TinyWorldGetters>(GETTERS_CONTRACT_ADDRESS);
   }
 
+  private getTileContract(addr: EthAddress) {
+    return this.ethConnection.getContract<TestTileContract>(addr);
+  }
+
   public constructor(ethConnection: EthConnection) {
     super();
     this.contractCaller = new ContractCaller();
@@ -113,6 +105,22 @@ export class ContractsAPI extends EventEmitter {
 
   private makeCall<T>(contractViewFunction: ContractFunction<T>, args: unknown[] = []): Promise<T> {
     return this.contractCaller.makeCall(contractViewFunction, args);
+  }
+
+  private async decodeTile(rawTile: RawTile): Promise<Tile> {
+    await this.ethConnection.loadContract(address(rawTile.smartContract), loadTileContract);
+    const tileContractMetaData = await this.getTileContractMetaData(address(rawTile.smartContract));
+    return {
+      coords: decodeCoords(rawTile.coords),
+      perlin: [rawTile.perlin[0].toNumber(), rawTile.perlin[1].toNumber()],
+      raritySeed: rawTile.raritySeed.toNumber(),
+      tileType: rawTile.tileType,
+      temperatureType: rawTile.temperatureType,
+      altitudeType: rawTile.altitudeType,
+      owner: address(rawTile.owner),
+      smartContract: address(rawTile.smartContract),
+      smartContractMetaData: tileContractMetaData,
+    };
   }
 
   public async setupEventListeners(): Promise<void> {
@@ -132,8 +140,8 @@ export class ContractsAPI extends EventEmitter {
       [ContractEvent.PlayerUpdated]: (rawAddress: string, coords: RawCoords) => {
         this.emit(ContractsAPIEvent.PlayerUpdated, address(rawAddress), decodeCoords(coords));
       },
-      [ContractEvent.TileUpdated]: (rawTile: RawTile) => {
-        this.emit(ContractsAPIEvent.TileUpdated, decodeTile(rawTile));
+      [ContractEvent.TileUpdated]: async (rawTile: RawTile) => {
+        this.emit(ContractsAPIEvent.TileUpdated, await this.decodeTile(rawTile));
       },
     };
 
@@ -161,7 +169,8 @@ export class ContractsAPI extends EventEmitter {
 
   public async getTouchedTiles(): Promise<Tile[]> {
     const touchedTiles = await this.makeCall<RawTile[]>(this.coreContract.getTouchedTiles);
-    return touchedTiles.map((rawTile) => decodeTile(rawTile));
+
+    return Promise.all(touchedTiles.map(async (rawTile) => await this.decodeTile(rawTile)));
   }
 
   public async getPlayerInfos(): Promise<Map<EthAddress, PlayerInfo>> {
@@ -201,6 +210,20 @@ export class ContractsAPI extends EventEmitter {
     const rawCoords = await this.makeCall<RawCoords>(this.coreContract.playerLocation, [addr]);
     const emoji = await this.makeCall<string>(this.coreContract.playerEmoji, [addr]);
     return { coords: decodeCoords(rawCoords), emoji };
+  }
+
+  public async getTileContractMetaData(addr: EthAddress): Promise<TileContractMetaData> {
+    if (!this.txExecutor) {
+      throw new Error('no signer, cannot execute tx');
+    }
+
+    if (addr == nullAddress) return { emoji: '', name: '', description: '' };
+
+    const tileContract = this.getTileContract(addr);
+    const emoji = await this.makeCall<string>(tileContract.emoji);
+    const name = await this.makeCall<string>(tileContract.name);
+    const description = await this.makeCall<string>(tileContract.description);
+    return { emoji, name, description };
   }
 
   public async initPlayerLocation(action: UnconfirmedInitPlayer) {

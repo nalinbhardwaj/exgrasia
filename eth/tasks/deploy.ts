@@ -8,6 +8,7 @@ import type {
   TinyWorldCoreReturn,
   LibraryContracts,
   Verifier,
+  TestTileContract,
 } from '../task-types';
 import * as prettier from 'prettier';
 import { Signer, Contract } from 'ethers';
@@ -22,6 +23,7 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
 
   // deploy libraries
   const libraries: LibraryContracts = await hre.run('deploy:libraries');
+  console.log('Library test deployed to:', libraries.tileContract.address);
 
   // deploy the core contract
   const tinyWorldCoreReturn: TinyWorldCoreReturn = await hre.run('deploy:core', {
@@ -124,8 +126,13 @@ async function deployLibraries({}, hre: HardhatRuntimeEnvironment): Promise<Libr
   const verifier = await VerifierFactory.deploy();
   await verifier.deployTransaction.wait();
 
+  const TileContractFactory = await hre.ethers.getContractFactory('TestTileContract');
+  const tileContract = await TileContractFactory.deploy();
+  await tileContract.deployTransaction.wait();
+
   return {
     verifier: verifier as Verifier,
+    tileContract: tileContract as TestTileContract,
   };
 }
 

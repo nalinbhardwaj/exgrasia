@@ -3,7 +3,7 @@ import { monomitter, Monomitter, Subscription } from '@darkforest_eth/events';
 import { perlin, PerlinConfig, getRaritySeed } from 'common-procgen-utils';
 import { address, EthAddress, PlayerInfo, Tile, WorldCoords } from 'common-types';
 import { EventEmitter } from 'events';
-import { ContractsAPI, makeContractsAPI, RawTile, decodeTile } from './ContractsAPI';
+import { ContractsAPI, makeContractsAPI, RawTile } from './ContractsAPI';
 import { getRandomActionId, getRandomTree, nullAddress, seedToTileAttrs } from '../utils';
 import {
   ContractMethodName,
@@ -119,6 +119,7 @@ class GameManager extends EventEmitter {
           altitudeType: tileAttrs.altitudeType,
           owner: nullAddress,
           smartContract: nullAddress,
+          smartContractMetaData: { emoji: '', description: '', name: '' },
         });
       }
     }

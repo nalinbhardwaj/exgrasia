@@ -49,7 +49,7 @@ export default function LandingPage() {
 
   const onGridClick = (coords: WorldCoords) => async () => {
     if (!gameManager || queryingBlockchain) return;
-    await gameManager.ownTile(coords, nullAddress);
+    await gameManager.ownTile(coords, address('0xA1cf9870677Bb213991DDdE342a5CE412c0f676D'));
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -117,10 +117,7 @@ export default function LandingPage() {
                             );
                           }
                         })}
-                        {tile.owner === ethConnection?.getAddress() && 'o'}
-                        {tile.owner !== ethConnection?.getAddress() &&
-                          tile.owner !== nullAddress &&
-                          'y'}
+                        {tile.smartContractMetaData.emoji}
                       </GridSquare>
                     );
                   })}
