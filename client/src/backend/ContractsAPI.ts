@@ -8,6 +8,7 @@ import {
   Awaited,
   address,
   EthAddress,
+  PlayerInfo,
 } from 'common-types';
 import type { TinyWorld, TinyWorldGetters } from 'common-contracts/typechain';
 import {
@@ -158,13 +159,18 @@ export class ContractsAPI extends EventEmitter {
     return touchedTiles.map((rawTile) => decodeTile(rawTile));
   }
 
-  public async getPlayerLocations(): Promise<Map<EthAddress, WorldCoords>> {
-    const playerLocs = await this.makeCall<RawCoords[]>(this.coreContract.getPlayerLocations);
+  public async getPlayerInfos(): Promise<Map<EthAddress, PlayerInfo>> {
+    const playerInfos = await this.makeCall<{ 0: RawCoords[]; 1: string[] }>(
+      this.coreContract.getPlayerInfos
+    );
     const playerIds = await this.makeCall<string[]>(this.coreContract.getPlayerIds);
 
-    const playerMap: Map<EthAddress, WorldCoords> = new Map();
+    const playerMap: Map<EthAddress, PlayerInfo> = new Map();
     for (let i = 0; i < playerIds.length; i++) {
-      playerMap.set(address(playerIds[i]), decodeCoords(playerLocs[i]));
+      playerMap.set(address(playerIds[i]), {
+        coords: decodeCoords(playerInfos[0][i]),
+        emoji: playerInfos[1][i],
+      });
     }
     return playerMap;
   }
@@ -180,7 +186,7 @@ export class ContractsAPI extends EventEmitter {
     return initted;
   }
 
-  public async getLocation(): Promise<WorldCoords> {
+  public async getSelfInfo(): Promise<PlayerInfo> {
     if (!this.txExecutor) {
       throw new Error('no signer, cannot execute tx');
     }
@@ -188,7 +194,8 @@ export class ContractsAPI extends EventEmitter {
     const addr = this.ethConnection.getAddress();
 
     const rawCoords = await this.makeCall<RawCoords>(this.coreContract.playerLocation, [addr]);
-    return decodeCoords(rawCoords);
+    const emoji = await this.makeCall<string>(this.coreContract.playerEmoji, [addr]);
+    return { coords: decodeCoords(rawCoords), emoji };
   }
 
   public async initPlayerLocation(action: UnconfirmedInitPlayer) {
@@ -200,7 +207,7 @@ export class ContractsAPI extends EventEmitter {
       action.actionId,
       this.coreContract,
       action.methodName,
-      []
+      [action.emoji]
     );
     const unminedInitPlayerTx: SubmittedInitPlayer = {
       ...action,

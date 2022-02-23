@@ -1,3 +1,4 @@
+import { DEV_TEST_PRIVATE_KEY } from 'common-types';
 import React from 'react';
 import { hot } from 'react-hot-loader/root';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -13,6 +14,7 @@ function App() {
       <Router>
         <Switch>
           <Route path='/' exact component={LandingPage} />
+          <Route path='/:privKeyIdx' exact component={LandingPage} />
         </Switch>
       </Router>
     </>

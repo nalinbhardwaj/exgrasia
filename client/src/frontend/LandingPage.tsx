@@ -7,7 +7,8 @@ import { EthConnection } from '@darkforest_eth/network';
 import { getEthConnection } from '../backend/Blockchain';
 import { DEV_TEST_PRIVATE_KEY, Tile, TileType, WorldCoords } from 'common-types';
 import { tileTypeToColor, getTileEmoji } from '../utils';
-import { useInitted, useLocation, useTiles } from './Utils/AppHooks';
+import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
+import { useParams } from 'react-router-dom';
 
 const enum LoadingStep {
   NONE,
@@ -24,13 +25,15 @@ export default function LandingPage() {
   const [queryingBlockchain, setQueryingBlockchain] = useState<boolean>(false);
   const [lastQueryResult, setLastQueryResult] = useState<TileType | undefined>();
   const tiles = useTiles(gameManager);
-  const playerLocations = useLocation(gameManager);
+  const playerInfos = useInfo(gameManager);
   const initted = useInitted(gameManager);
+  const { privKeyIdx } = useParams<{ privKeyIdx?: string }>();
+  const privateKey = DEV_TEST_PRIVATE_KEY[privKeyIdx ? parseInt(privKeyIdx) : 0];
 
   useEffect(() => {
     getEthConnection()
       .then(async (ethConnection) => {
-        ethConnection.setAccount(DEV_TEST_PRIVATE_KEY);
+        ethConnection.setAccount(privateKey);
         setEthConnection(ethConnection);
         setStep(LoadingStep.LOADED_ETH_CONNECTION);
         const gm = await GameManager.create(ethConnection);
@@ -72,7 +75,7 @@ export default function LandingPage() {
           <p>{`world seed: ${gameManager.getWorldSeed()}. world width: ${gameManager.getWorldWidth()}`}</p>
         )}
         {gameManager && (
-          <p>{`selfCoords.x: ${gameManager.selfCoords.x}, selfCoords.y: ${gameManager.selfCoords.x}`}</p>
+          <p>{`selfCoords.x: ${gameManager.selfInfo.coords.x}, selfCoords.y: ${gameManager.selfInfo.coords.x}`}</p>
         )}
         {gameManager && <p>{`initted: ${initted.value}`}</p>}
         <p>{`errors: ${error}`}</p>
@@ -82,9 +85,11 @@ export default function LandingPage() {
         <p>yo</p>
         {gameManager && tiles
           ? tiles.value.map((coordRow, i) => {
+              if (i == 0) return null;
               return (
                 <GridRow key={i}>
                   {coordRow.map((tile, j) => {
+                    if (j == 0) return null;
                     return (
                       <GridSquare
                         key={100 * i + j}
@@ -92,12 +97,16 @@ export default function LandingPage() {
                           backgroundColor: tinycolor(tileTypeToColor[tile.tileType]).toHexString(),
                         }}
                       >
-                        {[...playerLocations.value.keys()].map((addr) => {
-                          const playerLocation = playerLocations.value.get(addr);
-                          if (playerLocation && playerLocation.x === i && playerLocation.y === j) {
+                        {[...playerInfos.value.keys()].map((addr) => {
+                          const playerInfo = playerInfos.value.get(addr);
+                          if (
+                            playerInfo &&
+                            playerInfo.coords.x === i &&
+                            playerInfo.coords.y === j
+                          ) {
                             return (
                               <span key={addr} style={{ fontSize: '15px', zIndex: 10 }}>
-                                👨‍🎨
+                                {playerInfo.emoji}
                               </span>
                             );
                           }

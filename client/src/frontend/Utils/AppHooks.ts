@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { Wrapper } from '../../Backend/Utils/Wrapper';
 import GameManager from '../../Backend/GameManager';
 import { useEmitterSubscribe, useWrappedEmitter } from './EmitterHooks';
-import { EthAddress, Tile, TileType, WorldCoords } from 'common-types';
+import { EthAddress, PlayerInfo, Tile, TileType, WorldCoords } from 'common-types';
 import { createDefinedContext } from './createDefinedContext';
 
 export const { useDefinedContext: useGameManager, provider: GameManagerProvider } =
@@ -26,23 +26,23 @@ export function useTiles(gameManager: GameManager | undefined): Wrapper<Tile[][]
   return tiles;
 }
 
-export function useLocation(
+export function useInfo(
   gameManager: GameManager | undefined
-): Wrapper<Map<EthAddress, WorldCoords>> {
-  const [playerCoords, setPlayerCoords] = useState<Wrapper<Map<EthAddress, WorldCoords>>>(
+): Wrapper<Map<EthAddress, PlayerInfo>> {
+  const [playerInfos, setPlayerInfos] = useState<Wrapper<Map<EthAddress, PlayerInfo>>>(
     () => new Wrapper(new Map())
   );
 
   const onUpdate = useCallback(async () => {
     console.log('onUpdate useLocation');
-    const newCoords = gameManager ? await gameManager.getPlayerLocations() : new Map();
-    console.log('useLocation coords', newCoords);
-    setPlayerCoords(new Wrapper(newCoords));
+    const newInfos = gameManager ? await gameManager.getPlayerInfos() : new Map();
+    console.log('useLocation infos', newInfos);
+    setPlayerInfos(new Wrapper(newInfos));
   }, [gameManager]);
 
   useEmitterSubscribe(gameManager?.playerUpdated$, onUpdate);
 
-  return playerCoords;
+  return playerInfos;
 }
 
 export function useInitted(gameManager: GameManager | undefined): Wrapper<boolean> {

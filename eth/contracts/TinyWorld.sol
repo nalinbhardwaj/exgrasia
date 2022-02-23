@@ -40,6 +40,12 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
             [int16(707), int16(-708)],
             [int16(923), int16(-383)]
         ];
+        validPlayerEmoji["monkey"] = unicode"🐵";
+        validPlayerEmoji["bear"] = unicode"🐻";
+        validPlayerEmoji["frog"] = unicode"🐸";
+        validPlayerEmoji["dog"] = unicode"🐶";
+        validPlayerEmoji["cat"] = unicode"🐱";
+        validPlayerEmoji["mouse"] = unicode"🐭";
     }
 
     // Perlin Noise
@@ -277,7 +283,7 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
                 )
             )
         ) % worldWidth);
-        return Coords(worldWidth - x, worldWidth - y);
+        return Coords(worldWidth - x - 1, worldWidth - y - 1);
     }
 
     function abs(int256 x) private pure returns (uint256) {
@@ -294,16 +300,26 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         _;
     }
 
-    function initPlayerLocation() public {
+    modifier isInBounds(Coords memory loc) {
+        require(playerInited[msg.sender], "Player not inited");
+        require(loc.x >= 1 && loc.x < worldWidth, "X out of bounds");
+        require(loc.y >= 1 && loc.y < worldWidth, "Y out of bounds");
+        _;
+    }
+
+    function initPlayerLocation(string memory repr) public {
         require(playerInited[msg.sender] == false, "Already inited");
+        require(bytes(validPlayerEmoji[repr]).length > 0, "Invalid emoji");
         Coords memory coords = getInitSeedCoords();
+
         playerLocation[msg.sender] = coords;
         playerInited[msg.sender] = true;
+        playerEmoji[msg.sender] = validPlayerEmoji[repr];
         playerIds.push(msg.sender);
         emit PlayerUpdated(msg.sender, coords);
     }
 
-    function movePlayer(Coords memory coords) public isClose(coords) {
+    function movePlayer(Coords memory coords) public isClose(coords) isInBounds(coords) {
         playerLocation[msg.sender] = coords;
         emit PlayerUpdated(msg.sender, coords);
     }

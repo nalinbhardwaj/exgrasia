@@ -45,6 +45,7 @@ export function isUnconfirmedMovePlayer(txIntent: TxIntent): txIntent is Unconfi
 
 export type UnconfirmedInitPlayer = TxIntent & {
   methodName: ContractMethodName.INIT_PLAYER_LOCATION;
+  emoji: string;
 };
 
 export type SubmittedInitPlayer = UnconfirmedInitPlayer & SubmittedTx;

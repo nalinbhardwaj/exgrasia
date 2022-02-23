@@ -29,16 +29,17 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "getCorners(uint32,uint32,uint32)": FunctionFragment;
     "getGradientAt(uint32,uint32,uint32,uint32)": FunctionFragment;
     "getPlayerIds()": FunctionFragment;
-    "getPlayerLocations()": FunctionFragment;
+    "getPlayerInfos()": FunctionFragment;
     "getSingleScalePerlin(uint32,uint32,uint32,uint32)": FunctionFragment;
     "getTile(tuple)": FunctionFragment;
     "getTouchedTiles()": FunctionFragment;
     "getWeight(uint32,uint32,uint32,uint32,uint32)": FunctionFragment;
-    "initPlayerLocation()": FunctionFragment;
+    "initPlayerLocation(string)": FunctionFragment;
     "initialize(uint256,uint256,uint256)": FunctionFragment;
     "movePlayer(tuple)": FunctionFragment;
     "owner()": FunctionFragment;
     "perlinMax()": FunctionFragment;
+    "playerEmoji(address)": FunctionFragment;
     "playerIds(uint256)": FunctionFragment;
     "playerInited(address)": FunctionFragment;
     "playerLocation(address)": FunctionFragment;
@@ -47,6 +48,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "smoothStep(int128)": FunctionFragment;
     "touchedTiles(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "validPlayerEmoji(string)": FunctionFragment;
     "vecs(uint256,uint256)": FunctionFragment;
     "vecsDenom()": FunctionFragment;
     "worldScale()": FunctionFragment;
@@ -85,7 +87,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getPlayerLocations",
+    functionFragment: "getPlayerInfos",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -112,7 +114,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initPlayerLocation",
-    values?: undefined
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
@@ -124,6 +126,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(functionFragment: "perlinMax", values?: undefined): string;
+  encodeFunctionData(functionFragment: "playerEmoji", values: [string]): string;
   encodeFunctionData(
     functionFragment: "playerIds",
     values: [BigNumberish]
@@ -151,6 +154,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "validPlayerEmoji",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -190,7 +197,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getPlayerLocations",
+    functionFragment: "getPlayerInfos",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -211,6 +218,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "movePlayer", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "perlinMax", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "playerEmoji",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "playerIds", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "playerInited",
@@ -232,6 +243,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "validPlayerEmoji",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "vecs", data: BytesLike): Result;
@@ -460,12 +475,14 @@ export class TinyWorld extends Contract {
       0: string[];
     }>;
 
-    getPlayerLocations(overrides?: CallOverrides): Promise<{
+    getPlayerInfos(overrides?: CallOverrides): Promise<{
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
+      1: string[];
     }>;
 
-    "getPlayerLocations()"(overrides?: CallOverrides): Promise<{
+    "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
+      1: string[];
     }>;
 
     getSingleScalePerlin(
@@ -570,9 +587,15 @@ export class TinyWorld extends Contract {
       0: BigNumber;
     }>;
 
-    initPlayerLocation(overrides?: Overrides): Promise<ContractTransaction>;
+    initPlayerLocation(
+      repr: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    "initPlayerLocation()"(overrides?: Overrides): Promise<ContractTransaction>;
+    "initPlayerLocation(string)"(
+      repr: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     initialize(
       _seed: BigNumberish,
@@ -612,6 +635,20 @@ export class TinyWorld extends Contract {
 
     "perlinMax()"(overrides?: CallOverrides): Promise<{
       0: number;
+    }>;
+
+    playerEmoji(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "playerEmoji(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
     }>;
 
     playerIds(
@@ -745,6 +782,20 @@ export class TinyWorld extends Contract {
       newOwner: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    validPlayerEmoji(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "validPlayerEmoji(string)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
     vecs(
       arg0: BigNumberish,
@@ -955,13 +1006,15 @@ export class TinyWorld extends Contract {
 
   "getPlayerIds()"(overrides?: CallOverrides): Promise<string[]>;
 
-  getPlayerLocations(
-    overrides?: CallOverrides
-  ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
+  getPlayerInfos(overrides?: CallOverrides): Promise<{
+    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
+    1: string[];
+  }>;
 
-  "getPlayerLocations()"(
-    overrides?: CallOverrides
-  ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
+  "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
+    0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
+    1: string[];
+  }>;
 
   getSingleScalePerlin(
     x: BigNumberish,
@@ -1061,9 +1114,15 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  initPlayerLocation(overrides?: Overrides): Promise<ContractTransaction>;
+  initPlayerLocation(
+    repr: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "initPlayerLocation()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "initPlayerLocation(string)"(
+    repr: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   initialize(
     _seed: BigNumberish,
@@ -1096,6 +1155,13 @@ export class TinyWorld extends Contract {
   perlinMax(overrides?: CallOverrides): Promise<number>;
 
   "perlinMax()"(overrides?: CallOverrides): Promise<number>;
+
+  playerEmoji(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+  "playerEmoji(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   playerIds(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -1203,6 +1269,13 @@ export class TinyWorld extends Contract {
     newOwner: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  validPlayerEmoji(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+  "validPlayerEmoji(string)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   vecs(
     arg0: BigNumberish,
@@ -1397,13 +1470,15 @@ export class TinyWorld extends Contract {
 
     "getPlayerIds()"(overrides?: CallOverrides): Promise<string[]>;
 
-    getPlayerLocations(
-      overrides?: CallOverrides
-    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
+    getPlayerInfos(overrides?: CallOverrides): Promise<{
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
+      1: string[];
+    }>;
 
-    "getPlayerLocations()"(
-      overrides?: CallOverrides
-    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
+    "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
+      1: string[];
+    }>;
 
     getSingleScalePerlin(
       x: BigNumberish,
@@ -1545,9 +1620,12 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    initPlayerLocation(overrides?: CallOverrides): Promise<void>;
+    initPlayerLocation(repr: string, overrides?: CallOverrides): Promise<void>;
 
-    "initPlayerLocation()"(overrides?: CallOverrides): Promise<void>;
+    "initPlayerLocation(string)"(
+      repr: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     initialize(
       _seed: BigNumberish,
@@ -1580,6 +1658,13 @@ export class TinyWorld extends Contract {
     perlinMax(overrides?: CallOverrides): Promise<number>;
 
     "perlinMax()"(overrides?: CallOverrides): Promise<number>;
+
+    playerEmoji(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+    "playerEmoji(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     playerIds(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -1687,6 +1772,13 @@ export class TinyWorld extends Contract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    validPlayerEmoji(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+    "validPlayerEmoji(string)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     vecs(
       arg0: BigNumberish,
@@ -1807,9 +1899,9 @@ export class TinyWorld extends Contract {
 
     "getPlayerIds()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getPlayerLocations(overrides?: CallOverrides): Promise<BigNumber>;
+    getPlayerInfos(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "getPlayerLocations()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "getPlayerInfos()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getSingleScalePerlin(
       x: BigNumberish,
@@ -1859,9 +1951,12 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    initPlayerLocation(overrides?: Overrides): Promise<BigNumber>;
+    initPlayerLocation(repr: string, overrides?: Overrides): Promise<BigNumber>;
 
-    "initPlayerLocation()"(overrides?: Overrides): Promise<BigNumber>;
+    "initPlayerLocation(string)"(
+      repr: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     initialize(
       _seed: BigNumberish,
@@ -1894,6 +1989,13 @@ export class TinyWorld extends Contract {
     perlinMax(overrides?: CallOverrides): Promise<BigNumber>;
 
     "perlinMax()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    playerEmoji(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "playerEmoji(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     playerIds(
       arg0: BigNumberish,
@@ -1952,6 +2054,16 @@ export class TinyWorld extends Contract {
     "transferOwnership(address)"(
       newOwner: string,
       overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    validPlayerEmoji(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "validPlayerEmoji(string)"(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     vecs(
@@ -2064,11 +2176,9 @@ export class TinyWorld extends Contract {
 
     "getPlayerIds()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getPlayerLocations(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    getPlayerInfos(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "getPlayerLocations()"(
+    "getPlayerInfos()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2122,9 +2232,13 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    initPlayerLocation(overrides?: Overrides): Promise<PopulatedTransaction>;
+    initPlayerLocation(
+      repr: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
-    "initPlayerLocation()"(
+    "initPlayerLocation(string)"(
+      repr: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -2159,6 +2273,16 @@ export class TinyWorld extends Contract {
     perlinMax(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "perlinMax()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    playerEmoji(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "playerEmoji(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     playerIds(
       arg0: BigNumberish,
@@ -2226,6 +2350,16 @@ export class TinyWorld extends Contract {
     "transferOwnership(address)"(
       newOwner: string,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    validPlayerEmoji(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "validPlayerEmoji(string)"(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     vecs(

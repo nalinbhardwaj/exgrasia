@@ -17,6 +17,9 @@ contract TinyWorldStorage {
 
     mapping(address => Coords) public playerLocation;
     mapping(address => bool) public playerInited;
+    mapping(address => string) public playerEmoji;
+
+    mapping(string => string) public validPlayerEmoji;
 
     function getCachedTile(Coords memory coords) public view returns (Tile memory) {
         return cachedTiles[coords.x][coords.y];
@@ -30,11 +33,13 @@ contract TinyWorldStorage {
         return playerIds;
     }
 
-    function getPlayerLocations() public view returns (Coords[] memory) {
-        Coords[] memory ret = new Coords[](playerIds.length);
+    function getPlayerInfos() public view returns (Coords[] memory, string[] memory) {
+        Coords[] memory retLoc = new Coords[](playerIds.length);
+        string[] memory retEmoji = new string[](playerIds.length);
         for (uint256 i = 0; i < playerIds.length; i++) {
-            ret[i] = playerLocation[playerIds[i]];
+            retLoc[i] = playerLocation[playerIds[i]];
+            retEmoji[i] = playerEmoji[playerIds[i]];
         }
-        return ret;
+        return (retLoc, retEmoji);
     }
 }

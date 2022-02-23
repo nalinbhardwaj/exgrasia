@@ -61,6 +61,11 @@ export type Tile = {
   smartContract: EthAddress;
 };
 
+export type PlayerInfo = {
+  coords: WorldCoords;
+  emoji: string;
+};
+
 /**
  * An abstract type used to differentiate between common types, like `number` or `string`.
  * The `Id` type parameter is the key to vary upon and should be unique unless being used to subtype.
@@ -158,7 +163,10 @@ export function buildContractCallArgs(
 }
 
 /**
- * Corresponds to local dev deployer account 0x1c0f0Af3262A7213E59Be7f1440282279D788335
+ * Corresponds to local dev deployer account
  */
-export const DEV_TEST_PRIVATE_KEY =
-  '0x044C7963E9A89D4F8B64AB23E02E97B2E00DD57FCB60F316AC69B77135003AEF';
+export const DEV_TEST_PRIVATE_KEY = [
+  '0x044C7963E9A89D4F8B64AB23E02E97B2E00DD57FCB60F316AC69B77135003AEF', // 0x1c0f0Af3262A7213E59Be7f1440282279D788335
+  '0x523170AAE57904F24FFE1F61B7E4FF9E9A0CE7557987C2FC034EACB1C267B4AE', //
+  '0x67195c963ff445314e667112ab22f4a7404bad7f9746564eb409b9bb8c6aed32', //
+];
