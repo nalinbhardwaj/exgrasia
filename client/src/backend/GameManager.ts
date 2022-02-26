@@ -15,6 +15,7 @@ import {
   UnconfirmedInitPlayer,
   isUnconfirmedInitPlayer,
   UnconfirmedOwnTile,
+  UnconfirmedTileCall,
 } from '../_types/ContractAPITypes';
 
 class GameManager extends EventEmitter {
@@ -119,7 +120,7 @@ class GameManager extends EventEmitter {
           altitudeType: tileAttrs.altitudeType,
           owner: nullAddress,
           smartContract: nullAddress,
-          smartContractMetaData: { emoji: '', description: '', name: '' },
+          smartContractMetaData: { emoji: '', description: '', name: '', extendedAbi: '' },
         });
       }
     }
@@ -359,6 +360,36 @@ class GameManager extends EventEmitter {
     });
 
     return this;
+  }
+
+  public async tileTx(coords: WorldCoords, methodName: string, args: any) {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+
+    const actionId = getRandomActionId();
+    const txIntent: UnconfirmedTileCall = {
+      actionId,
+      methodName: methodName,
+      addr: this.tiles[coords.x][coords.y].smartContract,
+      abi: this.tiles[coords.x][coords.y].smartContractMetaData.extendedAbi,
+      args: args,
+    };
+    this.onTxIntent(txIntent);
+    this.contractsAPI.tileTx(txIntent).catch((err) => {
+      this.onTxIntentFail(txIntent, err);
+    });
+
+    return this;
+  }
+
+  public async tileCall(coords: WorldCoords, methodName: string, args: any) {
+    return this.contractsAPI.tileCall(
+      this.tiles[coords.x][coords.y].smartContract,
+      this.tiles[coords.x][coords.y].smartContractMetaData.extendedAbi,
+      methodName,
+      args
+    );
   }
 
   getTiles(): Tile[][] {

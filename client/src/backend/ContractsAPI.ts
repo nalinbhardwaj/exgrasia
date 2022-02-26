@@ -11,7 +11,7 @@ import {
   PlayerInfo,
   TileContractMetaData,
 } from 'common-types';
-import type { TinyWorld, TinyWorldGetters, TestTileContract } from 'common-contracts/typechain';
+import type { TinyWorld, TinyWorldGetters } from 'common-contracts/typechain';
 import {
   ContractCaller,
   EthConnection,
@@ -22,6 +22,7 @@ import {
 import { EventEmitter } from 'events';
 import {
   BigNumber as EthersBN,
+  Contract,
   ContractFunction /*, ethers, Event, providers*/,
   providers,
 } from 'ethers';
@@ -32,12 +33,19 @@ import {
   SubmittedInitPlayer,
   SubmittedMovePlayer,
   SubmittedOwnTile,
+  SubmittedTileCall,
   SubmittedTx,
   UnconfirmedInitPlayer,
   UnconfirmedMovePlayer,
   UnconfirmedOwnTile,
+  UnconfirmedTileCall,
 } from '../_types/ContractAPITypes';
-import { loadCoreContract, loadGettersContract, loadTileContract } from './Blockchain';
+import {
+  loadCoreContract,
+  loadGettersContract,
+  loadStubTileContract,
+  loadFullTileContract,
+} from './Blockchain';
 import { nullAddress } from '../utils';
 
 export type RawTile = Awaited<ReturnType<TinyWorld['getCachedTile(tuple)']>>;
@@ -86,8 +94,16 @@ export class ContractsAPI extends EventEmitter {
     return this.ethConnection.getContract<TinyWorldGetters>(GETTERS_CONTRACT_ADDRESS);
   }
 
-  private getTileContract(addr: EthAddress) {
-    return this.ethConnection.getContract<TestTileContract>(addr);
+  private async getStubTileContract(addr: EthAddress) {
+    await this.ethConnection.loadContract(addr, loadStubTileContract);
+    console.log('loaded stub tile contract', addr);
+    return this.ethConnection.getContract<Contract>(addr);
+  }
+
+  private async getFullTileContract(addr: EthAddress, abi: string) {
+    await this.ethConnection.loadContract(addr, loadFullTileContract(abi));
+    console.log('loaded full tile contract', addr);
+    return this.ethConnection.getContract<Contract>(addr);
   }
 
   public constructor(ethConnection: EthConnection) {
@@ -108,7 +124,6 @@ export class ContractsAPI extends EventEmitter {
   }
 
   private async decodeTile(rawTile: RawTile): Promise<Tile> {
-    await this.ethConnection.loadContract(address(rawTile.smartContract), loadTileContract);
     const tileContractMetaData = await this.getTileContractMetaData(address(rawTile.smartContract));
     return {
       coords: decodeCoords(rawTile.coords),
@@ -217,13 +232,16 @@ export class ContractsAPI extends EventEmitter {
       throw new Error('no signer, cannot execute tx');
     }
 
-    if (addr == nullAddress) return { emoji: '', name: '', description: '' };
+    if (addr == nullAddress) return { emoji: '', name: '', description: '', extendedAbi: '' };
 
-    const tileContract = this.getTileContract(addr);
+    const tileContract = await this.getStubTileContract(addr);
     const emoji = await this.makeCall<string>(tileContract.emoji);
     const name = await this.makeCall<string>(tileContract.name);
     const description = await this.makeCall<string>(tileContract.description);
-    return { emoji, name, description };
+    const extendedAbiURL = await this.makeCall<string>(tileContract.extendedAbi);
+    const extendedAbi = await fetch(extendedAbiURL).then((res) => res.text());
+
+    return { emoji, name, description, extendedAbi };
   }
 
   public async initPlayerLocation(action: UnconfirmedInitPlayer) {
@@ -284,6 +302,45 @@ export class ContractsAPI extends EventEmitter {
     };
 
     return this.waitFor(unminedOwnTileTx, tx.confirmed);
+  }
+
+  public async tileTx(action: UnconfirmedTileCall) {
+    if (!this.txExecutor) {
+      throw new Error('no signer, cannot execute tx');
+    }
+
+    const tileContract = await this.getFullTileContract(action.addr, action.abi);
+
+    const tx = this.txExecutor.queueTransaction(
+      action.actionId,
+      tileContract,
+      action.methodName,
+      action.args
+    );
+    const unminedTestCallTx: SubmittedTileCall = {
+      ...action,
+      txHash: (await tx.submitted).hash,
+      sentAtTimestamp: Math.floor(Date.now() / 1000),
+    };
+
+    return this.waitFor(unminedTestCallTx, tx.confirmed);
+  }
+
+  public async tileCall(
+    addr: EthAddress,
+    abi: string,
+    methodName: string,
+    args: any
+  ): Promise<any> {
+    if (!this.txExecutor) {
+      throw new Error('no signer, cannot execute tx');
+    }
+
+    if (addr == nullAddress) return undefined;
+
+    const tileContract = await this.getFullTileContract(addr, abi);
+    const res = await this.makeCall<string>(tileContract[methodName], args);
+    return res;
   }
 
   /**

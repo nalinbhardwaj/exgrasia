@@ -23,6 +23,7 @@ interface ITileContractInterface extends ethers.utils.Interface {
   functions: {
     "description()": FunctionFragment;
     "emoji()": FunctionFragment;
+    "extendedAbi()": FunctionFragment;
     "name()": FunctionFragment;
   };
 
@@ -31,6 +32,10 @@ interface ITileContractInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "emoji", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "extendedAbi",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
 
   decodeFunctionResult(
@@ -38,6 +43,10 @@ interface ITileContractInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "emoji", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "extendedAbi",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
 
   events: {};
@@ -73,6 +82,14 @@ export class ITileContract extends Contract {
       0: string;
     }>;
 
+    extendedAbi(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "extendedAbi()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
     name(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
@@ -90,6 +107,10 @@ export class ITileContract extends Contract {
 
   "emoji()"(overrides?: CallOverrides): Promise<string>;
 
+  extendedAbi(overrides?: CallOverrides): Promise<string>;
+
+  "extendedAbi()"(overrides?: CallOverrides): Promise<string>;
+
   name(overrides?: CallOverrides): Promise<string>;
 
   "name()"(overrides?: CallOverrides): Promise<string>;
@@ -102,6 +123,10 @@ export class ITileContract extends Contract {
     emoji(overrides?: CallOverrides): Promise<string>;
 
     "emoji()"(overrides?: CallOverrides): Promise<string>;
+
+    extendedAbi(overrides?: CallOverrides): Promise<string>;
+
+    "extendedAbi()"(overrides?: CallOverrides): Promise<string>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -119,6 +144,10 @@ export class ITileContract extends Contract {
 
     "emoji()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    extendedAbi(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "extendedAbi()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     "name()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -132,6 +161,10 @@ export class ITileContract extends Contract {
     emoji(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "emoji()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    extendedAbi(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "extendedAbi()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

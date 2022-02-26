@@ -27,11 +27,14 @@ async function copyAbi(
     JSON.stringify((await hre.artifacts.readArtifact('TinyWorldGetters')).abi),
     { semi: false, parser: 'json' }
   );
+  const stubTileAbi = prettier.format(
+    JSON.stringify((await hre.artifacts.readArtifact('StubTileContract')).abi),
+    { semi: false, parser: 'json' }
+  );
   const testTileAbi = prettier.format(
     JSON.stringify((await hre.artifacts.readArtifact('TestTileContract')).abi),
     { semi: false, parser: 'json' }
   );
-
   const abisDir = path.join(hre.packageDirs['common-contracts'], 'abis');
 
   await fs.mkdir(abisDir, { recursive: true });
@@ -39,6 +42,7 @@ async function copyAbi(
   // Save contract ABIs to client
   await fs.writeFile(path.join(abisDir, 'TinyWorld.json'), coreAbi);
   await fs.writeFile(path.join(abisDir, 'TinyWorldGetters.json'), gettersAbi);
+  await fs.writeFile(path.join(abisDir, 'StubTileContract.json'), stubTileAbi);
   await fs.writeFile(path.join(abisDir, 'TestTileContract.json'), testTileAbi);
 }
 

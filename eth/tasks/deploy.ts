@@ -8,7 +8,7 @@ import type {
   TinyWorldCoreReturn,
   LibraryContracts,
   Verifier,
-  TestTileContract,
+  StubTileContract,
 } from '../task-types';
 import * as prettier from 'prettier';
 import { Signer, Contract } from 'ethers';
@@ -132,7 +132,7 @@ async function deployLibraries({}, hre: HardhatRuntimeEnvironment): Promise<Libr
 
   return {
     verifier: verifier as Verifier,
-    tileContract: tileContract as TestTileContract,
+    tileContract: tileContract as StubTileContract,
   };
 }
 

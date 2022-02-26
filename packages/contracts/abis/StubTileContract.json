@@ -22,23 +22,9 @@
   },
   {
     "inputs": [],
-    "name": "logger",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "name",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "string", "name": "inp", "type": "string" }],
-    "name": "test",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

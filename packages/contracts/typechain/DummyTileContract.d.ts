@@ -13,21 +13,18 @@ import {
 import {
   Contract,
   ContractTransaction,
-  Overrides,
   CallOverrides,
 } from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface TestTileContractInterface extends ethers.utils.Interface {
+interface DummyTileContractInterface extends ethers.utils.Interface {
   functions: {
     "description()": FunctionFragment;
     "emoji()": FunctionFragment;
     "extendedAbi()": FunctionFragment;
-    "logger()": FunctionFragment;
     "name()": FunctionFragment;
-    "test(string)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -39,9 +36,7 @@ interface TestTileContractInterface extends ethers.utils.Interface {
     functionFragment: "extendedAbi",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "logger", values?: undefined): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "test", values: [string]): string;
 
   decodeFunctionResult(
     functionFragment: "description",
@@ -52,14 +47,12 @@ interface TestTileContractInterface extends ethers.utils.Interface {
     functionFragment: "extendedAbi",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "logger", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "test", data: BytesLike): Result;
 
   events: {};
 }
 
-export class TestTileContract extends Contract {
+export class DummyTileContract extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -70,7 +63,7 @@ export class TestTileContract extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: TestTileContractInterface;
+  interface: DummyTileContractInterface;
 
   functions: {
     description(overrides?: CallOverrides): Promise<{
@@ -97,14 +90,6 @@ export class TestTileContract extends Contract {
       0: string;
     }>;
 
-    logger(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "logger()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
     name(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
@@ -112,13 +97,6 @@ export class TestTileContract extends Contract {
     "name()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
-
-    test(inp: string, overrides?: Overrides): Promise<ContractTransaction>;
-
-    "test(string)"(
-      inp: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
   };
 
   description(overrides?: CallOverrides): Promise<string>;
@@ -133,20 +111,9 @@ export class TestTileContract extends Contract {
 
   "extendedAbi()"(overrides?: CallOverrides): Promise<string>;
 
-  logger(overrides?: CallOverrides): Promise<string>;
-
-  "logger()"(overrides?: CallOverrides): Promise<string>;
-
   name(overrides?: CallOverrides): Promise<string>;
 
   "name()"(overrides?: CallOverrides): Promise<string>;
-
-  test(inp: string, overrides?: Overrides): Promise<ContractTransaction>;
-
-  "test(string)"(
-    inp: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
 
   callStatic: {
     description(overrides?: CallOverrides): Promise<string>;
@@ -161,17 +128,9 @@ export class TestTileContract extends Contract {
 
     "extendedAbi()"(overrides?: CallOverrides): Promise<string>;
 
-    logger(overrides?: CallOverrides): Promise<string>;
-
-    "logger()"(overrides?: CallOverrides): Promise<string>;
-
     name(overrides?: CallOverrides): Promise<string>;
 
     "name()"(overrides?: CallOverrides): Promise<string>;
-
-    test(inp: string, overrides?: CallOverrides): Promise<void>;
-
-    "test(string)"(inp: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {};
@@ -189,17 +148,9 @@ export class TestTileContract extends Contract {
 
     "extendedAbi()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    logger(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "logger()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     "name()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    test(inp: string, overrides?: Overrides): Promise<BigNumber>;
-
-    "test(string)"(inp: string, overrides?: Overrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -215,19 +166,8 @@ export class TestTileContract extends Contract {
 
     "extendedAbi()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    logger(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "logger()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "name()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    test(inp: string, overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "test(string)"(
-      inp: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
   };
 }

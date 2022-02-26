@@ -25,7 +25,7 @@ export type TxIntent = {
   // we generate a txId so we can reference the tx
   // before it is submitted to chain and given a txHash
   actionId: string;
-  methodName: ContractMethodName;
+  methodName: ContractMethodName | string;
 };
 
 export type SubmittedTx = TxIntent & {
@@ -66,3 +66,12 @@ export type SubmittedOwnTile = UnconfirmedOwnTile & SubmittedTx;
 export function isUnconfirmedOwnTile(txIntent: TxIntent): txIntent is UnconfirmedOwnTile {
   return ContractMethodName.OWN_TILE == txIntent.methodName;
 }
+
+export type UnconfirmedTileCall = TxIntent & {
+  methodName: string;
+  addr: EthAddress;
+  abi: string;
+  args: any;
+};
+
+export type SubmittedTileCall = UnconfirmedTileCall & SubmittedTx;
