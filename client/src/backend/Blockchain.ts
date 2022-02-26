@@ -1,6 +1,6 @@
 // These are loaded as URL paths by a webpack loader
 import coreContractAbi from 'common-contracts/abis/TinyWorld.json';
-import dummyContractAbi from 'common-contracts/abis/DummyTileContract.json';
+import stubContractAbi from 'common-contracts/abis/StubTileContract.json';
 import gettersContractAbi from 'common-contracts/abis/TinyWorldGetters.json';
 import type { StubTileContract, TinyWorld, TinyWorldGetters } from 'common-contracts/typechain';
 import { createContract, createEthConnection, EthConnection } from '@darkforest_eth/network';
@@ -39,13 +39,13 @@ export async function loadStubTileContract(
   provider: providers.JsonRpcProvider,
   signer?: Wallet
 ): Promise<StubTileContract> {
-  return createContract<StubTileContract>(address, dummyContractAbi, provider, signer);
+  return createContract<StubTileContract>(address, stubContractAbi, provider, signer);
 }
 
 /**
  * Loads a full Tile contract, which is responsible for updating the state of the tile.
  */
-export function loadFullTileContract(abi: string) {
+export function loadFullTileContract(abi: any[]) {
   return async (address: string, provider: providers.JsonRpcProvider, signer?: Wallet) => {
     return createContract<Contract>(address, abi, provider, signer);
   };

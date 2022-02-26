@@ -52,6 +52,7 @@ export type TileContractMetaData = {
   emoji: string;
   name: string;
   description: string;
+  extendedAbi: any[];
 };
 
 export type Tile = {

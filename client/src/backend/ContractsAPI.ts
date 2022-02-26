@@ -100,7 +100,7 @@ export class ContractsAPI extends EventEmitter {
     return this.ethConnection.getContract<Contract>(addr);
   }
 
-  private async getFullTileContract(addr: EthAddress, abi: string) {
+  private async getFullTileContract(addr: EthAddress, abi: any[]) {
     await this.ethConnection.loadContract(addr, loadFullTileContract(abi));
     console.log('loaded full tile contract', addr);
     return this.ethConnection.getContract<Contract>(addr);
@@ -232,14 +232,14 @@ export class ContractsAPI extends EventEmitter {
       throw new Error('no signer, cannot execute tx');
     }
 
-    if (addr == nullAddress) return { emoji: '', name: '', description: '', extendedAbi: '' };
+    if (addr == nullAddress) return { emoji: '', name: '', description: '', extendedAbi: [] };
 
     const tileContract = await this.getStubTileContract(addr);
     const emoji = await this.makeCall<string>(tileContract.emoji);
     const name = await this.makeCall<string>(tileContract.name);
     const description = await this.makeCall<string>(tileContract.description);
     const extendedAbiURL = await this.makeCall<string>(tileContract.extendedAbi);
-    const extendedAbi = await fetch(extendedAbiURL).then((res) => res.text());
+    const extendedAbi: any[] = await fetch(extendedAbiURL).then((res) => res.json());
 
     return { emoji, name, description, extendedAbi };
   }
@@ -326,12 +326,7 @@ export class ContractsAPI extends EventEmitter {
     return this.waitFor(unminedTestCallTx, tx.confirmed);
   }
 
-  public async tileCall(
-    addr: EthAddress,
-    abi: string,
-    methodName: string,
-    args: any
-  ): Promise<any> {
+  public async tileCall(addr: EthAddress, abi: any[], methodName: string, args: any): Promise<any> {
     if (!this.txExecutor) {
       throw new Error('no signer, cannot execute tx');
     }

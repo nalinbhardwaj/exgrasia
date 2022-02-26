@@ -5,7 +5,14 @@ import { CORE_CONTRACT_ADDRESS } from 'common-contracts';
 import GameManager from '../backend/GameManager';
 import { EthConnection } from '@darkforest_eth/network';
 import { getEthConnection } from '../backend/Blockchain';
-import { address, DEV_TEST_PRIVATE_KEY, Tile, TileType, WorldCoords } from 'common-types';
+import {
+  address,
+  DEV_TEST_PRIVATE_KEY,
+  Tile,
+  TileContractMetaData,
+  TileType,
+  WorldCoords,
+} from 'common-types';
 import { tileTypeToColor, getTileEmoji, nullAddress } from '../utils';
 import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
 import { useParams } from 'react-router-dom';
@@ -29,6 +36,7 @@ export default function LandingPage() {
   const initted = useInitted(gameManager);
   const { privKeyIdx } = useParams<{ privKeyIdx?: string }>();
   const privateKey = DEV_TEST_PRIVATE_KEY[privKeyIdx ? parseInt(privKeyIdx) : 0];
+  const [input, setInput] = useState<Map<string, string>>(new Map());
 
   useEffect(() => {
     getEthConnection()
@@ -91,6 +99,28 @@ export default function LandingPage() {
         {gameManager && tiles
           ? tiles.value.map((coordRow, i) => {
               if (i == 0) return null;
+              return coordRow.map((tile, j) => {
+                if (j == 0) return null;
+                if (tiles.value[i][j].smartContractMetaData.name)
+                  return (
+                    <div key={100 * i + j + 100000}>
+                      {Pane(
+                        gameManager,
+                        { x: i, y: j },
+                        tiles.value[i][j].smartContractMetaData,
+                        input,
+                        setInput
+                      )}
+                    </div>
+                  );
+                else return null;
+              });
+            })
+          : null}
+
+        {gameManager && tiles
+          ? tiles.value.map((coordRow, i) => {
+              if (i == 0) return null;
               return (
                 <GridRow key={i}>
                   {coordRow.map((tile, j) => {
@@ -127,6 +157,58 @@ export default function LandingPage() {
           : null}
       </Page>
     </>
+  );
+}
+
+function Pane(
+  gm: GameManager,
+  coords: WorldCoords,
+  props: TileContractMetaData,
+  input: Map<string, string>,
+  setInput: React.Dispatch<React.SetStateAction<Map<string, string>>>
+) {
+  return (
+    <div key={props.name}>
+      <div>{`Contract coords x: ${coords.x}, y: ${coords.y}`}</div>
+      <div>{`Contract name: ${props.name}, emoji: ${props.emoji}, desc: ${props.description}`}</div>
+      {gm && props.extendedAbi && props.extendedAbi.length > 0
+        ? props.extendedAbi.map((contractFunc, i) => {
+            const purity =
+              contractFunc.stateMutability == 'view' || contractFunc.stateMutability == 'pure';
+            const handleSubmit = async (event: { preventDefault: () => void }) => {
+              event.preventDefault();
+              const strInp = input.get(contractFunc.name);
+              console.log('strInp', strInp);
+              const inp = strInp ? JSON.parse(strInp) : [];
+              console.log(inp);
+              const result = purity
+                ? await gm.tileCall(coords, contractFunc.name, inp)
+                : await gm.tileTx(coords, contractFunc.name, inp);
+              console.log(result);
+            };
+            const handleChange = (name: string, e: React.ChangeEvent<HTMLInputElement>) => {
+              let newInput = input;
+              newInput.set(name, e.target.value);
+              setInput(newInput);
+            };
+            console.log('contractFunc name', contractFunc.name);
+            return (
+              <form onSubmit={handleSubmit} key={contractFunc.name}>
+                <label>
+                  {`${JSON.stringify(contractFunc.name)}, ${JSON.stringify(contractFunc.inputs)}`}
+                  <input
+                    key={contractFunc.name}
+                    type='text'
+                    value={input.get(contractFunc.name)}
+                    onChange={(e) => handleChange(contractFunc.name, e)}
+                  />
+                </label>
+                <input key={contractFunc.name} type='submit' value='Submit' />
+              </form>
+            );
+          })
+        : null}
+    </div>
   );
 }
 

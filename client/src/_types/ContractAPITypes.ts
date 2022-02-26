@@ -70,7 +70,7 @@ export function isUnconfirmedOwnTile(txIntent: TxIntent): txIntent is Unconfirme
 export type UnconfirmedTileCall = TxIntent & {
   methodName: string;
   addr: EthAddress;
-  abi: string;
+  abi: any[];
   args: any;
 };
 

@@ -120,7 +120,7 @@ class GameManager extends EventEmitter {
           altitudeType: tileAttrs.altitudeType,
           owner: nullAddress,
           smartContract: nullAddress,
-          smartContractMetaData: { emoji: '', description: '', name: '', extendedAbi: '' },
+          smartContractMetaData: { emoji: '', description: '', name: '', extendedAbi: [] },
         });
       }
     }
