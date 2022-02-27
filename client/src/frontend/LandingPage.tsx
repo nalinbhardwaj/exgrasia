@@ -16,6 +16,7 @@ import {
 import { tileTypeToColor, getTileEmoji, nullAddress } from '../utils';
 import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
 import { useParams } from 'react-router-dom';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
 const enum LoadingStep {
   NONE,
@@ -117,44 +118,61 @@ export default function LandingPage() {
               });
             })
           : null}
-
-        {gameManager && tiles
-          ? tiles.value.map((coordRow, i) => {
-              if (i == 0) return null;
-              return (
-                <GridRow key={i}>
-                  {coordRow.map((tile, j) => {
-                    if (j == 0) return null;
-                    return (
-                      <GridSquare
-                        key={100 * i + j}
-                        style={{
-                          backgroundColor: tinycolor(tileTypeToColor[tile.tileType]).toHexString(),
-                        }}
-                        onClick={onGridClick({ x: i, y: j })}
-                      >
-                        {[...playerInfos.value.keys()].map((addr) => {
-                          const playerInfo = playerInfos.value.get(addr);
-                          if (
-                            playerInfo &&
-                            playerInfo.coords.x === i &&
-                            playerInfo.coords.y === j
-                          ) {
-                            return (
-                              <span key={addr} style={{ fontSize: '15px', zIndex: 10 }}>
-                                {playerInfo.emoji}
-                              </span>
-                            );
-                          }
-                        })}
-                        {tile.smartContractMetaData.emoji}
-                      </GridSquare>
-                    );
-                  })}
-                </GridRow>
-              );
-            })
-          : null}
+        {gameManager && tiles && initted.value ? (
+          <FullScreen>
+            <TransformWrapper
+              initialScale={5}
+              minScale={2}
+              initialPositionX={gameManager.selfInfo.coords.y * -105} // meticulously measured
+              initialPositionY={gameManager.selfInfo.coords.x * -112}
+            >
+              <TransformComponent
+                wrapperStyle={{
+                  maxWidth: '100%',
+                  maxHeight: 'calc(100vh - 0.1px)',
+                }}
+              >
+                {tiles.value.map((coordRow, i) => {
+                  if (i == 0) return null;
+                  return (
+                    <GridRow key={i}>
+                      {coordRow.map((tile, j) => {
+                        if (j == 0) return null;
+                        return (
+                          <GridSquare
+                            key={100 * i + j}
+                            style={{
+                              backgroundColor: tinycolor(
+                                tileTypeToColor[tile.tileType]
+                              ).toHexString(),
+                            }}
+                            onClick={onGridClick({ x: i, y: j })}
+                          >
+                            {[...playerInfos.value.keys()].map((addr) => {
+                              const playerInfo = playerInfos.value.get(addr);
+                              if (
+                                playerInfo &&
+                                playerInfo.coords.x === i &&
+                                playerInfo.coords.y === j
+                              ) {
+                                return (
+                                  <span key={addr} style={{ fontSize: '15px', zIndex: 10 }}>
+                                    {playerInfo.emoji}
+                                  </span>
+                                );
+                              }
+                            })}
+                            {tile.smartContractMetaData.emoji}
+                          </GridSquare>
+                        );
+                      })}
+                    </GridRow>
+                  );
+                })}
+              </TransformComponent>
+            </TransformWrapper>
+          </FullScreen>
+        ) : null}
       </Page>
     </>
   );
@@ -213,9 +231,6 @@ function Pane(
 }
 
 const Page = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
   color: black;
   font-size: 7;
   display: flex;
@@ -237,4 +252,12 @@ const GridSquare = styled.div`
   justify-content: center;
   vertical-align: middle;
   text-align: center;
+`;
+
+const FullScreen = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 `;
