@@ -17,6 +17,8 @@ import { tileTypeToColor, getTileEmoji, nullAddress } from '../utils';
 import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
 import { useParams } from 'react-router-dom';
 
+import Draggable from 'react-draggable';
+
 const enum LoadingStep {
   NONE,
   LOADED_ETH_CONNECTION,
@@ -38,24 +40,29 @@ export default function LandingPage() {
   const privateKey = DEV_TEST_PRIVATE_KEY[privKeyIdx ? parseInt(privKeyIdx) : 0];
   const [input, setInput] = useState<Map<string, string>>(new Map());
 
-  useEffect(() => {
-    getEthConnection()
-      .then(async (ethConnection) => {
-        ethConnection.setAccount(privateKey);
-        setEthConnection(ethConnection);
-        setStep(LoadingStep.LOADED_ETH_CONNECTION);
-        const gm = await GameManager.create(ethConnection);
-        window.gm = gm;
-        setGameManager(gm);
-        setStep(LoadingStep.LOADED_GAME_MANAGER);
-      })
-      .catch((e) => {
-        console.log(e);
-        setError(e.message);
-      });
-  }, []);
+  // array of tiles that player has open panes for
+  const [openTiles, setOpenTiles] = useState<Set<WorldCoords>>(new Set());
+
+  // NOTE: commented out while I iterate on the tilepane
+  // useEffect(() => {
+  //   getEthConnection()
+  //     .then(async (ethConnection) => {
+  //       ethConnection.setAccount(privateKey);
+  //       setEthConnection(ethConnection);
+  //       setStep(LoadingStep.LOADED_ETH_CONNECTION);
+  //       const gm = await GameManager.create(ethConnection);
+  //       window.gm = gm;
+  //       setGameManager(gm);
+  //       setStep(LoadingStep.LOADED_GAME_MANAGER);
+  //     })
+  //     .catch((e) => {
+  //       console.log(e);
+  //       setError(e.message);
+  //     });
+  // }, []);
 
   const onGridClick = (coords: WorldCoords) => async () => {
+    // NOTE: nibnalin old logic for taking ownership of a tile
     if (!gameManager || queryingBlockchain) return;
     await gameManager.ownTile(coords, address('0xA1cf9870677Bb213991DDdE342a5CE412c0f676D'));
   };
@@ -84,19 +91,26 @@ export default function LandingPage() {
         <p>{`The current loading step is: ${step}`}</p>
         {ethConnection ? <p>{`current user: ${ethConnection.getAddress()}`}</p> : null}
         <p>{`GameManager loaded: ${!!gameManager}`}</p>
-        {gameManager && (
+        {/* gameManager && (
           <p>{`world seed: ${gameManager.getWorldSeed()}. world width: ${gameManager.getWorldWidth()}`}</p>
-        )}
-        {gameManager && (
+        ) */}
+        {/* gameManager && (
           <p>{`selfCoords.x: ${gameManager.selfInfo.coords.x}, selfCoords.y: ${gameManager.selfInfo.coords.x}`}</p>
-        )}
-        {gameManager && <p>{`initted: ${initted.value}`}</p>}
+        )*/}
+        {/* gameManager && <p>{`initted: ${initted.value}`}</p> */}
         <p>{`errors: ${error}`}</p>
         {lastQueryResult !== undefined ? (
           <p>{`last queried for (${queryCoords?.x}, ${queryCoords?.y}): cached tile type is ${lastQueryResult}`}</p>
         ) : null}
-        <p>yo</p>
-        {gameManager && tiles
+
+        <Draggable>
+          <div>Draggable text?</div>
+        </Draggable>
+
+        {/* for each open tile, create a DF-like draggable */}
+
+        {/* NOTE: nibnalin's old logic for showing contract metadata for selected tile */}
+        {/* gameManager && tiles
           ? tiles.value.map((coordRow, i) => {
               if (i == 0) return null;
               return coordRow.map((tile, j) => {
@@ -116,9 +130,9 @@ export default function LandingPage() {
                 else return null;
               });
             })
-          : null}
+          : null */}
 
-        {gameManager && tiles
+        {/* gameManager && tiles
           ? tiles.value.map((coordRow, i) => {
               if (i == 0) return null;
               return (
@@ -154,7 +168,7 @@ export default function LandingPage() {
                 </GridRow>
               );
             })
-          : null}
+          : null */}
       </Page>
     </>
   );
