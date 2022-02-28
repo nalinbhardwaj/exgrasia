@@ -17,7 +17,7 @@ import { tileTypeToColor, getTileEmoji, nullAddress } from '../utils';
 import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
 import { useParams } from 'react-router-dom';
 
-import Draggable from 'react-draggable';
+import TilePane from './TilePane';
 
 const enum LoadingStep {
   NONE,
@@ -103,9 +103,9 @@ export default function LandingPage() {
           <p>{`last queried for (${queryCoords?.x}, ${queryCoords?.y}): cached tile type is ${lastQueryResult}`}</p>
         ) : null}
 
-        <Draggable>
-          <div>Draggable text?</div>
-        </Draggable>
+        {/* figure out close-ability, then put it in its own class */}
+        {/* close-ability involves calling a function in the LandingPage.tsx scope that removes the item from the list */}
+        <TilePane></TilePane>
 
         {/* for each open tile, create a DF-like draggable */}
 
