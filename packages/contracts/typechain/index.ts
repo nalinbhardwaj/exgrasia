@@ -13,5 +13,7 @@ export { TinyWorldFactory } from "./TinyWorldFactory";
 export type { TinyWorld } from "./TinyWorld";
 export { TinyWorldGettersFactory } from "./TinyWorldGettersFactory";
 export type { TinyWorldGetters } from "./TinyWorldGetters";
+export { TinyWorldRegistryFactory } from "./TinyWorldRegistryFactory";
+export type { TinyWorldRegistry } from "./TinyWorldRegistry";
 export { TinyWorldStorageFactory } from "./TinyWorldStorageFactory";
 export type { TinyWorldStorage } from "./TinyWorldStorage";

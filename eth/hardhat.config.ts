@@ -13,6 +13,7 @@ import './tasks/deploy';
 import './tasks/wallet';
 import './tasks/upgrade';
 import './tasks/compile';
+import './tasks/whitelist';
 
 require('dotenv').config();
 

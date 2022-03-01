@@ -37,6 +37,7 @@ export const Contracts = yup
      */
     CORE_CONTRACT_ADDRESS: yup.string().required(),
     GETTERS_CONTRACT_ADDRESS: yup.string().required(),
+    REGISTRY_CONTRACT_ADDRESS: yup.string().required(),
   })
   .defined();
 

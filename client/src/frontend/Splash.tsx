@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import tinycolor from 'tinycolor2';
-import { CORE_CONTRACT_ADDRESS } from 'common-contracts';
+import { CORE_CONTRACT_ADDRESS, REGISTRY_CONTRACT_ADDRESS } from 'common-contracts';
 import GameManager from '../backend/GameManager';
 import { EthConnection } from '@darkforest_eth/network';
-import { getEthConnection } from '../backend/Blockchain';
+import { getEthConnection, loadRegistryContract } from '../backend/Blockchain';
 import {
   address,
   DEV_TEST_PRIVATE_KEY,
@@ -19,12 +19,14 @@ import { useParams } from 'react-router-dom';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import SplashMap from './SplashMap.json';
 import { Mainnet, DAppProvider, useEtherBalance, useEthers, Config } from '@usedapp/core';
+import { makeContractsAPI } from '../backend/ContractsAPI';
 
 export default function Splash() {
   const [liveMap, setLiveMap] = useState<TileType[][]>(SplashMap);
   const [ticks, setTicks] = useState(36);
   const [tickDirection, setTickDirection] = useState(true);
   const { activateBrowserWallet, account } = useEthers();
+  const [whitelist, setWhitelist] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -39,6 +41,14 @@ export default function Splash() {
     }, 8000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    getEthConnection().then(async (ethConnection) => {
+      const contractsApi = await makeContractsAPI(ethConnection);
+      console.log('account', account);
+      if (account) setWhitelist(await contractsApi.isWhitelisted(account));
+    });
+  }, [account]);
 
   return (
     <>
@@ -64,7 +74,8 @@ export default function Splash() {
       <Page style={{ zIndex: 1 }}>
         <Title>εxgrasia</Title>
         <SubTitle onClick={() => activateBrowserWallet()}>
-          {account ? <>connected {account.slice(-10)}</> : <>connect wallet</>}
+          {account ? <>connected</> : <>connect wallet</>}
+          {whitelist && <p style={{ fontSize: '32px' }}>✅ whitelisted</p>}
         </SubTitle>
         <Twitter>
           <a href='https://twitter.com/exgrasia' target='_blank' style={{ textDecoration: 'none' }}>
@@ -95,7 +106,7 @@ const SubTitle = styled.div`
   vertical-align: middle;
   margin: 0;
   position: absolute;
-  bottom: 25%;
+  top: 60%;
   right: 25%;
   color: white;
   font-weight: 300;
@@ -118,6 +129,7 @@ const Twitter = styled.div`
   a {
     text-decoration: none;
   }
+  user-select: none;
 `;
 
 const Page = styled.div`

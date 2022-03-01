@@ -33,8 +33,12 @@ export const START_BLOCK = 0;
 /**
  * The address for the TinyWorld contract.
  */
-export const CORE_CONTRACT_ADDRESS = '0x627a72bbE16416Ae722BA05876C5cB2dcb0Dc6BB';
+export const CORE_CONTRACT_ADDRESS = '0x1aE9623899dDc2bB42217eF985a3d98E6E7623C1';
 /**
  * The address for the TinyWorldGetters contract.
  */
-export const GETTERS_CONTRACT_ADDRESS = '0x6c452936A27F5Afc41bCC9Dd49a5bdedBdfA9b7A';
+export const GETTERS_CONTRACT_ADDRESS = '0x8950bab77f29E8f81e6F78AEA0a79bADD88Eeb13';
+/**
+ * The address for the TinyWorldRegistry contract.
+ */
+export const REGISTRY_CONTRACT_ADDRESS = '0x1d8d73c2b578dd2ac32c79753dD8Ff34ad4c2FbF';

@@ -2,7 +2,13 @@
 import coreContractAbi from 'common-contracts/abis/TinyWorld.json';
 import stubContractAbi from 'common-contracts/abis/StubTileContract.json';
 import gettersContractAbi from 'common-contracts/abis/TinyWorldGetters.json';
-import type { StubTileContract, TinyWorld, TinyWorldGetters } from 'common-contracts/typechain';
+import registryContractAbi from 'common-contracts/abis/TinyWorldRegistry.json';
+import type {
+  StubTileContract,
+  TinyWorld,
+  TinyWorldGetters,
+  TinyWorldRegistry,
+} from 'common-contracts/typechain';
 import { createContract, createEthConnection, EthConnection } from '@darkforest_eth/network';
 import type { Contract, providers, Wallet } from 'ethers';
 
@@ -49,6 +55,17 @@ export function loadFullTileContract(abi: any[]) {
   return async (address: string, provider: providers.JsonRpcProvider, signer?: Wallet) => {
     return createContract<Contract>(address, abi, provider, signer);
   };
+}
+
+/**
+ * Loads the registry contract
+ */
+export async function loadRegistryContract(
+  address: string,
+  provider: providers.JsonRpcProvider,
+  signer?: Wallet
+): Promise<TinyWorldRegistry> {
+  return createContract<TinyWorldRegistry>(address, registryContractAbi, provider, signer);
 }
 
 export function getEthConnection(): Promise<EthConnection> {

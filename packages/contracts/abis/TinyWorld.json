@@ -462,7 +462,12 @@
     "inputs": [
       { "internalType": "uint256", "name": "_seed", "type": "uint256" },
       { "internalType": "uint256", "name": "_worldWidth", "type": "uint256" },
-      { "internalType": "uint256", "name": "_worldScale", "type": "uint256" }
+      { "internalType": "uint256", "name": "_worldScale", "type": "uint256" },
+      {
+        "internalType": "address",
+        "name": "_registryAddress",
+        "type": "address"
+      }
     ],
     "name": "initialize",
     "outputs": [],
@@ -545,6 +550,19 @@
     "outputs": [
       { "internalType": "uint256", "name": "x", "type": "uint256" },
       { "internalType": "uint256", "name": "y", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "registry",
+    "outputs": [
+      {
+        "internalType": "contract TinyWorldRegistry",
+        "name": "",
+        "type": "address"
+      }
     ],
     "stateMutability": "view",
     "type": "function"

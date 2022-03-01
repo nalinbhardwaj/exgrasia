@@ -9,6 +9,7 @@ import type {
   LibraryContracts,
   Verifier,
   StubTileContract,
+  TinyWorldRegistry,
 } from '../task-types';
 import * as prettier from 'prettier';
 import { Signer, Contract } from 'ethers';
@@ -28,6 +29,7 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
   // deploy the core contract
   const tinyWorldCoreReturn: TinyWorldCoreReturn = await hre.run('deploy:core', {
     verifierAddress: libraries.verifier.address,
+    registryAddress: libraries.registry.address,
   });
 
   const coreAddress = tinyWorldCoreReturn.contract.address;
@@ -41,6 +43,7 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
 
   await hre.run('deploy:save', {
     coreBlockNumber: tinyWorldCoreReturn.blockNumber,
+    registryAddress: libraries.registry.address,
     coreAddress,
     gettersAddress,
   });
@@ -60,6 +63,7 @@ async function deploySave(
     coreBlockNumber: number;
     coreAddress: string;
     gettersAddress: string;
+    registryAddress: string;
   },
   hre: HardhatRuntimeEnvironment
 ) {
@@ -112,6 +116,10 @@ async function deploySave(
    * The address for the TinyWorldGetters contract.
    */
   export const GETTERS_CONTRACT_ADDRESS = '${args.gettersAddress}';
+  /**
+   * The address for the TinyWorldRegistry contract.
+   */
+  export const REGISTRY_CONTRACT_ADDRESS = '${args.registryAddress}';
   `,
     { ...options, parser: 'babel-ts' }
   );
@@ -130,19 +138,26 @@ async function deployLibraries({}, hre: HardhatRuntimeEnvironment): Promise<Libr
   const tileContract = await TileContractFactory.deploy();
   await tileContract.deployTransaction.wait();
 
+  const TinyWorldRegistry = await hre.ethers.getContractFactory('TinyWorldRegistry');
+  const registry = await TinyWorldRegistry.deploy();
+  await registry.deployTransaction.wait();
+
   return {
     verifier: verifier as Verifier,
     tileContract: tileContract as StubTileContract,
+    registry: registry as TinyWorldRegistry,
   };
 }
 
 subtask('deploy:core', 'deploy and return tokens contract')
   .addParam('verifierAddress', '', undefined, types.string)
+  .addParam('registryAddress', '', undefined, types.string)
   .setAction(deployCore);
 
 async function deployCore(
   args: {
     verifierAddress: string;
+    registryAddress: string;
   },
   hre: HardhatRuntimeEnvironment
 ): Promise<TinyWorldCoreReturn> {
@@ -157,6 +172,7 @@ async function deployCore(
       hre.initializers.SEED_1,
       hre.initializers.WORLD_WIDTH,
       hre.initializers.WORLD_SCALE,
+      args.registryAddress,
     ],
     // Linking external libraries like `DarkForestUtils` is not yet supported, or
     // skip this check with the `unsafeAllowLinkedLibraries` flag

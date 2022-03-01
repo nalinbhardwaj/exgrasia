@@ -58,10 +58,6 @@ export default function LandingPage() {
 
   const onGridClick = (coords: WorldCoords) => async () => {
     if (!gameManager || queryingBlockchain) return;
-    const cutTiles = tiles.value.slice(62, 78).map((x) => x.slice(61, 94));
-    console.log('cutTiles', cutTiles);
-    const justTypes = cutTiles.map((x) => x.map((y) => y.tileType));
-    console.log(JSON.stringify(justTypes));
     await gameManager.ownTile(coords, address('0xA1cf9870677Bb213991DDdE342a5CE412c0f676D'));
   };
 

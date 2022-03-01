@@ -3,10 +3,11 @@ import type {
   TinyWorld,
   TinyWorldGetters,
   Verifier,
+  TinyWorldRegistry,
   StubTileContract,
 } from 'common-contracts/typechain';
 
-export { TinyWorld, TinyWorldGetters, Verifier, StubTileContract };
+export { TinyWorld, TinyWorldGetters, Verifier, StubTileContract, TinyWorldRegistry };
 export interface TinyWorldCoreReturn {
   blockNumber: number;
   contract: TinyWorld;
@@ -15,4 +16,5 @@ export interface TinyWorldCoreReturn {
 export interface LibraryContracts {
   verifier: Verifier;
   tileContract: StubTileContract;
+  registry: TinyWorldRegistry;
 }

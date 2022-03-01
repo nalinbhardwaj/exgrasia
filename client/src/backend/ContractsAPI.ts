@@ -1,4 +1,8 @@
-import { CORE_CONTRACT_ADDRESS, GETTERS_CONTRACT_ADDRESS } from 'common-contracts';
+import {
+  CORE_CONTRACT_ADDRESS,
+  GETTERS_CONTRACT_ADDRESS,
+  REGISTRY_CONTRACT_ADDRESS,
+} from 'common-contracts';
 import {
   ProveTileContractCallArgs,
   TransitionTileContractCallArgs,
@@ -11,7 +15,7 @@ import {
   PlayerInfo,
   TileContractMetaData,
 } from 'common-types';
-import type { TinyWorld, TinyWorldGetters } from 'common-contracts/typechain';
+import type { TinyWorld, TinyWorldGetters, TinyWorldRegistry } from 'common-contracts/typechain';
 import {
   ContractCaller,
   EthConnection,
@@ -45,6 +49,7 @@ import {
   loadGettersContract,
   loadStubTileContract,
   loadFullTileContract,
+  loadRegistryContract,
 } from './Blockchain';
 import { nullAddress } from '../utils';
 
@@ -92,6 +97,10 @@ export class ContractsAPI extends EventEmitter {
 
   get gettersContract() {
     return this.ethConnection.getContract<TinyWorldGetters>(GETTERS_CONTRACT_ADDRESS);
+  }
+
+  get registryContract() {
+    return this.ethConnection.getContract<TinyWorldRegistry>(REGISTRY_CONTRACT_ADDRESS);
   }
 
   private async getStubTileContract(addr: EthAddress) {
@@ -338,6 +347,13 @@ export class ContractsAPI extends EventEmitter {
     return res;
   }
 
+  public async isWhitelisted(realAddress: string) {
+    const whitelisted = await this.makeCall<boolean>(this.registryContract.isWhitelisted, [
+      address(realAddress),
+    ]);
+    return whitelisted;
+  }
+
   /**
    * Given an unconfirmed (but submitted) transaction, emits the appropriate
    * [[ContractsAPIEvent]].
@@ -361,6 +377,7 @@ export async function makeContractsAPI(ethConnection: EthConnection): Promise<Co
   // Could turn this into an array and iterate, but I like the explicitness
   await ethConnection.loadContract(CORE_CONTRACT_ADDRESS, loadCoreContract);
   await ethConnection.loadContract(GETTERS_CONTRACT_ADDRESS, loadGettersContract);
+  await ethConnection.loadContract(REGISTRY_CONTRACT_ADDRESS, loadRegistryContract);
 
   return new ContractsAPI(ethConnection);
 }

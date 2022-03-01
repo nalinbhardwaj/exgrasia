@@ -35,7 +35,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "getTouchedTiles()": FunctionFragment;
     "getWeight(uint32,uint32,uint32,uint32,uint32)": FunctionFragment;
     "initPlayerLocation(string)": FunctionFragment;
-    "initialize(uint256,uint256,uint256)": FunctionFragment;
+    "initialize(uint256,uint256,uint256,address)": FunctionFragment;
     "movePlayer(tuple)": FunctionFragment;
     "ownTile(tuple,address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -44,6 +44,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "playerIds(uint256)": FunctionFragment;
     "playerInited(address)": FunctionFragment;
     "playerLocation(address)": FunctionFragment;
+    "registry()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "seed()": FunctionFragment;
     "smoothStep(int128)": FunctionFragment;
@@ -120,7 +121,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [BigNumberish, BigNumberish, BigNumberish]
+    values: [BigNumberish, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "movePlayer",
@@ -145,6 +146,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     functionFragment: "playerLocation",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "registry", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
@@ -242,6 +244,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     functionFragment: "playerLocation",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "registry", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -606,13 +609,15 @@ export class TinyWorld extends Contract {
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
+      _registryAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(uint256,uint256,uint256)"(
+    "initialize(uint256,uint256,uint256,address)"(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
+      _registryAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -714,6 +719,14 @@ export class TinyWorld extends Contract {
       y: BigNumber;
       0: BigNumber;
       1: BigNumber;
+    }>;
+
+    registry(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "registry()"(overrides?: CallOverrides): Promise<{
+      0: string;
     }>;
 
     renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
@@ -1117,13 +1130,15 @@ export class TinyWorld extends Contract {
     _seed: BigNumberish,
     _worldWidth: BigNumberish,
     _worldScale: BigNumberish,
+    _registryAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(uint256,uint256,uint256)"(
+  "initialize(uint256,uint256,uint256,address)"(
     _seed: BigNumberish,
     _worldWidth: BigNumberish,
     _worldScale: BigNumberish,
+    _registryAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1197,6 +1212,10 @@ export class TinyWorld extends Contract {
     0: BigNumber;
     1: BigNumber;
   }>;
+
+  registry(overrides?: CallOverrides): Promise<string>;
+
+  "registry()"(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -1600,13 +1619,15 @@ export class TinyWorld extends Contract {
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
+      _registryAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(uint256,uint256,uint256)"(
+    "initialize(uint256,uint256,uint256,address)"(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
+      _registryAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1680,6 +1701,10 @@ export class TinyWorld extends Contract {
       0: BigNumber;
       1: BigNumber;
     }>;
+
+    registry(overrides?: CallOverrides): Promise<string>;
+
+    "registry()"(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -1929,13 +1954,15 @@ export class TinyWorld extends Contract {
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
+      _registryAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(uint256,uint256,uint256)"(
+    "initialize(uint256,uint256,uint256,address)"(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
+      _registryAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1999,6 +2026,10 @@ export class TinyWorld extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    registry(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "registry()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(overrides?: Overrides): Promise<BigNumber>;
 
@@ -2237,13 +2268,15 @@ export class TinyWorld extends Contract {
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
+      _registryAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(uint256,uint256,uint256)"(
+    "initialize(uint256,uint256,uint256,address)"(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
+      _registryAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -2316,6 +2349,10 @@ export class TinyWorld extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    registry(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "registry()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
 

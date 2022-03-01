@@ -7,15 +7,18 @@ import "./TinyWorldStorage.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "hardhat/console.sol";
 import "./FPMath.sol";
+import "./TinyWorldRegistry.sol";
 
 contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     event PlayerUpdated(address, Coords);
     event TileUpdated(Tile);
+    TinyWorldRegistry public registry;
 
     function initialize(
         uint256 _seed,
         uint256 _worldWidth,
-        uint256 _worldScale
+        uint256 _worldScale,
+        address _registryAddress
     ) public initializer {
         __Ownable_init();
         seed = _seed;
@@ -47,6 +50,8 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         validPlayerEmoji["dog"] = unicode"🐶";
         validPlayerEmoji["cat"] = unicode"🐱";
         validPlayerEmoji["mouse"] = unicode"🐭";
+
+        registry = TinyWorldRegistry(address(_registryAddress));
     }
 
     // Perlin Noise
@@ -308,6 +313,7 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     }
 
     function initPlayerLocation(string memory repr) public {
+        require(registry.getRealAddress(msg.sender) != address(0), "Player not registered");
         require(playerInited[msg.sender] == false, "Already inited");
         require(bytes(validPlayerEmoji[repr]).length > 0, "Invalid emoji");
         Coords memory coords = getInitSeedCoords();
