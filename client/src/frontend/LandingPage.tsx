@@ -41,7 +41,7 @@ export default function LandingPage() {
   const [input, setInput] = useState<Map<string, string>>(new Map());
 
   // array of tiles that player has open panes for
-  const [openTiles, setOpenTiles] = useState<Set<WorldCoords>>(new Set());
+  const [openTiles, setOpenTiles] = useState<Set<WorldCoords>>(new Set([{ x: 1, y: 1 }]));
 
   // NOTE: commented out while I iterate on the tilepane
   // useEffect(() => {
@@ -70,6 +70,10 @@ export default function LandingPage() {
   const handleKeyDown = (event: KeyboardEvent) => {
     if (!gameManager || queryingBlockchain) return;
     gameManager.movePlayer(event.key.toLowerCase());
+  };
+
+  const closePane = (coord: WorldCoords) => () => {
+    setOpenTiles(new Set(Array.from(openTiles).filter((c) => c.x !== coord.x && c.y !== coord.y)));
   };
 
   useEffect(() => {
@@ -103,11 +107,22 @@ export default function LandingPage() {
           <p>{`last queried for (${queryCoords?.x}, ${queryCoords?.y}): cached tile type is ${lastQueryResult}`}</p>
         ) : null}
 
-        {/* figure out close-ability, then put it in its own class */}
-        {/* close-ability involves calling a function in the LandingPage.tsx scope that removes the item from the list */}
-        <TilePane></TilePane>
-
         {/* for each open tile, create a DF-like draggable */}
+        {/* NOTE: needs eth to have loaded when I put game loading back in */}
+        {Array.from(openTiles)
+          .sort(({ x: x1, y: y1 }, { x: x2, y: y2 }) => {
+            const z1 = x1 * 100 + y1;
+            const z2 = x2 * 100 + y2;
+            if (z1 > z2) {
+              return 1;
+            } else {
+              return -1;
+            }
+          })
+          .map((coord) => {
+            // TODO: create TilePane with the proper state passed through + appropriate closeFn (i.e. for this coord)
+            return <TilePane onClose={closePane(coord)} key={100 * coord.x + coord.y}></TilePane>;
+          })}
 
         {/* NOTE: nibnalin's old logic for showing contract metadata for selected tile */}
         {/* gameManager && tiles

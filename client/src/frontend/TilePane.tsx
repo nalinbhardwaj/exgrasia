@@ -4,12 +4,14 @@ import styled from 'styled-components';
 
 import Draggable from 'react-draggable';
 
-export default function TilePane() {
+export default function TilePane(props: {
+  onClose: React.MouseEventHandler<HTMLAnchorElement> | undefined;
+}) {
   return (
     <Draggable>
       <PaneContents>
-        {/* onClick, call passed in function to remove from list */}
-        <CloseButton href='#'></CloseButton>
+        <CloseButton onClick={props.onClose} href='#'></CloseButton>
+        {/* TODO: display logic based on w/e else exists in tile that we care about */}
         foo
       </PaneContents>
     </Draggable>
