@@ -107,7 +107,6 @@ export default function LandingPage() {
           <p>{`last queried for (${queryCoords?.x}, ${queryCoords?.y}): cached tile type is ${lastQueryResult}`}</p>
         ) : null}
 
-        {/* for each open tile, create a DF-like draggable */}
         {/* NOTE: needs eth to have loaded when I put game loading back in */}
         {Array.from(openTiles)
           .sort(({ x: x1, y: y1 }, { x: x2, y: y2 }) => {
@@ -121,7 +120,14 @@ export default function LandingPage() {
           })
           .map((coord) => {
             // TODO: create TilePane with the proper state passed through + appropriate closeFn (i.e. for this coord)
-            return <TilePane onClose={closePane(coord)} key={100 * coord.x + coord.y}></TilePane>;
+            return (
+              <TilePane
+                key={100 * coord.x + coord.y}
+                onClose={closePane(coord)}
+                gameManager={gameManager}
+                coord={coord}
+              ></TilePane>
+            );
           })}
 
         {/* NOTE: nibnalin's old logic for showing contract metadata for selected tile */}

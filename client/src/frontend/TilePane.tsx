@@ -1,18 +1,35 @@
 import React, { useEffect, useState } from 'react';
-
 import styled from 'styled-components';
-
 import Draggable from 'react-draggable';
 
+import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
+import GameManager from '../backend/GameManager';
+import { WorldCoords } from 'common-types';
+
 export default function TilePane(props: {
+  gameManager: GameManager | undefined;
+  coord: WorldCoords | undefined;
   onClose: React.MouseEventHandler<HTMLAnchorElement> | undefined;
 }) {
+  const playerInfos = useInfo(props.gameManager);
+
+  // TODO: function that returns an Option containing player info to render
+
+  // TODO: contract abi interaction + claim contract stuff
+
   return (
     <Draggable>
       <PaneContents>
         <CloseButton onClick={props.onClose} href='#'></CloseButton>
-        {/* TODO: display logic based on w/e else exists in tile that we care about */}
-        foo
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+        {/* conditional view:
+          - if player here, show player stats
+
+          - if contract exists, show contract interaction (and renew btn if it's yours
+          - else show claim button (and remix code input)
+          */}
       </PaneContents>
     </Draggable>
   );
@@ -24,7 +41,8 @@ const PaneContents = styled.div`
   border-style: solid;
   border-width: 2px;
   padding: 10px;
-  z-index: 10;
+  width: 200px;
+  background: rgba(255, 255, 255, 1);
 `;
 
 // TODO: clean up absolutes
@@ -32,7 +50,7 @@ const CloseButton = styled.a`
   & {
     position: absolute;
     right: 25px;
-    top: 2px;
+    top: 4px;
     opacity: 0.3;
   }
 
