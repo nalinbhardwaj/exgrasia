@@ -1,12 +1,12 @@
-import { Config, DAppProvider, Mainnet } from '@usedapp/core';
+import { Config, DAppProvider, ChainId } from '@usedapp/core';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import App from './App';
 
 const config: Config = {
-  readOnlyChainId: Mainnet.chainId,
+  readOnlyChainId: ChainId.xDai,
   readOnlyUrls: {
-    [Mainnet.chainId]: 'https://mainnet.infura.io/v3/62687d1a985d4508b2b7a24827551934',
+    [ChainId.xDai]: 'https://poa-xdai.gateway.pokt.network/v1/lb/621ed98c4e140e003a32d166',
   },
 };
 

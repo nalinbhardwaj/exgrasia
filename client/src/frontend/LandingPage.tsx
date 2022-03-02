@@ -15,7 +15,7 @@ import {
 } from 'common-types';
 import { tileTypeToColor, getTileEmoji, nullAddress } from '../utils';
 import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
 const enum LoadingStep {
@@ -24,7 +24,13 @@ const enum LoadingStep {
   LOADED_GAME_MANAGER,
 }
 
+interface stateType {
+  proxyPrivKey: string;
+  character: string;
+}
+
 export default function LandingPage() {
+  const location = useLocation<stateType>();
   const [gameManager, setGameManager] = useState<GameManager | undefined>();
   const [ethConnection, setEthConnection] = useState<EthConnection | undefined>();
   const [step, setStep] = useState(LoadingStep.NONE);
@@ -36,7 +42,11 @@ export default function LandingPage() {
   const playerInfos = useInfo(gameManager);
   const initted = useInitted(gameManager);
   const { privKeyIdx } = useParams<{ privKeyIdx?: string }>();
-  const privateKey = DEV_TEST_PRIVATE_KEY[privKeyIdx ? parseInt(privKeyIdx) : 0];
+  const passedPrivateKey = location.state?.proxyPrivKey;
+  const nuxCharacter: string = location.state?.character;
+  const privateKey = passedPrivateKey
+    ? passedPrivateKey
+    : DEV_TEST_PRIVATE_KEY[privKeyIdx ? parseInt(privKeyIdx) : 0];
   const [input, setInput] = useState<Map<string, string>>(new Map());
 
   useEffect(() => {
@@ -67,6 +77,9 @@ export default function LandingPage() {
   };
 
   useEffect(() => {
+    if (gameManager && nuxCharacter) {
+      gameManager.initPlayerLocation(nuxCharacter);
+    }
     if (gameManager) {
       gameManager.tileUpdated$.publish();
       gameManager.playerUpdated$.publish();

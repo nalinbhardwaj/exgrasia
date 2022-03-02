@@ -23,6 +23,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface TinyWorldRegistryInterface extends ethers.utils.Interface {
   functions: {
     "appendWhitelist(address[])": FunctionFragment;
+    "dummySetProxyAddress(address[],address)": FunctionFragment;
     "getProxyAddress(address)": FunctionFragment;
     "getRealAddress(address)": FunctionFragment;
     "isWhitelisted(address)": FunctionFragment;
@@ -35,6 +36,10 @@ interface TinyWorldRegistryInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "appendWhitelist",
     values: [string[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "dummySetProxyAddress",
+    values: [string[], string]
   ): string;
   encodeFunctionData(
     functionFragment: "getProxyAddress",
@@ -67,6 +72,10 @@ interface TinyWorldRegistryInterface extends ethers.utils.Interface {
 
   decodeFunctionResult(
     functionFragment: "appendWhitelist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "dummySetProxyAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -122,6 +131,18 @@ export class TinyWorldRegistry extends Contract {
 
     "appendWhitelist(address[])"(
       _addresses: string[],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    dummySetProxyAddress(
+      realAddresses: string[],
+      proxyAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "dummySetProxyAddress(address[],address)"(
+      realAddresses: string[],
+      proxyAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -230,6 +251,18 @@ export class TinyWorldRegistry extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  dummySetProxyAddress(
+    realAddresses: string[],
+    proxyAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "dummySetProxyAddress(address[],address)"(
+    realAddresses: string[],
+    proxyAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   getProxyAddress(
     _realAddress: string,
     overrides?: CallOverrides
@@ -302,6 +335,18 @@ export class TinyWorldRegistry extends Contract {
 
     "appendWhitelist(address[])"(
       _addresses: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    dummySetProxyAddress(
+      realAddresses: string[],
+      proxyAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "dummySetProxyAddress(address[],address)"(
+      realAddresses: string[],
+      proxyAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -389,6 +434,18 @@ export class TinyWorldRegistry extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    dummySetProxyAddress(
+      realAddresses: string[],
+      proxyAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "dummySetProxyAddress(address[],address)"(
+      realAddresses: string[],
+      proxyAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     getProxyAddress(
       _realAddress: string,
       overrides?: CallOverrides
@@ -468,6 +525,18 @@ export class TinyWorldRegistry extends Contract {
 
     "appendWhitelist(address[])"(
       _addresses: string[],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    dummySetProxyAddress(
+      realAddresses: string[],
+      proxyAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "dummySetProxyAddress(address[],address)"(
+      realAddresses: string[],
+      proxyAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

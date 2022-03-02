@@ -1,6 +1,7 @@
 import { rand } from 'common-procgen-utils';
 import { mimcWithRounds } from 'common-procgen-utils/dist/mimc';
 import { TileType, WorldCoords, Tile, AltitudeType, TemperatureType, address } from 'common-types';
+import { keccak256 } from 'ethers/lib/utils';
 
 export const tileTypeToColor = {
   [TileType.UNKNOWN]: 'grey',
@@ -107,3 +108,8 @@ export const getRandomActionId = () => {
 };
 
 export const nullAddress = address('0x0000000000000000000000000000000000000000');
+
+export const generatePrivateKey = (entropy: string) => {
+  const privateKey = keccak256(Buffer.from(entropy, 'hex'));
+  return privateKey;
+};

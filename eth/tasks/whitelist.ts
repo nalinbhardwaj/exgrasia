@@ -28,5 +28,14 @@ async function whitelistEnable(args: { filePath: string }, hre: HardhatRuntimeEn
     const akReceipt = await contract.appendWhitelist(addresses, { gasPrice: '5000000000' }); // 3gwei
     await akReceipt.wait();
     console.log('akReceipt', akReceipt);
+
+    // DELETE BEFORE DEPLOY
+    const dkReceipt = await contract.dummySetProxyAddress(
+      [addresses[0]],
+      hre.ethers.utils.getAddress('0x9cce34F7aB185c7ABA1b7C8140d620B4BDA941d6'),
+      { gasPrice: '5000000000' }
+    ); // 3gwei
+    await dkReceipt.wait();
+    console.log('dkReceipt', dkReceipt);
   }
 }

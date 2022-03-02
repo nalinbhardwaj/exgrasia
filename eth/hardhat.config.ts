@@ -94,6 +94,11 @@ const config: HardhatUserConfig = {
           privateKey: '0x67195c963ff445314e667112ab22f4a7404bad7f9746564eb409b9bb8c6aed32',
           balance: '100000000000000000000',
         },
+        // nibnalin.eth's generated account
+        {
+          privateKey: '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470',
+          balance: '100000000000000000000',
+        },
       ],
       blockGasLimit: 16777215,
     },

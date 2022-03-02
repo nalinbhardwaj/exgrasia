@@ -354,6 +354,13 @@ export class ContractsAPI extends EventEmitter {
     return whitelisted;
   }
 
+  public async getProxyAddress(realAddress: string) {
+    const proxyAddress = await this.makeCall<string>(this.registryContract.getProxyAddress, [
+      address(realAddress),
+    ]);
+    return proxyAddress;
+  }
+
   /**
    * Given an unconfirmed (but submitted) transaction, emits the appropriate
    * [[ContractsAPIEvent]].

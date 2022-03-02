@@ -11,6 +11,20 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "realAddresses",
+        "type": "address[]"
+      },
+      { "internalType": "address", "name": "proxyAddress", "type": "address" }
+    ],
+    "name": "dummySetProxyAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       { "internalType": "address", "name": "_realAddress", "type": "address" }
     ],
     "name": "getProxyAddress",
