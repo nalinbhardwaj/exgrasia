@@ -17,6 +17,7 @@ import { tileTypeToColor, getTileEmoji, nullAddress } from '../utils';
 import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
 import { useLocation, useParams } from 'react-router-dom';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { Tooltip } from '@mui/material';
 
 const enum LoadingStep {
   NONE,
@@ -123,21 +124,30 @@ export default function Game() {
                             }}
                             onClick={onGridClick({ x: i, y: j })}
                           >
-                            {[...playerInfos.value.keys()].map((addr) => {
-                              const playerInfo = playerInfos.value.get(addr);
-                              if (
-                                playerInfo &&
-                                playerInfo.coords.x === i &&
-                                playerInfo.coords.y === j
-                              ) {
-                                return (
-                                  <span key={addr} style={{ fontSize: '15px', zIndex: 10 }}>
-                                    {playerInfo.emoji}
-                                  </span>
-                                );
-                              }
-                            })}
-                            {tile.smartContractMetaData.emoji}
+                            {tile.smartContractMetaData.emoji === '' ? (
+                              [...playerInfos.value.keys()].map((addr) => {
+                                const playerInfo = playerInfos.value.get(addr);
+                                if (
+                                  playerInfo &&
+                                  playerInfo.coords.x === i &&
+                                  playerInfo.coords.y === j
+                                ) {
+                                  return (
+                                    <Tooltip title={addr} placement='top'>
+                                      <span key={addr} style={{ fontSize: '15px', zIndex: 10 }}>
+                                        {playerInfo.emoji}
+                                      </span>
+                                    </Tooltip>
+                                  );
+                                }
+                              })
+                            ) : (
+                              <Tooltip title={tile.smartContractMetaData.name} placement='top'>
+                                <span key={tile.smartContractMetaData.name}>
+                                  {tile.smartContractMetaData.emoji}
+                                </span>
+                              </Tooltip>
+                            )}
                           </GridSquare>
                         );
                       })}
