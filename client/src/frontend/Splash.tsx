@@ -102,7 +102,7 @@ export default function Splash() {
   useEffect(() => {
     if (!nuxDone) return;
     history.push({
-      pathname: '/Landing',
+      pathname: '/game',
       state: {
         proxyPrivKey,
         character,

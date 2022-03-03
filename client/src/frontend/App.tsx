@@ -3,7 +3,7 @@ import React from 'react';
 import { hot } from 'react-hot-loader/root';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
-import LandingPage from './LandingPage';
+import Game from './Game';
 import Splash from './Splash';
 
 // const isProd = process.env.NODE_ENV === 'production';
@@ -14,9 +14,9 @@ function App() {
       <GlobalStyle />
       <Router>
         <Switch>
-          <Route path='/splash' exact component={Splash} />
-          <Route path='/' exact component={LandingPage} />
-          <Route path='/:privKeyIdx' exact component={LandingPage} />
+          <Route path='/' exact component={Splash} />
+          <Route path='/game' exact component={Game} />
+          <Route path='/game/:privKeyIdx' exact component={Game} />
         </Switch>
       </Router>
     </>

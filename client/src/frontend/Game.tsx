@@ -29,7 +29,7 @@ interface stateType {
   character: string;
 }
 
-export default function LandingPage() {
+export default function Game() {
   const location = useLocation<stateType>();
   const [gameManager, setGameManager] = useState<GameManager | undefined>();
   const [ethConnection, setEthConnection] = useState<EthConnection | undefined>();
@@ -93,51 +93,13 @@ export default function LandingPage() {
   return (
     <>
       <Page>
-        <h1>Hello!</h1>
-        <p>{`The contract address is: ${CORE_CONTRACT_ADDRESS}`}</p>
-        <p>{`The current loading step is: ${step}`}</p>
-        {ethConnection ? <p>{`current user: ${ethConnection.getAddress()}`}</p> : null}
-        <p>{`GameManager loaded: ${!!gameManager}`}</p>
-        {gameManager && (
-          <p>{`world seed: ${gameManager.getWorldSeed()}. world width: ${gameManager.getWorldWidth()}`}</p>
-        )}
-        {gameManager && (
-          <p>{`selfCoords.x: ${gameManager.selfInfo.coords.x}, selfCoords.y: ${gameManager.selfInfo.coords.x}`}</p>
-        )}
-        {gameManager && <p>{`initted: ${initted.value}`}</p>}
-        <p>{`errors: ${error}`}</p>
-        {lastQueryResult !== undefined ? (
-          <p>{`last queried for (${queryCoords?.x}, ${queryCoords?.y}): cached tile type is ${lastQueryResult}`}</p>
-        ) : null}
-        <p>yo</p>
-        {gameManager && tiles
-          ? tiles.value.map((coordRow, i) => {
-              if (i == 0) return null;
-              return coordRow.map((tile, j) => {
-                if (j == 0) return null;
-                if (tiles.value[i][j].smartContractMetaData.name)
-                  return (
-                    <div key={100 * i + j + 100000}>
-                      {Pane(
-                        gameManager,
-                        { x: i, y: j },
-                        tiles.value[i][j].smartContractMetaData,
-                        input,
-                        setInput
-                      )}
-                    </div>
-                  );
-                else return null;
-              });
-            })
-          : null}
         {gameManager && tiles && initted.value ? (
           <FullScreen>
             <TransformWrapper
-              initialScale={5}
-              minScale={2}
-              initialPositionX={gameManager.selfInfo.coords.y * -105} // meticulously measured
-              initialPositionY={gameManager.selfInfo.coords.x * -112}
+              initialScale={2}
+              minScale={1}
+              initialPositionX={gameManager.selfInfo.coords.y * -38} // meticulously measured
+              initialPositionY={gameManager.selfInfo.coords.x * -40}
             >
               <TransformComponent
                 wrapperStyle={{
@@ -185,7 +147,12 @@ export default function LandingPage() {
               </TransformComponent>
             </TransformWrapper>
           </FullScreen>
-        ) : null}
+        ) : (
+          <FullScreen>
+            <Title>εxgrasia</Title>
+            <SubTitle>Loading...</SubTitle>
+          </FullScreen>
+        )}
       </Page>
     </>
   );
@@ -273,4 +240,32 @@ const FullScreen = styled.div`
   left: 0;
   bottom: 0;
   right: 0;
+  background-image: url('/public/assets/clouds.svg');
+  background-repeat: repeat;
+  background-size: 20%;
+  height: 100%;
+`;
+
+const Title = styled.div`
+  font-size: 96px;
+  vertical-align: middle;
+  margin: 0;
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  color: black;
+  font-weight: 400;
+  user-select: none;
+`;
+
+const SubTitle = styled.div`
+  font-size: 64px;
+  vertical-align: middle;
+  margin: 0;
+  position: absolute;
+  top: 60%;
+  right: 25%;
+  color: black;
+  font-weight: 300;
+  line-height: 1.1;
 `;
