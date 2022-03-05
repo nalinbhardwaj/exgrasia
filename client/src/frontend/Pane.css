@@ -1,0 +1,41 @@
+.bg {
+  background: no-repeat fixed;
+  background-size: cover;
+}
+
+.frosted-glass {
+  overflow: hidden;
+  padding: 1rem;
+  min-height: 100px;
+  color: white;
+  background-color: rgba(47, 47, 47, 0.4);
+}
+.frosted-glass:not(.blue-app-sidebar) {
+  position: relative;
+}
+
+.frosted-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: inherit;
+  filter: blur(10px);
+  margin: -20px;
+}
+
+.frosted-glass .frosted-glass-content {
+  position: relative;
+}
+
+.frosted-glass .frosted-glass-content::before,
+.frosted-glass .frosted-glass-content::after {
+  content: '';
+  display: table;
+}
+
+.has-frosted-glass .frosted-glass {
+  box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.3);
+}

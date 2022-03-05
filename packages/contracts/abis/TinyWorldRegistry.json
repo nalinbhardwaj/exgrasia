@@ -24,6 +24,16 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getPlayerInfos",
+    "outputs": [
+      { "internalType": "address[]", "name": "", "type": "address[]" },
+      { "internalType": "address[]", "name": "", "type": "address[]" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       { "internalType": "address", "name": "_realAddress", "type": "address" }
     ],

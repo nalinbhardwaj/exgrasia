@@ -203,11 +203,22 @@ export class ContractsAPI extends EventEmitter {
     );
     const playerIds = await this.makeCall<string[]>(this.coreContract.getPlayerIds);
 
+    const registryPlayerInfos = await this.makeCall<{ 0: string[]; 1: string[] }>(
+      this.registryContract.getPlayerInfos
+    );
+
+    const proxyToRealMap: Map<EthAddress, EthAddress> = new Map();
+    for (let i = 0; i < registryPlayerInfos[0].length; i++) {
+      proxyToRealMap.set(address(registryPlayerInfos[0][i]), address(registryPlayerInfos[1][i]));
+    }
+
     const playerMap: Map<EthAddress, PlayerInfo> = new Map();
     for (let i = 0; i < playerIds.length; i++) {
       playerMap.set(address(playerIds[i]), {
         coords: decodeCoords(playerInfos[0][i]),
         emoji: playerInfos[1][i],
+        proxyAddress: address(playerIds[i]),
+        realAddress: address(proxyToRealMap.get(address(playerIds[i])) || playerIds[i]),
       });
     }
     return playerMap;
@@ -231,9 +242,19 @@ export class ContractsAPI extends EventEmitter {
 
     const addr = this.ethConnection.getAddress();
 
+    if (!addr) {
+      throw new Error('no address');
+    }
+
     const rawCoords = await this.makeCall<RawCoords>(this.coreContract.playerLocation, [addr]);
     const emoji = await this.makeCall<string>(this.coreContract.playerEmoji, [addr]);
-    return { coords: decodeCoords(rawCoords), emoji };
+    const realAddress = await this.makeCall<string>(this.registryContract.getRealAddress, [addr]);
+    return {
+      coords: decodeCoords(rawCoords),
+      emoji,
+      proxyAddress: address(addr),
+      realAddress: address(realAddress),
+    };
   }
 
   public async getTileContractMetaData(addr: EthAddress): Promise<TileContractMetaData> {
@@ -358,7 +379,7 @@ export class ContractsAPI extends EventEmitter {
     const proxyAddress = await this.makeCall<string>(this.registryContract.getProxyAddress, [
       address(realAddress),
     ]);
-    return proxyAddress;
+    return address(proxyAddress);
   }
 
   /**

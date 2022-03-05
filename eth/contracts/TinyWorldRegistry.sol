@@ -3,6 +3,7 @@ pragma solidity ^0.8.4;
 
 contract TinyWorldRegistry {
     address admin;
+    address[] registeredRealAddresses;
     mapping(address => bool) public whitelistAddresses;
     mapping(address => address) public realAddressToProxyAddress;
     mapping(address => address) public proxyAddressToRealAddress;
@@ -58,5 +59,16 @@ contract TinyWorldRegistry {
 
     function getRealAddress(address _proxyAddress) public view returns (address) {
         return proxyAddressToRealAddress[_proxyAddress];
+    }
+
+    function getPlayerInfos() public view returns (address[] memory, address[] memory) {
+        address[] memory realAddresses = new address[](registeredRealAddresses.length);
+        address[] memory proxyAddresses = new address[](registeredRealAddresses.length);
+        for (uint256 i = 0; i < registeredRealAddresses.length; i++) {
+            address realAddress = registeredRealAddresses[i];
+            realAddresses[i] = realAddress;
+            proxyAddresses[i] = realAddressToProxyAddress[realAddress];
+        }
+        return (proxyAddresses, realAddresses);
     }
 }

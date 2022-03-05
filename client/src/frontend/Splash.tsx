@@ -139,8 +139,8 @@ export default function Splash() {
         console.log('proxyAddress', proxyAddress);
         if (proxyAddress == nullAddress) {
           submitRegistry(pubKey);
-        } else if (proxyAddress != pubKey) {
-          console.log('fucked up');
+        } else if (proxyAddress.toLowerCase() != pubKey.toLowerCase()) {
+          console.log('fucked up', pubKey, proxyAddress);
         } else {
           ethConnection.setAccount(privKey);
           const isInitted = await contractsApi.getInitted();

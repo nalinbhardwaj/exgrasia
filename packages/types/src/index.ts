@@ -69,6 +69,8 @@ export type Tile = {
 
 export type PlayerInfo = {
   coords: WorldCoords;
+  proxyAddress: EthAddress;
+  realAddress: EthAddress;
   emoji: string;
 };
 

@@ -1,6 +1,15 @@
 import { rand } from 'common-procgen-utils';
 import { mimcWithRounds } from 'common-procgen-utils/dist/mimc';
-import { TileType, WorldCoords, Tile, AltitudeType, TemperatureType, address } from 'common-types';
+import {
+  TileType,
+  WorldCoords,
+  Tile,
+  AltitudeType,
+  TemperatureType,
+  address,
+  EthAddress,
+} from 'common-types';
+import { ethers } from 'ethers';
 import { keccak256 } from 'ethers/lib/utils';
 
 export const tileTypeToColor = {
@@ -112,4 +121,23 @@ export const nullAddress = address('0x0000000000000000000000000000000000000000')
 export const generatePrivateKey = (entropy: string) => {
   const privateKey = keccak256(Buffer.from(entropy, 'hex'));
   return privateKey;
+};
+
+const provider = new ethers.providers.InfuraProvider('mainnet', '661cfe1251ae47d2a6cd6d883750f357');
+
+export const fetchENS = async (address: EthAddress) => {
+  return provider.lookupAddress(address);
+};
+
+export const prettifyAddress = async (address: EthAddress) => {
+  const ens = await fetchENS(address);
+  console.log('ens', ens);
+  if (ens) {
+    return ens;
+  }
+  return address.slice(0, 6) + '...' + address.slice(-4);
+};
+
+export const distance = (a: WorldCoords, b: WorldCoords) => {
+  return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 };

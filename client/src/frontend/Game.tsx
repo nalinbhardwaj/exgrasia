@@ -18,6 +18,9 @@ import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
 import { useLocation, useParams } from 'react-router-dom';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { Tooltip } from '@mui/material';
+import Draggable from 'react-draggable';
+import './Pane.css';
+import Pane from './Pane';
 
 const enum LoadingStep {
   NONE,
@@ -49,6 +52,7 @@ export default function Game() {
     ? passedPrivateKey
     : DEV_TEST_PRIVATE_KEY[privKeyIdx ? parseInt(privKeyIdx) : 0];
   const [input, setInput] = useState<Map<string, string>>(new Map());
+  const [openPanes, setOpenPanes] = useState<WorldCoords[]>([]);
 
   useEffect(() => {
     getEthConnection()
@@ -69,7 +73,7 @@ export default function Game() {
 
   const onGridClick = (coords: WorldCoords) => async () => {
     if (!gameManager || queryingBlockchain) return;
-    await gameManager.ownTile(coords, address('0xA1cf9870677Bb213991DDdE342a5CE412c0f676D'));
+    setOpenPanes([...openPanes, coords]);
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -91,72 +95,93 @@ export default function Game() {
     };
   }, [gameManager]);
 
+  const onClose = (coords: WorldCoords) => {
+    setOpenPanes(openPanes.filter((c) => c !== coords));
+  };
+
   return (
     <>
       <Page>
         {gameManager && tiles && initted.value ? (
-          <FullScreen>
-            <TransformWrapper
-              initialScale={2}
-              minScale={1}
-              initialPositionX={gameManager.selfInfo.coords.y * -38} // meticulously measured
-              initialPositionY={gameManager.selfInfo.coords.x * -40}
-            >
-              <TransformComponent
-                wrapperStyle={{
-                  maxWidth: '100%',
-                  maxHeight: 'calc(100vh - 0.1px)',
-                }}
+          <>
+            <FullScreen>
+              <TransformWrapper
+                initialScale={2}
+                minScale={1}
+                initialPositionX={gameManager.selfInfo.coords.y * -38} // meticulously measured
+                initialPositionY={gameManager.selfInfo.coords.x * -40}
               >
-                {tiles.value.map((coordRow, i) => {
-                  if (i == 0) return null;
-                  return (
-                    <GridRow key={i}>
-                      {coordRow.map((tile, j) => {
-                        if (j == 0) return null;
-                        return (
-                          <GridSquare
-                            key={100 * i + j}
-                            style={{
-                              backgroundColor: tinycolor(
-                                tileTypeToColor[tile.tileType]
-                              ).toHexString(),
-                            }}
-                            onClick={onGridClick({ x: i, y: j })}
-                          >
-                            {tile.smartContractMetaData.emoji === '' ? (
-                              [...playerInfos.value.keys()].map((addr) => {
-                                const playerInfo = playerInfos.value.get(addr);
-                                if (
-                                  playerInfo &&
-                                  playerInfo.coords.x === i &&
-                                  playerInfo.coords.y === j
-                                ) {
-                                  return (
-                                    <Tooltip title={addr} placement='top'>
-                                      <span key={addr} style={{ fontSize: '15px', zIndex: 10 }}>
-                                        {playerInfo.emoji}
-                                      </span>
-                                    </Tooltip>
-                                  );
-                                }
-                              })
-                            ) : (
-                              <Tooltip title={tile.smartContractMetaData.name} placement='top'>
-                                <span key={tile.smartContractMetaData.name}>
-                                  {tile.smartContractMetaData.emoji}
-                                </span>
-                              </Tooltip>
-                            )}
-                          </GridSquare>
-                        );
-                      })}
-                    </GridRow>
-                  );
-                })}
-              </TransformComponent>
-            </TransformWrapper>
-          </FullScreen>
+                <TransformComponent
+                  wrapperStyle={{
+                    maxWidth: '100%',
+                    maxHeight: 'calc(100vh - 0.1px)',
+                  }}
+                >
+                  {tiles.value.map((coordRow, i) => {
+                    if (i == 0) return null;
+                    return (
+                      <GridRow key={i}>
+                        {coordRow.map((tile, j) => {
+                          if (j == 0) return null;
+                          return (
+                            <GridSquare
+                              key={100 * i + j}
+                              style={{
+                                backgroundColor: tinycolor(
+                                  tileTypeToColor[tile.tileType]
+                                ).toHexString(),
+                              }}
+                              onClick={onGridClick({ x: i, y: j })}
+                            >
+                              {tile.smartContractMetaData.emoji === '' ? (
+                                [...playerInfos.value.keys()].map((addr) => {
+                                  const playerInfo = playerInfos.value.get(addr);
+                                  if (
+                                    playerInfo &&
+                                    playerInfo.coords.x === i &&
+                                    playerInfo.coords.y === j
+                                  ) {
+                                    return (
+                                      <Tooltip title={addr} key={100 * i + j} placement='top'>
+                                        <span
+                                          key={100 * i + j}
+                                          style={{ fontSize: '15px', zIndex: 10 }}
+                                        >
+                                          {playerInfo.emoji}
+                                        </span>
+                                      </Tooltip>
+                                    );
+                                  }
+                                })
+                              ) : (
+                                <Tooltip
+                                  key={100 * i + j}
+                                  title={tile.smartContractMetaData.name}
+                                  placement='top'
+                                >
+                                  <span key={100 * i + j}>{tile.smartContractMetaData.emoji}</span>
+                                </Tooltip>
+                              )}
+                            </GridSquare>
+                          );
+                        })}
+                      </GridRow>
+                    );
+                  })}
+                </TransformComponent>
+              </TransformWrapper>
+            </FullScreen>
+            {openPanes.map((coords) => {
+              return (
+                <Pane
+                  coords={coords}
+                  gm={gameManager}
+                  playerInfos={playerInfos.value}
+                  onClose={onClose}
+                />
+              );
+            })}
+          </>
         ) : (
           <FullScreen>
             <Title>εxgrasia</Title>
@@ -165,58 +190,6 @@ export default function Game() {
         )}
       </Page>
     </>
-  );
-}
-
-function Pane(
-  gm: GameManager,
-  coords: WorldCoords,
-  props: TileContractMetaData,
-  input: Map<string, string>,
-  setInput: React.Dispatch<React.SetStateAction<Map<string, string>>>
-) {
-  return (
-    <div key={props.name}>
-      <div>{`Contract coords x: ${coords.x}, y: ${coords.y}`}</div>
-      <div>{`Contract name: ${props.name}, emoji: ${props.emoji}, desc: ${props.description}`}</div>
-      {gm && props.extendedAbi && props.extendedAbi.length > 0
-        ? props.extendedAbi.map((contractFunc, i) => {
-            const purity =
-              contractFunc.stateMutability == 'view' || contractFunc.stateMutability == 'pure';
-            const handleSubmit = async (event: { preventDefault: () => void }) => {
-              event.preventDefault();
-              const strInp = input.get(contractFunc.name);
-              console.log('strInp', strInp);
-              const inp = strInp ? JSON.parse(strInp) : [];
-              console.log(inp);
-              const result = purity
-                ? await gm.tileCall(coords, contractFunc.name, inp)
-                : await gm.tileTx(coords, contractFunc.name, inp);
-              console.log(result);
-            };
-            const handleChange = (name: string, e: React.ChangeEvent<HTMLInputElement>) => {
-              let newInput = input;
-              newInput.set(name, e.target.value);
-              setInput(newInput);
-            };
-            console.log('contractFunc name', contractFunc.name);
-            return (
-              <form onSubmit={handleSubmit} key={contractFunc.name}>
-                <label>
-                  {`${JSON.stringify(contractFunc.name)}, ${JSON.stringify(contractFunc.inputs)}`}
-                  <input
-                    key={contractFunc.name}
-                    type='text'
-                    value={input.get(contractFunc.name)}
-                    onChange={(e) => handleChange(contractFunc.name, e)}
-                  />
-                </label>
-                <input key={contractFunc.name} type='submit' value='Submit' />
-              </form>
-            );
-          })
-        : null}
-    </div>
   );
 }
 

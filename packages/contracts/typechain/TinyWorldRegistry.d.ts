@@ -24,6 +24,7 @@ interface TinyWorldRegistryInterface extends ethers.utils.Interface {
   functions: {
     "appendWhitelist(address[])": FunctionFragment;
     "dummySetProxyAddress(address[],address)": FunctionFragment;
+    "getPlayerInfos()": FunctionFragment;
     "getProxyAddress(address)": FunctionFragment;
     "getRealAddress(address)": FunctionFragment;
     "isWhitelisted(address)": FunctionFragment;
@@ -40,6 +41,10 @@ interface TinyWorldRegistryInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "dummySetProxyAddress",
     values: [string[], string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPlayerInfos",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getProxyAddress",
@@ -76,6 +81,10 @@ interface TinyWorldRegistryInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "dummySetProxyAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPlayerInfos",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -145,6 +154,16 @@ export class TinyWorldRegistry extends Contract {
       proxyAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    getPlayerInfos(overrides?: CallOverrides): Promise<{
+      0: string[];
+      1: string[];
+    }>;
+
+    "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
+      0: string[];
+      1: string[];
+    }>;
 
     getProxyAddress(
       _realAddress: string,
@@ -263,6 +282,16 @@ export class TinyWorldRegistry extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  getPlayerInfos(overrides?: CallOverrides): Promise<{
+    0: string[];
+    1: string[];
+  }>;
+
+  "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
+    0: string[];
+    1: string[];
+  }>;
+
   getProxyAddress(
     _realAddress: string,
     overrides?: CallOverrides
@@ -349,6 +378,16 @@ export class TinyWorldRegistry extends Contract {
       proxyAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    getPlayerInfos(overrides?: CallOverrides): Promise<{
+      0: string[];
+      1: string[];
+    }>;
+
+    "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
+      0: string[];
+      1: string[];
+    }>;
 
     getProxyAddress(
       _realAddress: string,
@@ -446,6 +485,10 @@ export class TinyWorldRegistry extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    getPlayerInfos(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getPlayerInfos()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getProxyAddress(
       _realAddress: string,
       overrides?: CallOverrides
@@ -538,6 +581,12 @@ export class TinyWorldRegistry extends Contract {
       realAddresses: string[],
       proxyAddress: string,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    getPlayerInfos(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getPlayerInfos()"(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getProxyAddress(
