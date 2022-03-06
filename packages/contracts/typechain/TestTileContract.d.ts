@@ -99,10 +99,12 @@ export class TestTileContract extends Contract {
 
     logger(overrides?: CallOverrides): Promise<{
       0: string;
+      1: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     }>;
 
     "logger()"(overrides?: CallOverrides): Promise<{
       0: string;
+      1: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     }>;
 
     name(overrides?: CallOverrides): Promise<{
@@ -133,9 +135,15 @@ export class TestTileContract extends Contract {
 
   "extendedAbi()"(overrides?: CallOverrides): Promise<string>;
 
-  logger(overrides?: CallOverrides): Promise<string>;
+  logger(overrides?: CallOverrides): Promise<{
+    0: string;
+    1: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+  }>;
 
-  "logger()"(overrides?: CallOverrides): Promise<string>;
+  "logger()"(overrides?: CallOverrides): Promise<{
+    0: string;
+    1: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+  }>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -161,9 +169,15 @@ export class TestTileContract extends Contract {
 
     "extendedAbi()"(overrides?: CallOverrides): Promise<string>;
 
-    logger(overrides?: CallOverrides): Promise<string>;
+    logger(overrides?: CallOverrides): Promise<{
+      0: string;
+      1: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    }>;
 
-    "logger()"(overrides?: CallOverrides): Promise<string>;
+    "logger()"(overrides?: CallOverrides): Promise<{
+      0: string;
+      1: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    }>;
 
     name(overrides?: CallOverrides): Promise<string>;
 

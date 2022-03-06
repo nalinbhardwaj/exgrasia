@@ -48,11 +48,20 @@ export type WorldCoords = {
   y: number;
 };
 
+export interface FuncABI {
+  name: string;
+  type: string;
+  inputs: { name: string; type: string }[];
+  stateMutability: string;
+  payable: boolean;
+  constant: any;
+}
+
 export type TileContractMetaData = {
   emoji: string;
   name: string;
   description: string;
-  extendedAbi: any[];
+  extendedAbi: FuncABI[];
 };
 
 export type Tile = {

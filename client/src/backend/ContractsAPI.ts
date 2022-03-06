@@ -361,10 +361,10 @@ export class ContractsAPI extends EventEmitter {
       throw new Error('no signer, cannot execute tx');
     }
 
-    if (addr == nullAddress) return undefined;
+    if (addr == nullAddress) return null;
 
     const tileContract = await this.getFullTileContract(addr, abi);
-    const res = await this.makeCall<string>(tileContract[methodName], args);
+    const res = await this.makeCall<any>(tileContract[methodName], args);
     return res;
   }
 

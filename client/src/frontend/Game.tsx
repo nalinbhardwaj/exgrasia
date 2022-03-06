@@ -8,12 +8,13 @@ import { getEthConnection } from '../backend/Blockchain';
 import {
   address,
   DEV_TEST_PRIVATE_KEY,
+  EthAddress,
   Tile,
   TileContractMetaData,
   TileType,
   WorldCoords,
 } from 'common-types';
-import { tileTypeToColor, getTileEmoji, nullAddress } from '../utils';
+import { tileTypeToColor, getTileEmoji, nullAddress, prettifyAddress } from '../utils';
 import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
 import { useLocation, useParams } from 'react-router-dom';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
@@ -53,6 +54,9 @@ export default function Game() {
     : DEV_TEST_PRIVATE_KEY[privKeyIdx ? parseInt(privKeyIdx) : 0];
   const [input, setInput] = useState<Map<string, string>>(new Map());
   const [openPanes, setOpenPanes] = useState<WorldCoords[]>([]);
+  const [prettifiedAddresses, setPrettifiedAddresses] = useState<Map<EthAddress, string>>(
+    new Map()
+  );
 
   useEffect(() => {
     getEthConnection()
@@ -71,8 +75,17 @@ export default function Game() {
       });
   }, []);
 
-  const onGridClick = (coords: WorldCoords) => async () => {
+  const onGridClick = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    coords: WorldCoords
+  ) => {
+    event.preventDefault();
     if (!gameManager || queryingBlockchain) return;
+    for (const openPane of openPanes) {
+      if (openPane.x === coords.x && openPane.y === coords.y) {
+        return;
+      }
+    }
     setOpenPanes([...openPanes, coords]);
   };
 
@@ -98,6 +111,16 @@ export default function Game() {
   const onClose = (coords: WorldCoords) => {
     setOpenPanes(openPanes.filter((c) => c !== coords));
   };
+
+  useEffect(() => {
+    const fetch = async () => {
+      for (const [playerAddress, playerInfo] of playerInfos.value) {
+        if (prettifiedAddresses.has(playerAddress)) continue;
+        prettifiedAddresses.set(playerAddress, await prettifyAddress(playerInfo.realAddress));
+      }
+    };
+    fetch();
+  }, [playerInfos]);
 
   return (
     <>
@@ -131,7 +154,7 @@ export default function Game() {
                                   tileTypeToColor[tile.tileType]
                                 ).toHexString(),
                               }}
-                              onClick={onGridClick({ x: i, y: j })}
+                              onContextMenu={(event) => onGridClick(event, { x: i, y: j })}
                             >
                               {tile.smartContractMetaData.emoji === '' ? (
                                 [...playerInfos.value.keys()].map((addr) => {
@@ -142,7 +165,11 @@ export default function Game() {
                                     playerInfo.coords.y === j
                                   ) {
                                     return (
-                                      <Tooltip title={addr} key={100 * i + j} placement='top'>
+                                      <Tooltip
+                                        title={prettifiedAddresses.get(addr) || addr}
+                                        key={100 * i + j}
+                                        placement='top'
+                                      >
                                         <span
                                           key={100 * i + j}
                                           style={{ fontSize: '15px', zIndex: 10 }}
@@ -174,10 +201,13 @@ export default function Game() {
             {openPanes.map((coords) => {
               return (
                 <Pane
+                  key={coords.x * 100 + coords.y}
                   coords={coords}
                   gm={gameManager}
                   playerInfos={playerInfos.value}
                   onClose={onClose}
+                  curTiles={tiles.value}
+                  prettifiedAddresses={prettifiedAddresses}
                 />
               );
             })}

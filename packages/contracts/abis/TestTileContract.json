@@ -3,14 +3,14 @@
     "inputs": [],
     "name": "description",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "pure",
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "emoji",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "pure",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -23,7 +23,18 @@
   {
     "inputs": [],
     "name": "logger",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "outputs": [
+      { "internalType": "string", "name": "", "type": "string" },
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct TestTileContract.Coords",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -31,7 +42,7 @@
     "inputs": [],
     "name": "name",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "pure",
+    "stateMutability": "view",
     "type": "function"
   },
   {
