@@ -1,15 +1,17 @@
 import { Button, TextField } from '@mui/material';
-import { address, EthAddress, PlayerInfo, Tile, WorldCoords } from 'common-types';
+import { address, dangerousHTML, EthAddress, PlayerInfo, Tile, WorldCoords } from 'common-types';
 import React, { Component, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import styled from 'styled-components';
 import GameManager from '../backend/GameManager';
 import { distance, prettifyAddress } from '../utils';
 import { BN } from 'ethereumjs-util';
+import { PluginManager } from '../backend/PluginManager';
 
 type PaneProps = {
   coords: WorldCoords;
   gm: GameManager;
+  pm: PluginManager;
   playerInfos: Map<EthAddress, PlayerInfo>;
   onClose: (coords: WorldCoords) => void;
   curTiles: Tile[][];
@@ -74,44 +76,49 @@ function ContractBody(props: { coords: WorldCoords; gm: GameManager; contractTil
     );
   };
   return (
-    <FuncContainer>
-      {abi &&
-        abi.map((funcABI, funcIndex) => {
-          const isConstant = funcABI.constant !== undefined ? funcABI.constant : false;
-          const lookupOnly =
-            funcABI.stateMutability === 'view' || funcABI.stateMutability === 'pure' || isConstant;
+    <>
+      <p style={{ fontSize: '32px' }}>{props.contractTile.smartContractMetaData.description}</p>
+      <FuncContainer>
+        {abi &&
+          abi.map((funcABI, funcIndex) => {
+            const isConstant = funcABI.constant !== undefined ? funcABI.constant : false;
+            const lookupOnly =
+              funcABI.stateMutability === 'view' ||
+              funcABI.stateMutability === 'pure' ||
+              isConstant;
 
-          return (
-            <>
-              {funcABI.inputs &&
-                funcABI.inputs.map((input, inputIndex) => {
-                  return (
-                    <TextField
-                      key={funcABI.name + inputIndex}
-                      id='standard-basic'
-                      label={input.name}
-                      variant='standard'
-                      onChange={(event) => handleChange(event, funcIndex, inputIndex)}
-                    />
-                  );
-                })}
-              <Button
-                key={funcABI.name}
-                style={{ margin: '10px' }}
-                variant='contained'
-                onClick={() =>
-                  handleClick(funcABI.name, funcIndex, funcABI.inputs.length, lookupOnly)
-                }
-              >
-                {funcABI.name}
-              </Button>
-              {results.has(funcIndex) && lookupOnly && (
-                <>{JSON.stringify(results.get(funcIndex), null, 2)}</>
-              )}
-            </>
-          );
-        })}
-    </FuncContainer>
+            return (
+              <>
+                {funcABI.inputs &&
+                  funcABI.inputs.map((input, inputIndex) => {
+                    return (
+                      <TextField
+                        key={funcABI.name + inputIndex}
+                        id='standard-basic'
+                        label={input.name}
+                        variant='standard'
+                        onChange={(event) => handleChange(event, funcIndex, inputIndex)}
+                      />
+                    );
+                  })}
+                <Button
+                  key={funcABI.name}
+                  style={{ margin: '10px' }}
+                  variant='contained'
+                  onClick={() =>
+                    handleClick(funcABI.name, funcIndex, funcABI.inputs.length, lookupOnly)
+                  }
+                >
+                  {funcABI.name}
+                </Button>
+                {results.has(funcIndex) && lookupOnly && (
+                  <>{JSON.stringify(results.get(funcIndex), null, 2)}</>
+                )}
+              </>
+            );
+          })}
+      </FuncContainer>
+    </>
   );
 }
 
@@ -131,7 +138,7 @@ type BodyProps = {
 };
 
 function Body(props: BodyProps) {
-  // Contract pane: TODO
+  // Contract pane
   const contractTile = props.curTiles[props.coords.x][props.coords.y];
   if (contractTile.smartContractMetaData.emoji !== '') {
     return <ContractBody coords={props.coords} gm={props.gm} contractTile={contractTile} />;
@@ -161,16 +168,62 @@ function Body(props: BodyProps) {
     setCurAddr(event.target.value);
   };
   // Example contract addr: 0xA1cf9870677Bb213991DDdE342a5CE412c0f676D
-  return !tooFar ? (
+  return (
     <>
-      <TextField id='standard-basic' label='Address' variant='standard' onChange={handleChange} />
-      <Button variant='contained' onClick={onClick}>
-        Own Tile ({props.coords.x}, {props.coords.y})
-      </Button>
+      <div style={{ marginBottom: '12px' }}>
+        Develop your own contract using the exgrasia remix IDE.
+        <div style={{ marginTop: '6px' }}>
+          <Button
+            variant='contained'
+            onClick={() => {
+              window.open('https://remix.exgrasia.xyz', '_blank');
+            }}
+          >
+            Open exgrasia remix IDE
+          </Button>
+        </div>
+      </div>
+      {!tooFar ? (
+        <>
+          <TextField
+            id='standard-basic'
+            label='Address'
+            variant='standard'
+            onChange={handleChange}
+          />
+          <Button variant='contained' onClick={onClick}>
+            Own Tile ({props.coords.x}, {props.coords.y})
+          </Button>
+        </>
+      ) : (
+        <>
+          You are too far to claim tile ({props.coords.x}, {props.coords.y})
+        </>
+      )}
     </>
-  ) : (
+  );
+}
+
+function Plugins(props: { coords: WorldCoords; gm: GameManager; pm: PluginManager }) {
+  const [pluginOutputs, setPluginOutputs] = useState<Map<string, dangerousHTML>>(new Map());
+
+  useEffect(() => {
+    props.pm.renderAllRunningPlugins(props.coords).then((outputs) => {
+      setPluginOutputs(outputs);
+    });
+  }, [props]);
+
+  return (
     <>
-      You are too far to claim tile ({props.coords.x}, {props.coords.y})
+      {pluginOutputs &&
+        [...pluginOutputs.keys()].map((pluginId) => {
+          return (
+            <div key={pluginId}>
+              <div>{pluginId}</div>
+              <div dangerouslySetInnerHTML={pluginOutputs.get(pluginId)} />
+            </div>
+          );
+        })}
     </>
   );
 }
@@ -179,7 +232,7 @@ export default function Pane(props: PaneProps) {
   return (
     <Draggable>
       <div className='frosted-glass'>
-        <CloseButton onClick={() => props.onClose(props.coords)}>x</CloseButton>
+        <CloseButton onClick={() => props.onClose(props.coords)}>&#10006;</CloseButton>
         <Title>{getTitle(props)}</Title>
         <Body
           coords={props.coords}
@@ -187,6 +240,7 @@ export default function Pane(props: PaneProps) {
           playerInfos={props.playerInfos}
           curTiles={props.curTiles}
         />
+        <Plugins coords={props.coords} gm={props.gm} pm={props.pm} />
       </div>
     </Draggable>
   );
@@ -198,8 +252,9 @@ const Title = styled.div`
 
 const CloseButton = styled.div`
   position: absolute;
-  top: 1%;
-  right: 1%;
+  top: 3%;
+  right: 3%;
   user-select: none;
   cursor: pointer;
+  font-size: 24px;
 `;

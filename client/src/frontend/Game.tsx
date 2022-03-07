@@ -22,11 +22,13 @@ import { Tooltip } from '@mui/material';
 import Draggable from 'react-draggable';
 import './Pane.css';
 import Pane from './Pane';
+import { PluginManager } from '../backend/PluginManager';
 
 const enum LoadingStep {
   NONE,
   LOADED_ETH_CONNECTION,
   LOADED_GAME_MANAGER,
+  LOADED_PLUGIN_MANAGER,
 }
 
 interface stateType {
@@ -37,6 +39,7 @@ interface stateType {
 export default function Game() {
   const location = useLocation<stateType>();
   const [gameManager, setGameManager] = useState<GameManager | undefined>();
+  const [pluginManager, setPluginManager] = useState<PluginManager | undefined>();
   const [ethConnection, setEthConnection] = useState<EthConnection | undefined>();
   const [step, setStep] = useState(LoadingStep.NONE);
   const [error, setError] = useState('no errors');
@@ -68,6 +71,10 @@ export default function Game() {
         window.gm = gm;
         setGameManager(gm);
         setStep(LoadingStep.LOADED_GAME_MANAGER);
+        const pm = new PluginManager(gameManager!);
+        window.pm = pm;
+        setPluginManager(pm);
+        setStep(LoadingStep.LOADED_PLUGIN_MANAGER);
       })
       .catch((e) => {
         console.log(e);
@@ -125,7 +132,7 @@ export default function Game() {
   return (
     <>
       <Page>
-        {gameManager && tiles && initted.value ? (
+        {gameManager && pluginManager && tiles && initted.value ? (
           <>
             <FullScreen>
               <TransformWrapper
@@ -204,6 +211,7 @@ export default function Game() {
                   key={coords.x * 100 + coords.y}
                   coords={coords}
                   gm={gameManager}
+                  pm={pluginManager}
                   playerInfos={playerInfos.value}
                   onClose={onClose}
                   curTiles={tiles.value}
