@@ -265,10 +265,10 @@ export class ContractsAPI extends EventEmitter {
     if (addr == nullAddress) return { emoji: '', name: '', description: '', extendedAbi: [] };
 
     const tileContract = await this.getStubTileContract(addr);
-    const emoji = await this.makeCall<string>(tileContract.emoji);
-    const name = await this.makeCall<string>(tileContract.name);
-    const description = await this.makeCall<string>(tileContract.description);
-    const extendedAbiURL = await this.makeCall<string>(tileContract.extendedAbi);
+    const emoji = await this.makeCall<string>(tileContract.tileEmoji);
+    const name = await this.makeCall<string>(tileContract.tileName);
+    const description = await this.makeCall<string>(tileContract.tileDescription);
+    const extendedAbiURL = await this.makeCall<string>(tileContract.tileABI);
     const extendedAbi: any[] = await fetch(extendedAbiURL).then((res) => res.json());
 
     return { emoji, name, description, extendedAbi };

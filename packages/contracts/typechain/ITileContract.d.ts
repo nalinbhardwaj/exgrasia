@@ -21,33 +21,27 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface ITileContractInterface extends ethers.utils.Interface {
   functions: {
-    "description()": FunctionFragment;
-    "emoji()": FunctionFragment;
-    "extendedAbi()": FunctionFragment;
-    "name()": FunctionFragment;
+    "tileABI()": FunctionFragment;
+    "tileDescription()": FunctionFragment;
+    "tileEmoji()": FunctionFragment;
+    "tileName()": FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: "tileABI", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "description",
+    functionFragment: "tileDescription",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "emoji", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "extendedAbi",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(functionFragment: "tileEmoji", values?: undefined): string;
+  encodeFunctionData(functionFragment: "tileName", values?: undefined): string;
 
+  decodeFunctionResult(functionFragment: "tileABI", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "description",
+    functionFragment: "tileDescription",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "emoji", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "extendedAbi",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "tileEmoji", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "tileName", data: BytesLike): Result;
 
   events: {};
 }
@@ -66,108 +60,110 @@ export class ITileContract extends Contract {
   interface: ITileContractInterface;
 
   functions: {
-    description(overrides?: CallOverrides): Promise<{
+    tileABI(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "description()"(overrides?: CallOverrides): Promise<{
+    "tileABI()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    emoji(overrides?: CallOverrides): Promise<{
+    tileDescription(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "emoji()"(overrides?: CallOverrides): Promise<{
+    "tileDescription()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    extendedAbi(overrides?: CallOverrides): Promise<{
+    tileEmoji(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "extendedAbi()"(overrides?: CallOverrides): Promise<{
+    "tileEmoji()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    name(overrides?: CallOverrides): Promise<{
+    tileName(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "name()"(overrides?: CallOverrides): Promise<{
+    "tileName()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
   };
 
-  description(overrides?: CallOverrides): Promise<string>;
+  tileABI(overrides?: CallOverrides): Promise<string>;
 
-  "description()"(overrides?: CallOverrides): Promise<string>;
+  "tileABI()"(overrides?: CallOverrides): Promise<string>;
 
-  emoji(overrides?: CallOverrides): Promise<string>;
+  tileDescription(overrides?: CallOverrides): Promise<string>;
 
-  "emoji()"(overrides?: CallOverrides): Promise<string>;
+  "tileDescription()"(overrides?: CallOverrides): Promise<string>;
 
-  extendedAbi(overrides?: CallOverrides): Promise<string>;
+  tileEmoji(overrides?: CallOverrides): Promise<string>;
 
-  "extendedAbi()"(overrides?: CallOverrides): Promise<string>;
+  "tileEmoji()"(overrides?: CallOverrides): Promise<string>;
 
-  name(overrides?: CallOverrides): Promise<string>;
+  tileName(overrides?: CallOverrides): Promise<string>;
 
-  "name()"(overrides?: CallOverrides): Promise<string>;
+  "tileName()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    description(overrides?: CallOverrides): Promise<string>;
+    tileABI(overrides?: CallOverrides): Promise<string>;
 
-    "description()"(overrides?: CallOverrides): Promise<string>;
+    "tileABI()"(overrides?: CallOverrides): Promise<string>;
 
-    emoji(overrides?: CallOverrides): Promise<string>;
+    tileDescription(overrides?: CallOverrides): Promise<string>;
 
-    "emoji()"(overrides?: CallOverrides): Promise<string>;
+    "tileDescription()"(overrides?: CallOverrides): Promise<string>;
 
-    extendedAbi(overrides?: CallOverrides): Promise<string>;
+    tileEmoji(overrides?: CallOverrides): Promise<string>;
 
-    "extendedAbi()"(overrides?: CallOverrides): Promise<string>;
+    "tileEmoji()"(overrides?: CallOverrides): Promise<string>;
 
-    name(overrides?: CallOverrides): Promise<string>;
+    tileName(overrides?: CallOverrides): Promise<string>;
 
-    "name()"(overrides?: CallOverrides): Promise<string>;
+    "tileName()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
 
   estimateGas: {
-    description(overrides?: CallOverrides): Promise<BigNumber>;
+    tileABI(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "description()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "tileABI()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    emoji(overrides?: CallOverrides): Promise<BigNumber>;
+    tileDescription(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "emoji()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "tileDescription()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    extendedAbi(overrides?: CallOverrides): Promise<BigNumber>;
+    tileEmoji(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "extendedAbi()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "tileEmoji()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    name(overrides?: CallOverrides): Promise<BigNumber>;
+    tileName(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "name()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "tileName()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    description(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    tileABI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "description()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "tileABI()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    emoji(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    tileDescription(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "emoji()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "tileDescription()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    extendedAbi(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    tileEmoji(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "extendedAbi()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "tileEmoji()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    tileName(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "name()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "tileName()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

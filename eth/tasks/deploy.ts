@@ -24,7 +24,8 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
 
   // deploy libraries
   const libraries: LibraryContracts = await hre.run('deploy:libraries');
-  console.log('Library test deployed to:', libraries.tileContract.address);
+  console.log('Library tileContract deployed to:', libraries.tileContract.address);
+  console.log('Library tinyFishingContract deployed to:', libraries.tinyFishingContract.address);
 
   // deploy the core contract
   const tinyWorldCoreReturn: TinyWorldCoreReturn = await hre.run('deploy:core', {
@@ -138,6 +139,10 @@ async function deployLibraries({}, hre: HardhatRuntimeEnvironment): Promise<Libr
   const tileContract = await TileContractFactory.deploy();
   await tileContract.deployTransaction.wait();
 
+  const TinyFishingContractFactory = await hre.ethers.getContractFactory('TinyFish');
+  const tinyFishingContract = await TinyFishingContractFactory.deploy();
+  await tinyFishingContract.deployTransaction.wait();
+
   const TinyWorldRegistry = await hre.ethers.getContractFactory('TinyWorldRegistry');
   const registry = await TinyWorldRegistry.deploy();
   await registry.deployTransaction.wait();
@@ -145,6 +150,7 @@ async function deployLibraries({}, hre: HardhatRuntimeEnvironment): Promise<Libr
   return {
     verifier: verifier as Verifier,
     tileContract: tileContract as StubTileContract,
+    tinyFishingContract: tinyFishingContract as StubTileContract,
     registry: registry as TinyWorldRegistry,
   };
 }

@@ -16,5 +16,6 @@ export interface TinyWorldCoreReturn {
 export interface LibraryContracts {
   verifier: Verifier;
   tileContract: StubTileContract;
+  tinyFishingContract: StubTileContract;
   registry: TinyWorldRegistry;
 }

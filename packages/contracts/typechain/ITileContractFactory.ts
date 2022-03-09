@@ -19,7 +19,7 @@ export class ITileContractFactory {
 const _abi = [
   {
     inputs: [],
-    name: "description",
+    name: "tileABI",
     outputs: [
       {
         internalType: "string",
@@ -32,7 +32,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "emoji",
+    name: "tileDescription",
     outputs: [
       {
         internalType: "string",
@@ -45,7 +45,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "extendedAbi",
+    name: "tileEmoji",
     outputs: [
       {
         internalType: "string",
@@ -58,7 +58,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "name",
+    name: "tileName",
     outputs: [
       {
         internalType: "string",
