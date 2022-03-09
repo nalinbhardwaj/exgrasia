@@ -25,6 +25,7 @@ interface TinyFishInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "castFishingRod()": FunctionFragment;
+    "connectedWorld()": FunctionFragment;
     "currentPool(uint256)": FunctionFragment;
     "getAdjective(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
@@ -55,6 +56,10 @@ interface TinyFishInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
     functionFragment: "castFishingRod",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "connectedWorld",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -128,6 +133,10 @@ interface TinyFishInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "castFishingRod",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "connectedWorld",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -236,6 +245,14 @@ export class TinyFish extends Contract {
     castFishingRod(overrides?: Overrides): Promise<ContractTransaction>;
 
     "castFishingRod()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    connectedWorld(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "connectedWorld()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
 
     currentPool(
       arg0: BigNumberish,
@@ -510,6 +527,10 @@ export class TinyFish extends Contract {
 
   "castFishingRod()"(overrides?: Overrides): Promise<ContractTransaction>;
 
+  connectedWorld(overrides?: CallOverrides): Promise<string>;
+
+  "connectedWorld()"(overrides?: CallOverrides): Promise<string>;
+
   currentPool(
     arg0: BigNumberish,
     overrides?: CallOverrides
@@ -696,6 +717,10 @@ export class TinyFish extends Contract {
     castFishingRod(overrides?: CallOverrides): Promise<void>;
 
     "castFishingRod()"(overrides?: CallOverrides): Promise<void>;
+
+    connectedWorld(overrides?: CallOverrides): Promise<string>;
+
+    "connectedWorld()"(overrides?: CallOverrides): Promise<string>;
 
     currentPool(
       arg0: BigNumberish,
@@ -911,6 +936,10 @@ export class TinyFish extends Contract {
 
     "castFishingRod()"(overrides?: Overrides): Promise<BigNumber>;
 
+    connectedWorld(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "connectedWorld()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     currentPool(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -1116,6 +1145,12 @@ export class TinyFish extends Contract {
     castFishingRod(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "castFishingRod()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    connectedWorld(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "connectedWorld()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     currentPool(
       arg0: BigNumberish,

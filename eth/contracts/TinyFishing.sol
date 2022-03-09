@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "base64-sol/base64.sol";
 import "./TileContract.sol";
+import "./TinyWorld.sol";
+import "./Types.sol";
 
 contract TinyFish is ERC721, ReentrancyGuard, ITileContract {
     using Counters for Counters.Counter;
@@ -119,6 +121,7 @@ contract TinyFish is ERC721, ReentrancyGuard, ITileContract {
     Counters.Counter private tokenCounter;
     uint256[] public currentPool;
     mapping(address => uint256) public previousCast;
+    TinyWorld public connectedWorld;
 
     function random(string memory input) internal pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(input)));
@@ -247,7 +250,31 @@ contract TinyFish is ERC721, ReentrancyGuard, ITileContract {
         currentPool.push(tokenCounter.current());
     }
 
-    function castFishingRod() public nonReentrant {
+    modifier closeToSelfAndWater() {
+        require(connectedWorld.playerInited(msg.sender), "Not an exgrasia player");
+        Coords memory playerLoc = connectedWorld.getPlayerLocation(msg.sender);
+        Coords[4] memory neighbors = [
+            Coords(playerLoc.x - 1, playerLoc.y),
+            Coords(playerLoc.x + 1, playerLoc.y),
+            Coords(playerLoc.x, playerLoc.y - 1),
+            Coords(playerLoc.x, playerLoc.y + 1)
+        ];
+        bool closeToSelf = false;
+        bool closeToWater = false;
+        for (uint256 i = 0; i < neighbors.length; i++) {
+            if (connectedWorld.getTile(neighbors[i]).smartContract == address(this)) {
+                closeToSelf = true;
+            }
+            if (connectedWorld.getTile(neighbors[i]).tileType == TileType.WATER) {
+                closeToWater = true;
+            }
+        }
+        require(closeToSelf, "You need to next to the fishing tile to cast");
+        require(closeToWater, "You need to next to a water tile to cast");
+        _;
+    }
+
+    function castFishingRod() public nonReentrant closeToSelfAndWater {
         // maintain a pool of ~1.2 fish per cast in expectation
         mintFishToPool();
         if (uint256(blockhash(block.number - 1)) % 100 < 20) {
@@ -256,7 +283,7 @@ contract TinyFish is ERC721, ReentrancyGuard, ITileContract {
         previousCast[msg.sender] = block.timestamp;
     }
 
-    function reelIn() public nonReentrant {
+    function reelIn() public nonReentrant closeToSelfAndWater {
         require(currentPool.length > 0, "No fish in the pool");
         require(
             previousCast[msg.sender] != 0 && previousCast[msg.sender] + 5 < block.timestamp,
@@ -295,7 +322,8 @@ contract TinyFish is ERC721, ReentrancyGuard, ITileContract {
             "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/8c7bd0fdda2bad92511d031f54fb407802f9eb84/TinyFishing.json";
     }
 
-    constructor() ERC721("TinyFish", "TINYFISH") {
+    constructor(TinyWorld _connectedWorld) ERC721("TinyFish", "TINYFISH") {
+        connectedWorld = _connectedWorld;
         setApprovalForAll(address(this), true);
     }
 }

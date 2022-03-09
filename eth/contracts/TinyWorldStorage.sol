@@ -46,4 +46,8 @@ contract TinyWorldStorage {
         }
         return (retLoc, retEmoji);
     }
+
+    function getPlayerLocation(address player) public view returns (Coords memory) {
+        return playerLocation[player];
+    }
 }

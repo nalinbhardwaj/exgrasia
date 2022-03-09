@@ -30,6 +30,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "getGradientAt(uint32,uint32,uint32,uint32)": FunctionFragment;
     "getPlayerIds()": FunctionFragment;
     "getPlayerInfos()": FunctionFragment;
+    "getPlayerLocation(address)": FunctionFragment;
     "getSingleScalePerlin(uint32,uint32,uint32,uint32)": FunctionFragment;
     "getTile(tuple)": FunctionFragment;
     "getTouchedTiles()": FunctionFragment;
@@ -92,6 +93,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getPlayerInfos",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPlayerLocation",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "getSingleScalePerlin",
@@ -210,6 +215,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getPlayerInfos",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPlayerLocation",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -495,6 +504,20 @@ export class TinyWorld extends Contract {
     "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
       1: string[];
+    }>;
+
+    getPlayerLocation(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
+    }>;
+
+    "getPlayerLocation(address)"(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     }>;
 
     getSingleScalePerlin(
@@ -1022,6 +1045,16 @@ export class TinyWorld extends Contract {
     1: string[];
   }>;
 
+  getPlayerLocation(
+    player: string,
+    overrides?: CallOverrides
+  ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }>;
+
+  "getPlayerLocation(address)"(
+    player: string,
+    overrides?: CallOverrides
+  ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }>;
+
   getSingleScalePerlin(
     x: BigNumberish,
     y: BigNumberish,
@@ -1476,6 +1509,16 @@ export class TinyWorld extends Contract {
       1: string[];
     }>;
 
+    getPlayerLocation(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }>;
+
+    "getPlayerLocation(address)"(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }>;
+
     getSingleScalePerlin(
       x: BigNumberish,
       y: BigNumberish,
@@ -1895,6 +1938,16 @@ export class TinyWorld extends Contract {
 
     "getPlayerInfos()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getPlayerLocation(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getPlayerLocation(address)"(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getSingleScalePerlin(
       x: BigNumberish,
       y: BigNumberish,
@@ -2201,6 +2254,16 @@ export class TinyWorld extends Contract {
     getPlayerInfos(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getPlayerInfos()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getPlayerLocation(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getPlayerLocation(address)"(
+      player: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

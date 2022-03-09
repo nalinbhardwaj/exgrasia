@@ -1,5 +1,15 @@
 [
-  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  {
+    "inputs": [
+      {
+        "internalType": "contract TinyWorld",
+        "name": "_connectedWorld",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
   {
     "anonymous": false,
     "inputs": [
@@ -99,6 +109,15 @@
     "name": "castFishingRod",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "connectedWorld",
+    "outputs": [
+      { "internalType": "contract TinyWorld", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

@@ -9,6 +9,7 @@ import type {
   LibraryContracts,
   StubTileContract,
   TinyWorldRegistry,
+  TileContracts,
 } from '../task-types';
 import * as prettier from 'prettier';
 import { Signer, Contract } from 'ethers';
@@ -23,9 +24,6 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
 
   // deploy libraries
   const libraries: LibraryContracts = await hre.run('deploy:libraries');
-  console.log('Library tileContract deployed to:', libraries.tileContract.address);
-  console.log('Library tinyFishingContract deployed to:', libraries.tinyFishingContract.address);
-
   // deploy the core contract
   const tinyWorldCoreReturn: TinyWorldCoreReturn = await hre.run('deploy:core', {
     registryAddress: libraries.registry.address,
@@ -38,6 +36,8 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
     coreAddress,
   });
 
+  const tileContracts: TileContracts = await hre.run('deploy:tileContracts', { coreAddress });
+
   const gettersAddress = tinyWorldGetters.address;
 
   await hre.run('deploy:save', {
@@ -45,6 +45,8 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
     registryAddress: libraries.registry.address,
     coreAddress,
     gettersAddress,
+    testTileContractAddress: tileContracts.testTileContract.address,
+    tinyFishContractAddress: tileContracts.tinyFishingContract.address,
   });
 
   // give all contract administration over to an admin address if was provided
@@ -63,6 +65,8 @@ async function deploySave(
     coreAddress: string;
     gettersAddress: string;
     registryAddress: string;
+    testTileContractAddress: string;
+    tinyFishContractAddress: string;
   },
   hre: HardhatRuntimeEnvironment
 ) {
@@ -119,7 +123,12 @@ async function deploySave(
    * The address for the TinyWorldRegistry contract.
    */
   export const REGISTRY_CONTRACT_ADDRESS = '${args.registryAddress}';
-  `,
+  /**
+   * The addresses for the Tile contracts.
+   */
+   export const TESTING_CONTRACT_ADDRESS = '${args.testTileContractAddress}';
+   export const FISHING_CONTRACT_ADDRESS = '${args.tinyFishContractAddress}';
+   `,
     { ...options, parser: 'babel-ts' }
   );
 
@@ -129,21 +138,11 @@ async function deploySave(
 subtask('deploy:libraries', 'deploy and return tokens contract').setAction(deployLibraries);
 
 async function deployLibraries({}, hre: HardhatRuntimeEnvironment): Promise<LibraryContracts> {
-  const TileContractFactory = await hre.ethers.getContractFactory('TestTileContract');
-  const tileContract = await TileContractFactory.deploy();
-  await tileContract.deployTransaction.wait();
-
-  const TinyFishingContractFactory = await hre.ethers.getContractFactory('TinyFish');
-  const tinyFishingContract = await TinyFishingContractFactory.deploy();
-  await tinyFishingContract.deployTransaction.wait();
-
   const TinyWorldRegistry = await hre.ethers.getContractFactory('TinyWorldRegistry');
   const registry = await TinyWorldRegistry.deploy();
   await registry.deployTransaction.wait();
 
   return {
-    tileContract: tileContract as StubTileContract,
-    tinyFishingContract: tinyFishingContract as StubTileContract,
     registry: registry as TinyWorldRegistry,
   };
 }
@@ -154,7 +153,6 @@ subtask('deploy:core', 'deploy and return tokens contract')
 
 async function deployCore(
   args: {
-    verifierAddress: string;
     registryAddress: string;
   },
   hre: HardhatRuntimeEnvironment
@@ -204,6 +202,30 @@ async function deployGetters(
     retries: 5,
     hre,
   });
+}
+
+subtask('deploy:tileContracts', 'deploy and return tile contracts')
+  .addParam('coreAddress', '', undefined, types.string)
+  .setAction(deployTileContracts);
+
+async function deployTileContracts(
+  args: {
+    coreAddress: string;
+  },
+  hre: HardhatRuntimeEnvironment
+): Promise<TileContracts> {
+  const TileContractFactory = await hre.ethers.getContractFactory('TestTileContract');
+  const tileContract = await TileContractFactory.deploy();
+  await tileContract.deployTransaction.wait();
+
+  const TinyFishingContractFactory = await hre.ethers.getContractFactory('TinyFish');
+  const tinyFishingContract = await TinyFishingContractFactory.deploy(args.coreAddress);
+  await tinyFishingContract.deployTransaction.wait();
+
+  return {
+    testTileContract: tileContract as StubTileContract,
+    tinyFishingContract: tinyFishingContract as StubTileContract,
+  };
 }
 
 async function deployProxyWithRetry<C extends Contract>({

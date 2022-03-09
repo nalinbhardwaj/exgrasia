@@ -298,6 +298,25 @@
   },
   {
     "inputs": [
+      { "internalType": "address", "name": "player", "type": "address" }
+    ],
+    "name": "getPlayerLocation",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       { "internalType": "uint32", "name": "x", "type": "uint32" },
       { "internalType": "uint32", "name": "y", "type": "uint32" },
       { "internalType": "uint32", "name": "scale", "type": "uint32" },

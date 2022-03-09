@@ -13,7 +13,10 @@ export interface TinyWorldCoreReturn {
 }
 
 export interface LibraryContracts {
-  tileContract: StubTileContract;
-  tinyFishingContract: StubTileContract;
   registry: TinyWorldRegistry;
+}
+
+export interface TileContracts {
+  testTileContract: StubTileContract;
+  tinyFishingContract: StubTileContract;
 }
