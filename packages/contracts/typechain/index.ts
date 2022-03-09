@@ -5,8 +5,6 @@ export { Erc721UpgradeableFactory } from "./Erc721UpgradeableFactory";
 export type { Erc721Upgradeable } from "./Erc721Upgradeable";
 export { Erc721Factory } from "./Erc721Factory";
 export type { Erc721 } from "./Erc721";
-export { VerifierFactory } from "./VerifierFactory";
-export type { Verifier } from "./Verifier";
 export { StubTileContractFactory } from "./StubTileContractFactory";
 export type { StubTileContract } from "./StubTileContract";
 export { TestTileContractFactory } from "./TestTileContractFactory";

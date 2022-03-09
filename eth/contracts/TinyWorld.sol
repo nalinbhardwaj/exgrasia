@@ -6,7 +6,7 @@ import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "./TinyWorldStorage.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "hardhat/console.sol";
-import "./FPMath.sol";
+import "abdk-libraries-solidity/ABDKMath64x64.sol";
 import "./TinyWorldRegistry.sol";
 
 contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
@@ -138,7 +138,8 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
             resNumerator += int128(int64(weight)) * int128(dot);
         }
 
-        return FPMath.divi(int256(resNumerator), int256(vecsDenom) * int256(int32(scale))**3);
+        return
+            ABDKMath64x64.divi(int256(resNumerator), int256(vecsDenom) * int256(int32(scale))**3);
     }
 
     function computePerlin(
@@ -147,21 +148,21 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         uint32 seed,
         uint32 scale
     ) public view returns (uint256) {
-        int128 perlin = FPMath.fromUInt(0);
+        int128 perlin = ABDKMath64x64.fromUInt(0);
 
         for (uint8 i = 0; i < 3; i++) {
             int128 v = getSingleScalePerlin(x, y, scale * uint32(2**i), seed);
-            perlin = FPMath.add(perlin, v);
+            perlin = ABDKMath64x64.add(perlin, v);
         }
-        perlin = FPMath.add(perlin, getSingleScalePerlin(x, y, scale * uint32(2**0), seed));
+        perlin = ABDKMath64x64.add(perlin, getSingleScalePerlin(x, y, scale * uint32(2**0), seed));
 
-        perlin = FPMath.div(perlin, FPMath.fromUInt(4));
-        int128 perlinScaledShifted = FPMath.add(
-            FPMath.mul(perlin, FPMath.fromUInt(uint256(perlinMax / 2))),
-            FPMath.fromUInt((uint256(perlinMax / 2)))
+        perlin = ABDKMath64x64.div(perlin, ABDKMath64x64.fromUInt(4));
+        int128 perlinScaledShifted = ABDKMath64x64.add(
+            ABDKMath64x64.mul(perlin, ABDKMath64x64.fromUInt(uint256(perlinMax / 2))),
+            ABDKMath64x64.fromUInt((uint256(perlinMax / 2)))
         );
 
-        return FPMath.toUInt(perlinScaledShifted);
+        return ABDKMath64x64.toUInt(perlinScaledShifted);
     }
 
     // Map parametrisation

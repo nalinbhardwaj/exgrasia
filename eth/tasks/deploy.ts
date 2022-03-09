@@ -7,7 +7,6 @@ import type {
   TinyWorldGetters,
   TinyWorldCoreReturn,
   LibraryContracts,
-  Verifier,
   StubTileContract,
   TinyWorldRegistry,
 } from '../task-types';
@@ -29,7 +28,6 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
 
   // deploy the core contract
   const tinyWorldCoreReturn: TinyWorldCoreReturn = await hre.run('deploy:core', {
-    verifierAddress: libraries.verifier.address,
     registryAddress: libraries.registry.address,
   });
 
@@ -131,10 +129,6 @@ async function deploySave(
 subtask('deploy:libraries', 'deploy and return tokens contract').setAction(deployLibraries);
 
 async function deployLibraries({}, hre: HardhatRuntimeEnvironment): Promise<LibraryContracts> {
-  const VerifierFactory = await hre.ethers.getContractFactory('Verifier');
-  const verifier = await VerifierFactory.deploy();
-  await verifier.deployTransaction.wait();
-
   const TileContractFactory = await hre.ethers.getContractFactory('TestTileContract');
   const tileContract = await TileContractFactory.deploy();
   await tileContract.deployTransaction.wait();
@@ -148,7 +142,6 @@ async function deployLibraries({}, hre: HardhatRuntimeEnvironment): Promise<Libr
   await registry.deployTransaction.wait();
 
   return {
-    verifier: verifier as Verifier,
     tileContract: tileContract as StubTileContract,
     tinyFishingContract: tinyFishingContract as StubTileContract,
     registry: registry as TinyWorldRegistry,
@@ -156,7 +149,6 @@ async function deployLibraries({}, hre: HardhatRuntimeEnvironment): Promise<Libr
 }
 
 subtask('deploy:core', 'deploy and return tokens contract')
-  .addParam('verifierAddress', '', undefined, types.string)
   .addParam('registryAddress', '', undefined, types.string)
   .setAction(deployCore);
 
@@ -169,11 +161,7 @@ async function deployCore(
 ): Promise<TinyWorldCoreReturn> {
   const tinyWorldCore = await deployProxyWithRetry<TinyWorld>({
     contractName: 'TinyWorld',
-    signerOrOptions: {
-      // libraries: {
-      //   Verifier: args.verifierAddress,
-      // },
-    },
+    signerOrOptions: {},
     contractArgs: [
       hre.initializers.SEED_1,
       hre.initializers.WORLD_WIDTH,
