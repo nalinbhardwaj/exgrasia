@@ -21,7 +21,7 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { Tooltip } from '@mui/material';
 import Draggable from 'react-draggable';
 import './Pane.css';
-import Pane from './Pane';
+import { Pane, SettingsPane } from './Pane';
 import { PluginManager } from '../backend/PluginManager';
 
 const enum LoadingStep {
@@ -60,6 +60,7 @@ export default function Game() {
   const [prettifiedAddresses, setPrettifiedAddresses] = useState<Map<EthAddress, string>>(
     new Map()
   );
+  const [openSettings, setOpenSettings] = useState<boolean>(false);
 
   useEffect(() => {
     getEthConnection()
@@ -219,6 +220,18 @@ export default function Game() {
                 />
               );
             })}
+            <SettingsIcon>
+              <span role='img' aria-label='gear' onClick={() => setOpenSettings(!openSettings)}>
+                ⚙️
+              </span>
+            </SettingsIcon>
+            {openSettings && (
+              <SettingsPane
+                gm={gameManager}
+                pm={pluginManager}
+                onClose={() => setOpenSettings(false)}
+              />
+            )}
           </>
         ) : (
           <FullScreen>
@@ -289,4 +302,22 @@ const SubTitle = styled.div`
   color: black;
   font-weight: 300;
   line-height: 1.1;
+`;
+
+const SettingsIcon = styled.div`
+  font-size: 64px;
+  vertical-align: middle;
+  margin: 0;
+  position: absolute;
+  bottom: 1%;
+  left: 1%;
+  color: white;
+  font-weight: 300;
+  line-height: 1.1;
+  a {
+    text-decoration: none;
+  }
+  user-select: none;
+  cursor: pointer;
+  z-index: 10;
 `;

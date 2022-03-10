@@ -65,11 +65,18 @@ export class PluginManager {
   private pluginProcesses: Record<string, PluginProcess>;
   private pluginProcessInfos: Record<string, ProcessInfo>;
 
+  /**
+   * Event emitter that publishes whenever the set of plugins changes.
+   */
+  public plugins$: Monomitter<SerializedPlugin[]>;
+
   public constructor(gameManager: GameManager) {
     this.gameManager = gameManager;
     this.pluginLibrary = [];
     this.pluginProcesses = {};
     this.pluginProcessInfos = {};
+    this.load();
+    this.plugins$ = monomitter<SerializedPlugin[]>();
   }
 
   /**
@@ -109,6 +116,7 @@ export class PluginManager {
 
     this.pluginLibrary.push(newPlugin);
     localStorage.setItem('pluginLibrary', JSON.stringify(this.pluginLibrary));
+    this.notifyPluginLibraryUpdated();
 
     return PluginManager.copy(newPlugin);
   }
@@ -120,6 +128,8 @@ export class PluginManager {
   public async deletePlugin(pluginId: string): Promise<void> {
     this.pluginLibrary = this.pluginLibrary.filter((p) => p.id !== pluginId);
     this.destroy(pluginId);
+    this.notifyPluginLibraryUpdated();
+
     localStorage.setItem('pluginLibrary', JSON.stringify(this.pluginLibrary));
   }
 
@@ -131,6 +141,7 @@ export class PluginManager {
   public async load() {
     const stringyPluginLib = localStorage.getItem('pluginLibrary');
     this.pluginLibrary = stringyPluginLib ? JSON.parse(stringyPluginLib) : [];
+    this.notifyPluginLibraryUpdated();
   }
 
   /**
@@ -186,14 +197,14 @@ export class PluginManager {
    * function, then render that plugin to the screen.
    */
   public async renderAllRunningPlugins(coords: WorldCoords) {
-    const res: Map<string, dangerousHTML> = new Map();
+    const res: Map<string, [string, dangerousHTML]> = new Map();
     for (const plugin of this.pluginLibrary) {
       const processInfo = this.pluginProcessInfos[plugin.id];
       const pluginInstance = this.pluginProcesses[plugin.id];
 
       if (pluginInstance && typeof pluginInstance.render === 'function' && !processInfo.hasError) {
         try {
-          res.set(plugin.id, await pluginInstance.render(coords));
+          res.set(plugin.id, [plugin.name, await pluginInstance.render(coords)]);
         } catch (e) {
           console.log('failed to draw plugin', e);
           processInfo.hasError = true;
@@ -211,5 +222,17 @@ export class PluginManager {
    */
   private static copy<T>(plugin: T): T {
     return JSON.parse(JSON.stringify(plugin)) as T;
+  }
+
+  public getPlugins(): SerializedPlugin[] {
+    return this.pluginLibrary.map((p) => PluginManager.copy(p));
+  }
+
+  public isSpawned(id: string) {
+    return this.pluginProcesses[id] !== undefined;
+  }
+
+  private notifyPluginLibraryUpdated() {
+    this.plugins$.publish(this.getPlugins());
   }
 }

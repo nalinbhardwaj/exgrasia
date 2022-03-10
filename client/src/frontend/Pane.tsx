@@ -4,9 +4,10 @@ import React, { Component, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import styled from 'styled-components';
 import GameManager from '../backend/GameManager';
-import { distance, prettifyAddress } from '../utils';
+import { distance, getRandomActionId, prettifyAddress } from '../utils';
 import { BN } from 'ethereumjs-util';
 import { PluginManager } from '../backend/PluginManager';
+import { useEmitterValue } from './Utils/EmitterHooks';
 
 type PaneProps = {
   coords: WorldCoords;
@@ -16,6 +17,12 @@ type PaneProps = {
   onClose: (coords: WorldCoords) => void;
   curTiles: Tile[][];
   prettifiedAddresses: Map<EthAddress, string>;
+};
+
+type SettingsProps = {
+  gm: GameManager;
+  pm: PluginManager;
+  onClose: () => void;
 };
 
 function getTitle(props: PaneProps): string {
@@ -205,7 +212,9 @@ function Body(props: BodyProps) {
 }
 
 function Plugins(props: { coords: WorldCoords; gm: GameManager; pm: PluginManager }) {
-  const [pluginOutputs, setPluginOutputs] = useState<Map<string, dangerousHTML>>(new Map());
+  const [pluginOutputs, setPluginOutputs] = useState<Map<string, [string, dangerousHTML]>>(
+    new Map()
+  );
 
   useEffect(() => {
     props.pm.renderAllRunningPlugins(props.coords).then((outputs) => {
@@ -219,8 +228,8 @@ function Plugins(props: { coords: WorldCoords; gm: GameManager; pm: PluginManage
         [...pluginOutputs.keys()].map((pluginId) => {
           return (
             <div key={pluginId}>
-              <div>{pluginId}</div>
-              <div dangerouslySetInnerHTML={pluginOutputs.get(pluginId)} />
+              <div>{pluginOutputs.get(pluginId)![0]}</div>
+              <div dangerouslySetInnerHTML={pluginOutputs.get(pluginId)![1]} />
             </div>
           );
         })}
@@ -228,7 +237,7 @@ function Plugins(props: { coords: WorldCoords; gm: GameManager; pm: PluginManage
   );
 }
 
-export default function Pane(props: PaneProps) {
+export function Pane(props: PaneProps) {
   return (
     <Draggable>
       <div className='frosted-glass'>
@@ -241,6 +250,87 @@ export default function Pane(props: PaneProps) {
           curTiles={props.curTiles}
         />
         <Plugins coords={props.coords} gm={props.gm} pm={props.pm} />
+      </div>
+    </Draggable>
+  );
+}
+
+export function SettingsPane(props: SettingsProps) {
+  const [spawnedPlugins, setSpawnedPlugins] = useState<string[]>([]);
+  const plugins = useEmitterValue(props.pm.plugins$, props.pm.getPlugins());
+  const [addPluginName, setAddPluginName] = useState<string>('');
+  const [addPluginCodeURL, setAddPluginCodeURL] = useState<string>('');
+
+  useEffect(() => {
+    plugins.forEach((plugin) => {
+      if (props.pm.isSpawned(plugin.id)) setSpawnedPlugins([...spawnedPlugins, plugin.id]);
+    });
+  }, [plugins]);
+
+  const handleClick = (pluginId: string) => {
+    if (spawnedPlugins.includes(pluginId)) {
+      props.pm.destroy(pluginId);
+      setSpawnedPlugins(spawnedPlugins.filter((id) => id !== pluginId));
+    } else {
+      props.pm.spawn(pluginId);
+      setSpawnedPlugins([...spawnedPlugins, pluginId]);
+    }
+  };
+
+  const handleNameChange = (event: { target: { value: React.SetStateAction<string> } }) => {
+    setAddPluginName(event.target.value);
+  };
+
+  const handleCodeChange = (event: { target: { value: React.SetStateAction<string> } }) => {
+    setAddPluginCodeURL(event.target.value);
+  };
+
+  const handleAdd = async () => {
+    await props.pm.addPluginToLibrary(getRandomActionId(), addPluginName, addPluginCodeURL);
+  };
+
+  const handleDelete = (pluginId: string) => {
+    props.pm.deletePlugin(pluginId);
+    if (spawnedPlugins.includes(pluginId)) {
+      setSpawnedPlugins(spawnedPlugins.filter((id) => id !== pluginId));
+    }
+  };
+
+  return (
+    <Draggable>
+      <div className='frosted-glass'>
+        <CloseButton onClick={props.onClose}>&#10006;</CloseButton>
+        <Title>⚙️ Settings</Title>
+        <div style={{ fontSize: '32px' }}>Plugins</div>
+        {plugins.map((plugin) => {
+          return (
+            <div key={plugin.id}>
+              <div style={{ fontSize: '16px' }}>{plugin.name}</div>
+              <Button variant='contained' onClick={() => handleClick(plugin.id)}>
+                {spawnedPlugins.includes(plugin.id) ? 'Destroy' : 'Spawn'}
+              </Button>
+              <Button variant='contained' onClick={() => handleDelete(plugin.id)}>
+                Delete
+              </Button>
+            </div>
+          );
+        })}
+        <div style={{ fontSize: '16px' }}>Add plugin</div>
+        <TextField
+          id='standard-basic'
+          label='Name'
+          variant='standard'
+          onChange={handleNameChange}
+        />
+        <TextField
+          id='standard-basic'
+          label='Code URL'
+          variant='standard'
+          onChange={handleCodeChange}
+        />
+        <Button variant='contained' onClick={handleAdd}>
+          Add
+        </Button>
       </div>
     </Draggable>
   );
