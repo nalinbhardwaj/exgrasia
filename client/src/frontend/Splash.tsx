@@ -32,11 +32,15 @@ import { TinyWorldRegistry, TinyWorldRegistryFactory } from 'common-contracts/ty
 import registryContractAbi from 'common-contracts/abis/TinyWorldRegistry.json';
 import { Contract } from '@ethersproject/contracts';
 import { ethers } from 'ethers';
+import { Tooltip, useTheme, Text, Button } from '@nextui-org/react';
+import { SubTitle, Title } from './StyledComps';
 
 const entropyMessage =
   'Sign this message as an entropy seed\nfor your proxy wallet.\n\nDO NOT SIGN this for any URL\nexcept the official Exgrasia\nwebsite: exgrasia.xyz';
 
 export default function Splash() {
+  const { theme } = useTheme();
+
   const history = useHistory();
   const [liveMap, setLiveMap] = useState<TileType[][]>(SplashMap);
   const [ticks, setTicks] = useState(36);
@@ -173,11 +177,17 @@ export default function Splash() {
           ))}
       </Page>
       <Page style={{ zIndex: 1 }}>
-        <Title>εxgrasia</Title>
+        <Title>
+          <Text h1 color='primary' size={96}>
+            εxgrasia
+          </Text>
+        </Title>
         {nuxStepOneDone ? (
           <SubTitle>
-            choose character
-            <p>
+            <Text h2 color='primary' size={64}>
+              choose character
+            </Text>
+            <Text h2 color='primary' size={64}>
               {Object.keys(characterMapping).map((name) => {
                 return (
                   <Emoji
@@ -193,55 +203,61 @@ export default function Splash() {
                   </Emoji>
                 );
               })}
-            </p>
+            </Text>
           </SubTitle>
         ) : (
           <SubTitle>
             {account ? (
-              <>connected</>
+              <Text h2 color='primary' size={64}>
+                connected
+              </Text>
             ) : (
-              <ConnectButton onClick={() => activateBrowserWallet()}>connect wallet</ConnectButton>
+              <Button
+                bordered
+                color='primary'
+                auto
+                onClick={() => activateBrowserWallet()}
+                css={{ padding: '$xl' }}
+              >
+                <Text h2 color='primary' size={64}>
+                  connect wallet
+                </Text>
+              </Button>
             )}
             {account && (
-              <p style={{ fontSize: '32px' }}>
+              <Text h3 color='primary' size={42}>
                 {whitelist ? '✅ whitelisted' : '❌ not whitelisted'}
-              </p>
+              </Text>
             )}
             {whitelist && registryState && (
-              <p style={{ fontSize: '32px' }}>{`Registration: ${getHumanisedStatus(
+              <Text h3 color='primary' size={42}>{`Registration: ${getHumanisedStatus(
                 registryState.status
-              )}`}</p>
+              )}`}</Text>
             )}
             {whitelist && registryState.status == 'Success' && transferState && (
-              <p style={{ fontSize: '32px' }}>{`Funding: ${getHumanisedStatus(
+              <Text h3 color='primary' size={42}>{`Funding: ${getHumanisedStatus(
                 transferState.status
-              )}`}</p>
+              )}`}</Text>
             )}
           </SubTitle>
         )}
         <Twitter>
-          <a href='https://twitter.com/exgrasia' target='_blank' style={{ textDecoration: 'none' }}>
-            <span role='img' aria-label='bird'>
-              🐦
-            </span>
-          </a>
+          <Tooltip trigger='hover' content={'Twitter'} placement='right'>
+            <a
+              href='https://twitter.com/exgrasia'
+              target='_blank'
+              style={{ textDecoration: 'none' }}
+            >
+              <span role='img' aria-label='bird'>
+                🐦
+              </span>
+            </a>
+          </Tooltip>
         </Twitter>
       </Page>
     </>
   );
 }
-
-const Title = styled.div`
-  font-size: 96px;
-  vertical-align: middle;
-  margin: 0;
-  position: absolute;
-  top: 25%;
-  left: 25%;
-  color: white;
-  font-weight: 400;
-  user-select: none;
-`;
 
 const Emoji = styled.span`
   margin: 10px;
@@ -249,22 +265,11 @@ const Emoji = styled.span`
   cursor: pointer;
 `;
 
-const SubTitle = styled.div`
-  font-size: 64px;
-  vertical-align: middle;
-  margin: 0;
-  position: absolute;
-  top: 60%;
-  right: 25%;
-  color: white;
-  font-weight: 300;
-  line-height: 1.1;
-`;
-
 const ConnectButton = styled.div`
   user-select: none;
   cursor: pointer;
   text-decoration: underline;
+  text-decoration-color: '$cyan100';
 `;
 
 const Twitter = styled.div`
@@ -298,6 +303,7 @@ const Page = styled.div`
   left: 0;
   bottom: 0;
   right: 0;
+  user-select: none;
 `;
 
 const GridRow = styled.div`

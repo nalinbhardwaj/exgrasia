@@ -18,11 +18,12 @@ import { tileTypeToColor, getTileEmoji, nullAddress, prettifyAddress } from '../
 import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
 import { useLocation, useParams } from 'react-router-dom';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import { Tooltip } from '@mui/material';
+import { Tooltip, Text, Loading, Grid, Card } from '@nextui-org/react';
 import Draggable from 'react-draggable';
 import './Pane.css';
 import { Pane, SettingsPane } from './Pane';
 import { PluginManager } from '../backend/PluginManager';
+import { SubTitle, Title } from './StyledComps';
 
 const enum LoadingStep {
   NONE,
@@ -122,13 +123,28 @@ export default function Game() {
 
   useEffect(() => {
     const fetch = async () => {
+      const newPrettifiedAddresses = new Map<EthAddress, string>(prettifiedAddresses);
       for (const [playerAddress, playerInfo] of playerInfos.value) {
-        if (prettifiedAddresses.has(playerAddress)) continue;
-        prettifiedAddresses.set(playerAddress, await prettifyAddress(playerInfo.realAddress));
+        if (newPrettifiedAddresses.has(playerAddress)) continue;
+        newPrettifiedAddresses.set(playerAddress, await prettifyAddress(playerInfo.realAddress));
       }
+      setPrettifiedAddresses(newPrettifiedAddresses);
     };
     fetch();
   }, [playerInfos]);
+
+  const ControlItem = ({ txt, subtxt }: { txt: string; subtxt: string }) => {
+    return (
+      <Card css={{ bgBlur: '#111111', borderStyle: 'none' }}>
+        <Text h2 size={16} color='white' css={{ m: 0, whiteSpace: 'nowrap' }} weight='bold'>
+          {txt}
+        </Text>
+        <Text h5 size={12} color='white' css={{ m: 0 }}>
+          {subtxt}
+        </Text>
+      </Card>
+    );
+  };
 
   return (
     <>
@@ -139,6 +155,7 @@ export default function Game() {
               <TransformWrapper
                 initialScale={2}
                 minScale={1}
+                maxScale={5}
                 initialPositionX={gameManager.selfInfo.coords.y * -38} // meticulously measured
                 initialPositionY={gameManager.selfInfo.coords.x * -40}
               >
@@ -174,7 +191,8 @@ export default function Game() {
                                   ) {
                                     return (
                                       <Tooltip
-                                        title={prettifiedAddresses.get(addr) || addr}
+                                        trigger='hover'
+                                        content={prettifiedAddresses.get(addr) || addr}
                                         key={100 * i + j}
                                         placement='top'
                                       >
@@ -190,8 +208,9 @@ export default function Game() {
                                 })
                               ) : (
                                 <Tooltip
+                                  trigger='hover'
                                   key={100 * i + j}
-                                  title={tile.smartContractMetaData.name}
+                                  content={tile.smartContractMetaData.name}
                                   placement='top'
                                 >
                                   <span key={100 * i + j}>{tile.smartContractMetaData.emoji}</span>
@@ -221,9 +240,11 @@ export default function Game() {
               );
             })}
             <SettingsIcon>
-              <span role='img' aria-label='gear' onClick={() => setOpenSettings(!openSettings)}>
-                ⚙️
-              </span>
+              <Tooltip trigger='hover' content={'Settings'} placement='right'>
+                <span role='img' aria-label='gear' onClick={() => setOpenSettings(!openSettings)}>
+                  ⚙️
+                </span>
+              </Tooltip>
             </SettingsIcon>
             {openSettings && (
               <SettingsPane
@@ -235,8 +256,28 @@ export default function Game() {
           </>
         ) : (
           <FullScreen>
-            <Title>εxgrasia</Title>
-            <SubTitle>Loading...</SubTitle>
+            <Title>
+              <Text h1 size={96} color='secondary'>
+                εxgrasia
+              </Text>
+            </Title>
+            <SubTitle>
+              <Text h2 size={64} color='secondary'>
+                Loading
+                <Loading type='points-opacity' size='lg' color='secondary' />
+              </Text>
+              <Grid.Container gap={1} justify='center'>
+                <Grid xs>
+                  <ControlItem txt='right click' subtxt='interact' />
+                </Grid>
+                <Grid xs>
+                  <ControlItem txt='WASD' subtxt='move' />
+                </Grid>
+                <Grid xs>
+                  <ControlItem txt='pan &amp; pinch' subtxt='explore' />
+                </Grid>
+              </Grid.Container>
+            </SubTitle>
           </FullScreen>
         )}
       </Page>
@@ -266,6 +307,9 @@ const GridSquare = styled.div`
   justify-content: center;
   vertical-align: middle;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const FullScreen = styled.div`
@@ -278,30 +322,7 @@ const FullScreen = styled.div`
   background-repeat: repeat;
   background-size: 20%;
   height: 100%;
-`;
-
-const Title = styled.div`
-  font-size: 96px;
-  vertical-align: middle;
-  margin: 0;
-  position: absolute;
-  top: 25%;
-  left: 25%;
-  color: black;
-  font-weight: 400;
   user-select: none;
-`;
-
-const SubTitle = styled.div`
-  font-size: 64px;
-  vertical-align: middle;
-  margin: 0;
-  position: absolute;
-  top: 60%;
-  right: 25%;
-  color: black;
-  font-weight: 300;
-  line-height: 1.1;
 `;
 
 const SettingsIcon = styled.div`

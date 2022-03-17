@@ -1,4 +1,4 @@
-import { Button, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import { address, dangerousHTML, EthAddress, PlayerInfo, Tile, WorldCoords } from 'common-types';
 import React, { Component, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
@@ -8,6 +8,20 @@ import { distance, getRandomActionId, prettifyAddress } from '../utils';
 import { BN } from 'ethereumjs-util';
 import { PluginManager } from '../backend/PluginManager';
 import { useEmitterValue } from './Utils/EmitterHooks';
+import {
+  Modal,
+  Button,
+  Text,
+  Input,
+  Checkbox,
+  Row,
+  Card,
+  Divider,
+  Grid,
+  Switch,
+  Col,
+} from '@nextui-org/react';
+import { CloseSquare, Delete } from 'react-iconly';
 
 type PaneProps = {
   coords: WorldCoords;
@@ -111,7 +125,6 @@ function ContractBody(props: { coords: WorldCoords; gm: GameManager; contractTil
                 <Button
                   key={funcABI.name}
                   style={{ margin: '10px' }}
-                  variant='contained'
                   onClick={() =>
                     handleClick(funcABI.name, funcIndex, funcABI.inputs.length, lookupOnly)
                   }
@@ -181,7 +194,6 @@ function Body(props: BodyProps) {
         Develop your own contract using the exgrasia remix IDE.
         <div style={{ marginTop: '6px' }}>
           <Button
-            variant='contained'
             onClick={() => {
               window.open('https://remix.exgrasia.xyz', '_blank');
             }}
@@ -198,7 +210,7 @@ function Body(props: BodyProps) {
             variant='standard'
             onChange={handleChange}
           />
-          <Button variant='contained' onClick={onClick}>
+          <Button onClick={onClick}>
             Own Tile ({props.coords.x}, {props.coords.y})
           </Button>
         </>
@@ -240,7 +252,7 @@ function Plugins(props: { coords: WorldCoords; gm: GameManager; pm: PluginManage
 export function Pane(props: PaneProps) {
   return (
     <Draggable>
-      <div className='frosted-glass'>
+      <div className='frosted-glass' style={{ maxWidth: '50%' }}>
         <CloseButton onClick={() => props.onClose(props.coords)}>&#10006;</CloseButton>
         <Title>{getTitle(props)}</Title>
         <Body
@@ -298,40 +310,106 @@ export function SettingsPane(props: SettingsProps) {
 
   return (
     <Draggable>
-      <div className='frosted-glass'>
-        <CloseButton onClick={props.onClose}>&#10006;</CloseButton>
-        <Title>⚙️ Settings</Title>
-        <div style={{ fontSize: '32px' }}>Plugins</div>
-        {plugins.map((plugin) => {
-          return (
-            <div key={plugin.id}>
-              <div style={{ fontSize: '16px' }}>{plugin.name}</div>
-              <Button variant='contained' onClick={() => handleClick(plugin.id)}>
-                {spawnedPlugins.includes(plugin.id) ? 'Destroy' : 'Spawn'}
+      <Card
+        css={{
+          bgBlur: '#111111',
+          borderStyle: 'none',
+          maxWidth: '25%',
+          position: 'absolute',
+          top: '25%',
+          zIndex: '1',
+        }}
+      >
+        <Card.Header>
+          <Text b h1 size={48}>
+            ⚙️ Settings
+          </Text>
+        </Card.Header>
+        <Divider />
+        <Card.Body css={{ py: '$4' }}>
+          <Text css={{ marginBottom: '$4' }}>Manage plugins and add new ones.</Text>
+          {plugins.map((plugin) => {
+            return (
+              <Grid.Container justify='space-between' key={plugin.id}>
+                <Grid xs>
+                  <Text b size={24} css={{ verticalAlign: 'middle' }}>
+                    {plugin.name}
+                  </Text>
+                </Grid>
+                <Grid xs>
+                  <Switch
+                    shadow
+                    color='success'
+                    checked={spawnedPlugins.includes(plugin.id)}
+                    onChange={(e) => handleClick(plugin.id)}
+                    css={{ marginRight: '0px', marginLeft: 'auto' }}
+                    size='md'
+                  ></Switch>
+                  <Button
+                    flat
+                    auto
+                    rounded
+                    size='sm'
+                    color='error'
+                    onClick={() => handleDelete(plugin.id)}
+                    css={{ marginRight: '0px', marginLeft: 'auto' }}
+                  >
+                    <Text color='error'>delete</Text>
+                  </Button>
+                </Grid>
+              </Grid.Container>
+            );
+          })}
+          <Text css={{ marginTop: '$4' }}>Add plugin:</Text>
+          <Grid.Container gap={2} css={{ marginTop: '$2' }}>
+            <Row css={{ marginTop: '$4' }}>
+              <Col>
+                <Input
+                  size='sm'
+                  labelPlaceholder='Name'
+                  status='default'
+                  onChange={handleNameChange}
+                  css={{
+                    $$inputPlaceholderColor: '$colors$foreground',
+                  }}
+                />
+              </Col>
+              <Col>
+                <Input
+                  size='sm'
+                  labelPlaceholder='Code URL'
+                  status='default'
+                  onChange={handleCodeChange}
+                  css={{
+                    $$inputPlaceholderColor: '$colors$foreground',
+                  }}
+                />
+              </Col>
+            </Row>
+            <Row css={{ marginTop: '$4' }}>
+              <Button
+                flat
+                auto
+                rounded
+                size='sm'
+                color='success'
+                onClick={handleAdd}
+                css={{ marginRight: '0px', marginLeft: 'auto' }}
+              >
+                <Text color='success'>add</Text>
               </Button>
-              <Button variant='contained' onClick={() => handleDelete(plugin.id)}>
-                Delete
-              </Button>
-            </div>
-          );
-        })}
-        <div style={{ fontSize: '16px' }}>Add plugin</div>
-        <TextField
-          id='standard-basic'
-          label='Name'
-          variant='standard'
-          onChange={handleNameChange}
-        />
-        <TextField
-          id='standard-basic'
-          label='Code URL'
-          variant='standard'
-          onChange={handleCodeChange}
-        />
-        <Button variant='contained' onClick={handleAdd}>
-          Add
-        </Button>
-      </div>
+            </Row>
+          </Grid.Container>
+        </Card.Body>
+        <Divider />
+        <Card.Footer>
+          <Row justify='flex-end'>
+            <Button flat auto rounded size='sm' color='secondary' onClick={props.onClose}>
+              <Text color='primary'>close</Text>
+            </Button>
+          </Row>
+        </Card.Footer>
+      </Card>
     </Draggable>
   );
 }
