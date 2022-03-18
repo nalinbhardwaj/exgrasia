@@ -68,11 +68,15 @@ function getTitle(props: PaneProps): string {
 
 function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contractTile: Tile }) {
   const abi = props.contractTile.smartContractMetaData.extendedAbi;
-  const [selectedFuncName, setSelectedFuncName] = useState<string>(abi[0].name);
+  const [selectedFuncName, setSelectedFuncName] = useState<string>(
+    abi.find((f) => f.name !== undefined)!.name
+  );
   const [actionId, setActionId] = useState<string>('');
   const [result, setResult] = useState<any>(undefined);
   const [inputs, setInputs] = useState<Map<number, string>>(new Map());
-  const [buttonState, setButtonState] = useState<'none' | 'loading' | 'success'>('none');
+  const [buttonState, setButtonState] = useState<'none' | 'loading' | 'success' | 'reverted'>(
+    'none'
+  );
   const tileTxStatus = useTileTxStatus(props.gm);
   const selectedFunc = abi.find((f) => f.name === selectedFuncName) || abi[0];
   const selectedFuncLookupOnly =
@@ -166,6 +170,28 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
     }
   }, [tileTxStatus.submitted, actionId]);
 
+  useEffect(() => {
+    if (tileTxStatus.reverted.value.includes(actionId)) {
+      setButtonState('reverted');
+    }
+    setTimeout(() => {
+      setButtonState('none');
+    }, 2000);
+  }, [tileTxStatus.reverted, actionId]);
+
+  const prettifyButtonState = () => {
+    switch (buttonState) {
+      case 'none':
+        return 'submit';
+      case 'loading':
+        return 'loading...';
+      case 'success':
+        return 'success';
+      case 'reverted':
+        return 'reverted';
+    }
+  };
+
   return (
     <Grid.Container justify='flex-start' direction='row'>
       <Row css={{ margin: '$4' }}>
@@ -192,32 +218,37 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
                 leaveTo='opacity-0'
               >
                 <Listbox.Options className='absolute w-full py-1 mt-1 overflow-auto text-base bg-black rounded-md shadow-lg max-h-36 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-max'>
-                  {abi.map((func, funcIdx) => (
-                    <Listbox.Option
-                      key={funcIdx}
-                      className={({ active }) =>
-                        `cursor-default select-none relative py-2 pl-10 pr-4 ${
-                          active ? 'text-warning-yellowtext bg-warning-yellowbg' : 'text-white'
-                        }`
-                      }
-                      value={func.name}
-                    >
-                      {({ selected }) => (
-                        <>
-                          <span
-                            className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
-                          >
-                            {func.name}
-                          </span>
-                          {selected ? (
-                            <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-warning-yellowtext'>
-                              <CheckIcon className='w-5 h-5' aria-hidden='true' />
-                            </span>
-                          ) : null}
-                        </>
-                      )}
-                    </Listbox.Option>
-                  ))}
+                  {abi.map(
+                    (func, funcIdx) =>
+                      func.name && (
+                        <Listbox.Option
+                          key={funcIdx}
+                          className={({ active }) =>
+                            `cursor-default select-none relative py-2 pl-10 pr-4 ${
+                              active ? 'text-warning-yellowtext bg-warning-yellowbg' : 'text-white'
+                            }`
+                          }
+                          value={func.name}
+                        >
+                          {({ selected }) => (
+                            <>
+                              <span
+                                className={`block truncate ${
+                                  selected ? 'font-medium' : 'font-normal'
+                                }`}
+                              >
+                                {func.name}
+                              </span>
+                              {selected ? (
+                                <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-warning-yellowtext'>
+                                  <CheckIcon className='w-5 h-5' aria-hidden='true' />
+                                </span>
+                              ) : null}
+                            </>
+                          )}
+                        </Listbox.Option>
+                      )
+                  )}
                 </Listbox.Options>
               </Transition>
             </div>
@@ -339,13 +370,7 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
       })}
       <Row css={{ margin: '$4' }}>
         <Button color='warning' flat auto rounded onClick={handleClick} css={{ width: '100%' }}>
-          {selectedFuncLookupOnly
-            ? 'Call'
-            : buttonState === 'none'
-            ? 'Submit'
-            : buttonState === 'loading'
-            ? 'Loading...'
-            : 'Successful'}
+          {selectedFuncLookupOnly ? 'call' : prettifyButtonState()}
         </Button>
       </Row>
       {result && (
@@ -381,7 +406,7 @@ function ContractBody(props: { coords: WorldCoords; gm: GameManager; contractTil
               gm={props.gm}
               contractTile={props.contractTile}
             />
-            {i < expanders - 1 ? <Spacer key={i}></Spacer> : null}
+            {i < expanders - 1 ? <Spacer></Spacer> : null}
           </div>
         );
       })}

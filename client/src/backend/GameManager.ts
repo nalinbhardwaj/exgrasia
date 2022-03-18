@@ -64,7 +64,7 @@ class GameManager extends EventEmitter {
 
   public tileUpdated$: Monomitter<void>;
   public playerUpdated$: Monomitter<void>;
-  public tileTxUpdated$: Monomitter<[TxIntent, 'submitted' | 'confirmed']>;
+  public tileTxUpdated$: Monomitter<[TxIntent, 'submitted' | 'confirmed' | 'reverted']>;
 
   private constructor(
     account: EthAddress | undefined,
@@ -214,8 +214,11 @@ class GameManager extends EventEmitter {
         }
         gameManager.onTxConfirmed(unconfirmedTx);
       })
-      .on(ContractsAPIEvent.TxReverted, async (unconfirmedTx: SubmittedTx) => {
+      .on(ContractsAPIEvent.TxReverted, async (unconfirmedTx: SubmittedTx, error: any) => {
         // todo: remove the tx from localStorage
+        if (isUnconfirmedTileTx(unconfirmedTx)) {
+          gameManager.tileTxUpdated$.publish([unconfirmedTx, 'reverted']);
+        }
         gameManager.onTxReverted(unconfirmedTx);
       });
 
@@ -243,6 +246,9 @@ class GameManager extends EventEmitter {
     // pop up a little notification, clear the txIntent from memory
     // if it was being displayed in UI
     console.log(`txIntent failed with error ${e.message}`);
+    if (isUnconfirmedTileTx(txIntent)) {
+      this.tileTxUpdated$.publish([txIntent, 'reverted']);
+    }
     console.log(txIntent);
   }
 

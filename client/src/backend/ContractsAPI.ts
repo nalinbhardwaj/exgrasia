@@ -395,7 +395,7 @@ export class ContractsAPI extends EventEmitter {
         return receipt;
       })
       .catch((e) => {
-        this.emit(ContractsAPIEvent.TxReverted, submitted);
+        this.emit(ContractsAPIEvent.TxReverted, submitted, e);
         throw e;
       });
   }

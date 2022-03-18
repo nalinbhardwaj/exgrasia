@@ -61,9 +61,11 @@ export function useInitted(gameManager: GameManager | undefined): Wrapper<boolea
 export function useTileTxStatus(gameManager: GameManager | undefined): {
   submitted: Wrapper<string[]>;
   confirmed: Wrapper<string[]>;
+  reverted: Wrapper<string[]>;
 } {
   const [submittedTileTx, setSubmittedTileTx] = useState<Wrapper<string[]>>(() => new Wrapper([]));
   const [confirmedTileTx, setConfirmedTileTx] = useState<Wrapper<string[]>>(() => new Wrapper([]));
+  const [revertedTileTx, setRevertedTileTx] = useState<Wrapper<string[]>>(() => new Wrapper([]));
 
   const onUpdate = useCallback(async ([tx, status]) => {
     if (status == 'submitted') {
@@ -72,6 +74,9 @@ export function useTileTxStatus(gameManager: GameManager | undefined): {
     if (status == 'confirmed') {
       setConfirmedTileTx(new Wrapper([...confirmedTileTx.value, tx.actionId]));
     }
+    if (status == 'reverted') {
+      setRevertedTileTx(new Wrapper([...revertedTileTx.value, tx.actionId]));
+    }
   }, []);
 
   useEmitterSubscribe(gameManager?.tileTxUpdated$, onUpdate);
@@ -79,5 +84,6 @@ export function useTileTxStatus(gameManager: GameManager | undefined): {
   return {
     submitted: submittedTileTx,
     confirmed: confirmedTileTx,
+    reverted: revertedTileTx,
   };
 }
