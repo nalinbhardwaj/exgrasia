@@ -25,9 +25,6 @@ async function whitelistEnable(args: { filePath: string }, hre: HardhatRuntimeEn
     const subset = keys.splice(0, Math.min(keys.length, 400));
     console.log(`clearing ${subset.length} keys`);
     const addresses: string[] = subset.map((x) => hre.ethers.utils.getAddress(x));
-    const akReceipt = await contract.appendWhitelist(addresses, { gasPrice: '5000000000' }); // 3gwei
-    await akReceipt.wait();
-    console.log('akReceipt', akReceipt);
 
     // DELETE BEFORE DEPLOY
     const dkReceipt = await contract.dummySetProxyAddress(

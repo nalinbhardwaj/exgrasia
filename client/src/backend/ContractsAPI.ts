@@ -375,6 +375,42 @@ export class ContractsAPI extends EventEmitter {
     return address(proxyAddress);
   }
 
+  public async getTileNFTs(
+    addr: EthAddress,
+    abi: any[],
+    ownerAddress: EthAddress
+  ): Promise<string[]> {
+    if (!this.txExecutor) {
+      throw new Error('no signer, cannot execute tx');
+    }
+
+    if (addr == nullAddress) return [];
+
+    const tileContract = await this.getFullTileContract(addr, abi);
+    if (
+      !('balanceOf' in tileContract) ||
+      !('tokenOfOwnerByIndex' in tileContract) ||
+      !('tokenURI' in tileContract)
+    ) {
+      throw new Error('Tile contract is not enumerable');
+    }
+    const balance = (
+      await this.makeCall<EthersBN>(tileContract['balanceOf'], [address(ownerAddress)])
+    ).toNumber();
+    const res: string[] = [];
+    for (let i = 0; i < balance; i++) {
+      const tokenIdx = (
+        await this.makeCall<EthersBN>(tileContract['tokenOfOwnerByIndex'], [
+          address(ownerAddress),
+          i,
+        ])
+      ).toNumber();
+      const tokenURI = await this.makeCall<string>(tileContract['tokenURI'], [tokenIdx]);
+      res.push(tokenURI);
+    }
+    return res;
+  }
+
   /**
    * Given an unconfirmed (but submitted) transaction, emits the appropriate
    * [[ContractsAPIEvent]].

@@ -20,31 +20,18 @@ import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface TinyFishInterface extends ethers.utils.Interface {
+interface Erc721EnumerableInterface extends ethers.utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "castFishingRod()": FunctionFragment;
-    "connectedWorld()": FunctionFragment;
-    "currentPool(uint256)": FunctionFragment;
-    "getAdjective(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getHeight(uint256)": FunctionFragment;
-    "getName(uint256)": FunctionFragment;
-    "getWeight(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
-    "previousCast(address)": FunctionFragment;
-    "reelIn()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
-    "tileABI()": FunctionFragment;
-    "tileDescription()": FunctionFragment;
-    "tileEmoji()": FunctionFragment;
-    "tileName()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
     "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -58,35 +45,7 @@ interface TinyFishInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "castFishingRod",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "connectedWorld",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "currentPool",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getAdjective",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getApproved",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getHeight",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getName",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getWeight",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -98,11 +57,6 @@ interface TinyFishInterface extends ethers.utils.Interface {
     functionFragment: "ownerOf",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "previousCast",
-    values: [string]
-  ): string;
-  encodeFunctionData(functionFragment: "reelIn", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
     values: [string, string, BigNumberish]
@@ -116,13 +70,6 @@ interface TinyFishInterface extends ethers.utils.Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(functionFragment: "tileABI", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "tileDescription",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "tileEmoji", values?: undefined): string;
-  encodeFunctionData(functionFragment: "tileName", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "tokenByIndex",
     values: [BigNumberish]
@@ -147,39 +94,15 @@ interface TinyFishInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "castFishingRod",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "connectedWorld",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "currentPool",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getAdjective",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "getHeight", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getName", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getWeight", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "previousCast",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "reelIn", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
@@ -193,13 +116,6 @@ interface TinyFishInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tileABI", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "tileDescription",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "tileEmoji", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tileName", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "tokenByIndex",
     data: BytesLike
@@ -229,7 +145,7 @@ interface TinyFishInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
-export class TinyFish extends Contract {
+export class Erc721Enumerable extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -240,7 +156,7 @@ export class TinyFish extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: TinyFishInterface;
+  interface: Erc721EnumerableInterface;
 
   functions: {
     approve(
@@ -269,46 +185,6 @@ export class TinyFish extends Contract {
       0: BigNumber;
     }>;
 
-    castFishingRod(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "castFishingRod()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-    connectedWorld(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "connectedWorld()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    currentPool(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "currentPool(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    getAdjective(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getAdjective(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -317,48 +193,6 @@ export class TinyFish extends Contract {
     }>;
 
     "getApproved(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    getHeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getHeight(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    getName(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getName(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    getWeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getWeight(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
@@ -402,24 +236,6 @@ export class TinyFish extends Contract {
     ): Promise<{
       0: string;
     }>;
-
-    previousCast(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "previousCast(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    reelIn(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "reelIn()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -467,38 +283,6 @@ export class TinyFish extends Contract {
     }>;
 
     "symbol()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    tileABI(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "tileABI()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    tileDescription(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "tileDescription()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    tileEmoji(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "tileEmoji()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    tileName(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "tileName()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -588,61 +372,12 @@ export class TinyFish extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  castFishingRod(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "castFishingRod()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-  connectedWorld(overrides?: CallOverrides): Promise<string>;
-
-  "connectedWorld()"(overrides?: CallOverrides): Promise<string>;
-
-  currentPool(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "currentPool(uint256)"(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getAdjective(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  "getAdjective(uint256)"(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
   "getApproved(uint256)"(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getHeight(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  "getHeight(uint256)"(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getName(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  "getName(uint256)"(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getWeight(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  "getWeight(uint256)"(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
@@ -669,17 +404,6 @@ export class TinyFish extends Contract {
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
-
-  previousCast(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  "previousCast(address)"(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  reelIn(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "reelIn()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   "safeTransferFrom(address,address,uint256)"(
     from: string,
@@ -721,22 +445,6 @@ export class TinyFish extends Contract {
   symbol(overrides?: CallOverrides): Promise<string>;
 
   "symbol()"(overrides?: CallOverrides): Promise<string>;
-
-  tileABI(overrides?: CallOverrides): Promise<string>;
-
-  "tileABI()"(overrides?: CallOverrides): Promise<string>;
-
-  tileDescription(overrides?: CallOverrides): Promise<string>;
-
-  "tileDescription()"(overrides?: CallOverrides): Promise<string>;
-
-  tileEmoji(overrides?: CallOverrides): Promise<string>;
-
-  "tileEmoji()"(overrides?: CallOverrides): Promise<string>;
-
-  tileName(overrides?: CallOverrides): Promise<string>;
-
-  "tileName()"(overrides?: CallOverrides): Promise<string>;
 
   tokenByIndex(
     index: BigNumberish,
@@ -805,67 +513,12 @@ export class TinyFish extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    castFishingRod(overrides?: CallOverrides): Promise<void>;
-
-    "castFishingRod()"(overrides?: CallOverrides): Promise<void>;
-
-    connectedWorld(overrides?: CallOverrides): Promise<string>;
-
-    "connectedWorld()"(overrides?: CallOverrides): Promise<string>;
-
-    currentPool(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "currentPool(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAdjective(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "getAdjective(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
     "getApproved(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getHeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "getHeight(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getName(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    "getName(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getWeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "getWeight(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
@@ -892,17 +545,6 @@ export class TinyFish extends Contract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
-
-    previousCast(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "previousCast(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    reelIn(overrides?: CallOverrides): Promise<void>;
-
-    "reelIn()"(overrides?: CallOverrides): Promise<void>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -944,22 +586,6 @@ export class TinyFish extends Contract {
     symbol(overrides?: CallOverrides): Promise<string>;
 
     "symbol()"(overrides?: CallOverrides): Promise<string>;
-
-    tileABI(overrides?: CallOverrides): Promise<string>;
-
-    "tileABI()"(overrides?: CallOverrides): Promise<string>;
-
-    tileDescription(overrides?: CallOverrides): Promise<string>;
-
-    "tileDescription()"(overrides?: CallOverrides): Promise<string>;
-
-    tileEmoji(overrides?: CallOverrides): Promise<string>;
-
-    "tileEmoji()"(overrides?: CallOverrides): Promise<string>;
-
-    tileName(overrides?: CallOverrides): Promise<string>;
-
-    "tileName()"(overrides?: CallOverrides): Promise<string>;
 
     tokenByIndex(
       index: BigNumberish,
@@ -1049,70 +675,12 @@ export class TinyFish extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    castFishingRod(overrides?: Overrides): Promise<BigNumber>;
-
-    "castFishingRod()"(overrides?: Overrides): Promise<BigNumber>;
-
-    connectedWorld(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "connectedWorld()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    currentPool(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "currentPool(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAdjective(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getAdjective(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "getApproved(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getHeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getHeight(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getName(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getName(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getWeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getWeight(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1142,17 +710,6 @@ export class TinyFish extends Contract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    previousCast(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "previousCast(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    reelIn(overrides?: Overrides): Promise<BigNumber>;
-
-    "reelIn()"(overrides?: Overrides): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -1194,22 +751,6 @@ export class TinyFish extends Contract {
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tileABI(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tileABI()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tileDescription(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tileDescription()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tileEmoji(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tileEmoji()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tileName(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tileName()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     tokenByIndex(
       index: BigNumberish,
@@ -1285,72 +826,12 @@ export class TinyFish extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    castFishingRod(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "castFishingRod()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    connectedWorld(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "connectedWorld()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    currentPool(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "currentPool(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAdjective(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getAdjective(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "getApproved(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getHeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getHeight(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getName(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getName(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getWeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getWeight(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1380,20 +861,6 @@ export class TinyFish extends Contract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    previousCast(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "previousCast(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    reelIn(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "reelIn()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -1435,24 +902,6 @@ export class TinyFish extends Contract {
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tileABI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tileABI()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tileDescription(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tileDescription()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tileEmoji(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tileEmoji()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tileName(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tileName()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     tokenByIndex(
       index: BigNumberish,

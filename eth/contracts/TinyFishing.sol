@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "base64-sol/base64.sol";
@@ -9,7 +9,7 @@ import "./TileContract.sol";
 import "./TinyWorld.sol";
 import "./Types.sol";
 
-contract TinyFish is ERC721, ReentrancyGuard, ITileContract {
+contract TinyFish is ERC721Enumerable, ReentrancyGuard, ITileContract {
     using Counters for Counters.Counter;
 
     string[] private fishyNames = [
@@ -319,7 +319,7 @@ contract TinyFish is ERC721, ReentrancyGuard, ITileContract {
 
     function tileABI() external view virtual override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/8c7bd0fdda2bad92511d031f54fb407802f9eb84/TinyFishing.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/d09538a21e918ef2e629de05e025f4e16f65ec39/TinyFishing.json";
     }
 
     constructor(TinyWorld _connectedWorld) ERC721("TinyFish", "TINYFISH") {

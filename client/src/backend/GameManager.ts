@@ -1,7 +1,7 @@
 import { EthConnection } from '@darkforest_eth/network';
 import { monomitter, Monomitter, Subscription } from '@darkforest_eth/events';
 import { perlin, PerlinConfig, getRaritySeed } from 'common-procgen-utils';
-import { address, EthAddress, PlayerInfo, Tile, WorldCoords } from 'common-types';
+import { address, EthAddress, FuncABI, PlayerInfo, Tile, WorldCoords } from 'common-types';
 import { EventEmitter } from 'events';
 import { ContractsAPI, makeContractsAPI, RawTile } from './ContractsAPI';
 import { getRandomActionId, getRandomTree, nullAddress, seedToTileAttrs } from '../utils';
@@ -406,6 +406,35 @@ class GameManager extends EventEmitter {
       methodName,
       args
     );
+  }
+
+  public async getTileNFTs(contractAddresses: EthAddress[], ownerAddress: EthAddress) {
+    const tileContractAddresses: EthAddress[] = [];
+    const addrToAbi: Map<EthAddress, FuncABI[]> = new Map();
+    for (const x of this.tiles) {
+      for (const y of x) {
+        if (contractAddresses.includes(y.smartContract)) {
+          tileContractAddresses.push(y.smartContract);
+          addrToAbi.set(y.smartContract, y.smartContractMetaData.extendedAbi);
+        }
+      }
+    }
+
+    console.log('tileContractAddresses', tileContractAddresses);
+    console.log('addrToAbi', addrToAbi);
+
+    const tileNFTs: Map<EthAddress, string[]> = new Map();
+    for (const tileContract of tileContractAddresses) {
+      tileNFTs.set(
+        tileContract,
+        await this.contractsAPI.getTileNFTs(
+          tileContract,
+          addrToAbi.get(tileContract)!,
+          ownerAddress
+        )
+      );
+    }
+    return tileNFTs;
   }
 
   getTiles(): Tile[][] {
