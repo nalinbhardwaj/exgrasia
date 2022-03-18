@@ -15,7 +15,9 @@ import {
   UnconfirmedInitPlayer,
   isUnconfirmedInitPlayer,
   UnconfirmedOwnTile,
-  UnconfirmedTileCall,
+  UnconfirmedTileTx,
+  isUnconfirmedOwnTile,
+  isUnconfirmedTileTx,
 } from '../_types/ContractAPITypes';
 
 class GameManager extends EventEmitter {
@@ -62,6 +64,7 @@ class GameManager extends EventEmitter {
 
   public tileUpdated$: Monomitter<void>;
   public playerUpdated$: Monomitter<void>;
+  public tileTxUpdated$: Monomitter<[TxIntent, 'submitted' | 'confirmed']>;
 
   private constructor(
     account: EthAddress | undefined,
@@ -102,6 +105,7 @@ class GameManager extends EventEmitter {
 
     this.tileUpdated$ = monomitter();
     this.playerUpdated$ = monomitter();
+    this.tileTxUpdated$ = monomitter();
 
     for (let i = 0; i < worldWidth; i++) {
       this.tiles.push([]);
@@ -194,6 +198,9 @@ class GameManager extends EventEmitter {
       })
       .on(ContractsAPIEvent.TxSubmitted, (unconfirmedTx: SubmittedTx) => {
         // todo: save the tx to localstorage
+        if (isUnconfirmedTileTx(unconfirmedTx)) {
+          gameManager.tileTxUpdated$.publish([unconfirmedTx, 'submitted']);
+        }
         gameManager.onTxSubmit(unconfirmedTx);
       })
       .on(ContractsAPIEvent.TxConfirmed, async (unconfirmedTx: SubmittedTx) => {
@@ -201,6 +208,9 @@ class GameManager extends EventEmitter {
         if (isUnconfirmedMovePlayer(unconfirmedTx)) {
           gameManager.selfInfo.coords = unconfirmedTx.coords;
           gameManager.playerUpdated$.publish();
+        }
+        if (isUnconfirmedTileTx(unconfirmedTx)) {
+          gameManager.tileTxUpdated$.publish([unconfirmedTx, 'confirmed']);
         }
         gameManager.onTxConfirmed(unconfirmedTx);
       })
@@ -368,7 +378,7 @@ class GameManager extends EventEmitter {
     }
 
     const actionId = getRandomActionId();
-    const txIntent: UnconfirmedTileCall = {
+    const txIntent: UnconfirmedTileTx = {
       actionId,
       methodName: methodName,
       addr: this.tiles[coords.x][coords.y].smartContract,
@@ -380,7 +390,7 @@ class GameManager extends EventEmitter {
       this.onTxIntentFail(txIntent, err);
     });
 
-    return this;
+    return actionId;
   }
 
   public async tileCall(coords: WorldCoords, methodName: string, args: any) {

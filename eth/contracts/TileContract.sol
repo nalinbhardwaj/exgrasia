@@ -33,6 +33,11 @@ contract StubTileContract is ITileContract {
 
 contract TestTileContract is StubTileContract {
     string world = "hello";
+    uint256 a = 5;
+    bytes32 b = "0x12345678";
+    bytes c = "0x12345678";
+    address d = 0xF05b5f04B7a77Ca549C0dE06beaF257f40C66FDB;
+
     struct Coords {
         uint256 x;
         uint256 y;
@@ -40,7 +45,7 @@ contract TestTileContract is StubTileContract {
 
     function tileABI() external pure override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/8c7bd0fdda2bad92511d031f54fb407802f9eb84/TestTileContract.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/d9be0db4ac8c292f3430923c572e7e4e8382975d/TestTileContract.json";
     }
 
     function test(string memory inp) public {
@@ -50,5 +55,39 @@ contract TestTileContract is StubTileContract {
     function logger() public view returns (string memory, Coords memory) {
         console.log("world:", world);
         return (world, Coords(1, 2));
+    }
+
+    function test_a(uint256 inp) public {
+        a = inp;
+    }
+
+    function test_b(bytes32 inp) public {
+        b = inp;
+    }
+
+    function test_c(bytes memory inp) public {
+        c = inp;
+    }
+
+    function test_d(address inp) public {
+        d = inp;
+    }
+
+    function logger_a() public view returns (uint256) {
+        console.log("a:", a);
+        return a;
+    }
+
+    function logger_b() public view returns (bytes32) {
+        return b;
+    }
+
+    function logger_c() public view returns (bytes memory) {
+        return c;
+    }
+
+    function logger_d() public view returns (address) {
+        console.log("d:", d);
+        return d;
     }
 }

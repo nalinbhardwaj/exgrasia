@@ -75,8 +75,8 @@ export class PluginManager {
     this.pluginLibrary = [];
     this.pluginProcesses = {};
     this.pluginProcessInfos = {};
-    this.load();
     this.plugins$ = monomitter<SerializedPlugin[]>();
+    this.load();
   }
 
   /**

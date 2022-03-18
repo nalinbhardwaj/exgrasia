@@ -23,7 +23,15 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface TestTileContractInterface extends ethers.utils.Interface {
   functions: {
     "logger()": FunctionFragment;
+    "logger_a()": FunctionFragment;
+    "logger_b()": FunctionFragment;
+    "logger_c()": FunctionFragment;
+    "logger_d()": FunctionFragment;
     "test(string)": FunctionFragment;
+    "test_a(uint256)": FunctionFragment;
+    "test_b(bytes32)": FunctionFragment;
+    "test_c(bytes)": FunctionFragment;
+    "test_d(address)": FunctionFragment;
     "tileABI()": FunctionFragment;
     "tileDescription()": FunctionFragment;
     "tileEmoji()": FunctionFragment;
@@ -31,7 +39,18 @@ interface TestTileContractInterface extends ethers.utils.Interface {
   };
 
   encodeFunctionData(functionFragment: "logger", values?: undefined): string;
+  encodeFunctionData(functionFragment: "logger_a", values?: undefined): string;
+  encodeFunctionData(functionFragment: "logger_b", values?: undefined): string;
+  encodeFunctionData(functionFragment: "logger_c", values?: undefined): string;
+  encodeFunctionData(functionFragment: "logger_d", values?: undefined): string;
   encodeFunctionData(functionFragment: "test", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "test_a",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "test_b", values: [BytesLike]): string;
+  encodeFunctionData(functionFragment: "test_c", values: [BytesLike]): string;
+  encodeFunctionData(functionFragment: "test_d", values: [string]): string;
   encodeFunctionData(functionFragment: "tileABI", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "tileDescription",
@@ -41,7 +60,15 @@ interface TestTileContractInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "tileName", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "logger", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "logger_a", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "logger_b", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "logger_c", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "logger_d", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "test", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "test_a", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "test_b", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "test_c", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "test_d", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tileABI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "tileDescription",
@@ -77,9 +104,72 @@ export class TestTileContract extends Contract {
       1: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     }>;
 
+    logger_a(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "logger_a()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    logger_b(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "logger_b()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    logger_c(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "logger_c()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    logger_d(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "logger_d()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
     test(inp: string, overrides?: Overrides): Promise<ContractTransaction>;
 
     "test(string)"(
+      inp: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    test_a(
+      inp: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "test_a(uint256)"(
+      inp: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    test_b(inp: BytesLike, overrides?: Overrides): Promise<ContractTransaction>;
+
+    "test_b(bytes32)"(
+      inp: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    test_c(inp: BytesLike, overrides?: Overrides): Promise<ContractTransaction>;
+
+    "test_c(bytes)"(
+      inp: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    test_d(inp: string, overrides?: Overrides): Promise<ContractTransaction>;
+
+    "test_d(address)"(
       inp: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -127,9 +217,56 @@ export class TestTileContract extends Contract {
     1: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
   }>;
 
+  logger_a(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "logger_a()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  logger_b(overrides?: CallOverrides): Promise<string>;
+
+  "logger_b()"(overrides?: CallOverrides): Promise<string>;
+
+  logger_c(overrides?: CallOverrides): Promise<string>;
+
+  "logger_c()"(overrides?: CallOverrides): Promise<string>;
+
+  logger_d(overrides?: CallOverrides): Promise<string>;
+
+  "logger_d()"(overrides?: CallOverrides): Promise<string>;
+
   test(inp: string, overrides?: Overrides): Promise<ContractTransaction>;
 
   "test(string)"(
+    inp: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  test_a(
+    inp: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "test_a(uint256)"(
+    inp: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  test_b(inp: BytesLike, overrides?: Overrides): Promise<ContractTransaction>;
+
+  "test_b(bytes32)"(
+    inp: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  test_c(inp: BytesLike, overrides?: Overrides): Promise<ContractTransaction>;
+
+  "test_c(bytes)"(
+    inp: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  test_d(inp: string, overrides?: Overrides): Promise<ContractTransaction>;
+
+  "test_d(address)"(
     inp: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -161,9 +298,44 @@ export class TestTileContract extends Contract {
       1: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
     }>;
 
+    logger_a(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "logger_a()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    logger_b(overrides?: CallOverrides): Promise<string>;
+
+    "logger_b()"(overrides?: CallOverrides): Promise<string>;
+
+    logger_c(overrides?: CallOverrides): Promise<string>;
+
+    "logger_c()"(overrides?: CallOverrides): Promise<string>;
+
+    logger_d(overrides?: CallOverrides): Promise<string>;
+
+    "logger_d()"(overrides?: CallOverrides): Promise<string>;
+
     test(inp: string, overrides?: CallOverrides): Promise<void>;
 
     "test(string)"(inp: string, overrides?: CallOverrides): Promise<void>;
+
+    test_a(inp: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    "test_a(uint256)"(
+      inp: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    test_b(inp: BytesLike, overrides?: CallOverrides): Promise<void>;
+
+    "test_b(bytes32)"(inp: BytesLike, overrides?: CallOverrides): Promise<void>;
+
+    test_c(inp: BytesLike, overrides?: CallOverrides): Promise<void>;
+
+    "test_c(bytes)"(inp: BytesLike, overrides?: CallOverrides): Promise<void>;
+
+    test_d(inp: string, overrides?: CallOverrides): Promise<void>;
+
+    "test_d(address)"(inp: string, overrides?: CallOverrides): Promise<void>;
 
     tileABI(overrides?: CallOverrides): Promise<string>;
 
@@ -189,9 +361,47 @@ export class TestTileContract extends Contract {
 
     "logger()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    logger_a(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "logger_a()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    logger_b(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "logger_b()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    logger_c(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "logger_c()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    logger_d(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "logger_d()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     test(inp: string, overrides?: Overrides): Promise<BigNumber>;
 
     "test(string)"(inp: string, overrides?: Overrides): Promise<BigNumber>;
+
+    test_a(inp: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+
+    "test_a(uint256)"(
+      inp: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    test_b(inp: BytesLike, overrides?: Overrides): Promise<BigNumber>;
+
+    "test_b(bytes32)"(
+      inp: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    test_c(inp: BytesLike, overrides?: Overrides): Promise<BigNumber>;
+
+    "test_c(bytes)"(inp: BytesLike, overrides?: Overrides): Promise<BigNumber>;
+
+    test_d(inp: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "test_d(address)"(inp: string, overrides?: Overrides): Promise<BigNumber>;
 
     tileABI(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -215,9 +425,62 @@ export class TestTileContract extends Contract {
 
     "logger()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    logger_a(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "logger_a()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    logger_b(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "logger_b()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    logger_c(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "logger_c()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    logger_d(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "logger_d()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     test(inp: string, overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "test(string)"(
+      inp: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    test_a(
+      inp: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "test_a(uint256)"(
+      inp: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    test_b(
+      inp: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "test_b(bytes32)"(
+      inp: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    test_c(
+      inp: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "test_c(bytes)"(
+      inp: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    test_d(inp: string, overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "test_d(address)"(
       inp: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

@@ -42,7 +42,7 @@ import {
   UnconfirmedInitPlayer,
   UnconfirmedMovePlayer,
   UnconfirmedOwnTile,
-  UnconfirmedTileCall,
+  UnconfirmedTileTx,
 } from '../_types/ContractAPITypes';
 import {
   loadCoreContract,
@@ -334,7 +334,7 @@ export class ContractsAPI extends EventEmitter {
     return this.waitFor(unminedOwnTileTx, tx.confirmed);
   }
 
-  public async tileTx(action: UnconfirmedTileCall) {
+  public async tileTx(action: UnconfirmedTileTx) {
     if (!this.txExecutor) {
       throw new Error('no signer, cannot execute tx');
     }

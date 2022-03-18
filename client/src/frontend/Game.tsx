@@ -44,9 +44,6 @@ export default function Game() {
   const [ethConnection, setEthConnection] = useState<EthConnection | undefined>();
   const [step, setStep] = useState(LoadingStep.NONE);
   const [error, setError] = useState('no errors');
-  const [queryCoords, setQueryCoords] = useState<WorldCoords | undefined>();
-  const [queryingBlockchain, setQueryingBlockchain] = useState<boolean>(false);
-  const [lastQueryResult, setLastQueryResult] = useState<TileType | undefined>();
   const tiles = useTiles(gameManager);
   const playerInfos = useInfo(gameManager);
   const initted = useInitted(gameManager);
@@ -56,7 +53,6 @@ export default function Game() {
   const privateKey = passedPrivateKey
     ? passedPrivateKey
     : DEV_TEST_PRIVATE_KEY[privKeyIdx ? parseInt(privKeyIdx) : 0];
-  const [input, setInput] = useState<Map<string, string>>(new Map());
   const [openPanes, setOpenPanes] = useState<WorldCoords[]>([]);
   const [prettifiedAddresses, setPrettifiedAddresses] = useState<Map<EthAddress, string>>(
     new Map()
@@ -89,7 +85,7 @@ export default function Game() {
     coords: WorldCoords
   ) => {
     event.preventDefault();
-    if (!gameManager || queryingBlockchain) return;
+    if (!gameManager) return;
     for (const openPane of openPanes) {
       if (openPane.x === coords.x && openPane.y === coords.y) {
         return;
@@ -99,7 +95,9 @@ export default function Game() {
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (!gameManager || queryingBlockchain) return;
+    if (!gameManager) return;
+    const eve = event.target as HTMLElement;
+    if (eve.tagName.toLowerCase() !== 'body') return;
     gameManager.movePlayer(event.key.toLowerCase());
   };
 

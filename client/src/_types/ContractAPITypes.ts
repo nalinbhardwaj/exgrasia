@@ -67,11 +67,15 @@ export function isUnconfirmedOwnTile(txIntent: TxIntent): txIntent is Unconfirme
   return ContractMethodName.OWN_TILE == txIntent.methodName;
 }
 
-export type UnconfirmedTileCall = TxIntent & {
+export type UnconfirmedTileTx = TxIntent & {
   methodName: string;
   addr: EthAddress;
   abi: any[];
   args: any;
 };
 
-export type SubmittedTileCall = UnconfirmedTileCall & SubmittedTx;
+export type SubmittedTileCall = UnconfirmedTileTx & SubmittedTx;
+
+export function isUnconfirmedTileTx(txIntent: TxIntent): txIntent is UnconfirmedTileTx {
+  return txIntent.hasOwnProperty('abi');
+}
