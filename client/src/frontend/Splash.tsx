@@ -18,6 +18,7 @@ import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
 import { useHistory, useParams } from 'react-router-dom';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import SplashMap from './SplashMap.json';
+import Whitelist from './Whitelist.json';
 import {
   Mainnet,
   DAppProvider,
@@ -89,7 +90,7 @@ export default function Splash() {
     getEthConnection().then(async (ethConnection) => {
       const contractsApi = await makeContractsAPI(ethConnection);
       console.log('account', account);
-      if (account) setWhitelist(await contractsApi.isWhitelisted(account));
+      if (account) setWhitelist(Whitelist.includes(account));
     });
   }, [account]);
 

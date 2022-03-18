@@ -25,6 +25,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "cachedTiles(uint256,uint256)": FunctionFragment;
     "computePerlin(uint32,uint32,uint32,uint32)": FunctionFragment;
     "dist(tuple,tuple)": FunctionFragment;
+    "forceTileUpdate(tuple)": FunctionFragment;
     "getCachedTile(tuple)": FunctionFragment;
     "getCorners(uint32,uint32,uint32)": FunctionFragment;
     "getGradientAt(uint32,uint32,uint32,uint32)": FunctionFragment;
@@ -73,6 +74,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
       { x: BigNumberish; y: BigNumberish },
       { x: BigNumberish; y: BigNumberish }
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "forceTileUpdate",
+    values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(
     functionFragment: "getCachedTile",
@@ -200,6 +205,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "dist", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "forceTileUpdate",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getCachedTile",
     data: BytesLike
@@ -387,6 +396,16 @@ export class TinyWorld extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
+
+    forceTileUpdate(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "forceTileUpdate(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
@@ -949,6 +968,16 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  forceTileUpdate(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "forceTileUpdate(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   getCachedTile(
     coords: { x: BigNumberish; y: BigNumberish },
     overrides?: CallOverrides
@@ -1412,6 +1441,16 @@ export class TinyWorld extends Contract {
       b: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    forceTileUpdate(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "forceTileUpdate(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
@@ -1890,6 +1929,16 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    forceTileUpdate(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "forceTileUpdate(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -2205,6 +2254,16 @@ export class TinyWorld extends Contract {
       a: { x: BigNumberish; y: BigNumberish },
       b: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    forceTileUpdate(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "forceTileUpdate(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     getCachedTile(

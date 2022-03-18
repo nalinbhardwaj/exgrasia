@@ -368,13 +368,6 @@ export class ContractsAPI extends EventEmitter {
     return res;
   }
 
-  public async isWhitelisted(realAddress: string) {
-    const whitelisted = await this.makeCall<boolean>(this.registryContract.isWhitelisted, [
-      address(realAddress),
-    ]);
-    return whitelisted;
-  }
-
   public async getProxyAddress(realAddress: string) {
     const proxyAddress = await this.makeCall<string>(this.registryContract.getProxyAddress, [
       address(realAddress),

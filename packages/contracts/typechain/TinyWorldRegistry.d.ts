@@ -22,26 +22,14 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface TinyWorldRegistryInterface extends ethers.utils.Interface {
   functions: {
-    "appendWhitelist(address[])": FunctionFragment;
-    "dummySetProxyAddress(address[],address)": FunctionFragment;
     "getPlayerInfos()": FunctionFragment;
     "getProxyAddress(address)": FunctionFragment;
     "getRealAddress(address)": FunctionFragment;
-    "isWhitelisted(address)": FunctionFragment;
     "proxyAddressToRealAddress(address)": FunctionFragment;
     "realAddressToProxyAddress(address)": FunctionFragment;
     "setProxyAddress(address)": FunctionFragment;
-    "whitelistAddresses(address)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "appendWhitelist",
-    values: [string[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "dummySetProxyAddress",
-    values: [string[], string]
-  ): string;
   encodeFunctionData(
     functionFragment: "getPlayerInfos",
     values?: undefined
@@ -55,10 +43,6 @@ interface TinyWorldRegistryInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "isWhitelisted",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "proxyAddressToRealAddress",
     values: [string]
   ): string;
@@ -70,19 +54,7 @@ interface TinyWorldRegistryInterface extends ethers.utils.Interface {
     functionFragment: "setProxyAddress",
     values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "whitelistAddresses",
-    values: [string]
-  ): string;
 
-  decodeFunctionResult(
-    functionFragment: "appendWhitelist",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "dummySetProxyAddress",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "getPlayerInfos",
     data: BytesLike
@@ -96,10 +68,6 @@ interface TinyWorldRegistryInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isWhitelisted",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "proxyAddressToRealAddress",
     data: BytesLike
   ): Result;
@@ -109,10 +77,6 @@ interface TinyWorldRegistryInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setProxyAddress",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "whitelistAddresses",
     data: BytesLike
   ): Result;
 
@@ -133,28 +97,6 @@ export class TinyWorldRegistry extends Contract {
   interface: TinyWorldRegistryInterface;
 
   functions: {
-    appendWhitelist(
-      _addresses: string[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "appendWhitelist(address[])"(
-      _addresses: string[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    dummySetProxyAddress(
-      realAddresses: string[],
-      proxyAddress: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "dummySetProxyAddress(address[],address)"(
-      realAddresses: string[],
-      proxyAddress: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     getPlayerInfos(overrides?: CallOverrides): Promise<{
       0: string[];
       1: string[];
@@ -191,20 +133,6 @@ export class TinyWorldRegistry extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: string;
-    }>;
-
-    isWhitelisted(
-      _address: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
-    "isWhitelisted(address)"(
-      _address: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
     }>;
 
     proxyAddressToRealAddress(
@@ -244,43 +172,7 @@ export class TinyWorldRegistry extends Contract {
       _proxyAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    whitelistAddresses(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
-    "whitelistAddresses(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
   };
-
-  appendWhitelist(
-    _addresses: string[],
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "appendWhitelist(address[])"(
-    _addresses: string[],
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  dummySetProxyAddress(
-    realAddresses: string[],
-    proxyAddress: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "dummySetProxyAddress(address[],address)"(
-    realAddresses: string[],
-    proxyAddress: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
 
   getPlayerInfos(overrides?: CallOverrides): Promise<{
     0: string[];
@@ -312,13 +204,6 @@ export class TinyWorldRegistry extends Contract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  isWhitelisted(_address: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "isWhitelisted(address)"(
-    _address: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   proxyAddressToRealAddress(
     arg0: string,
     overrides?: CallOverrides
@@ -349,36 +234,7 @@ export class TinyWorldRegistry extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  whitelistAddresses(arg0: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "whitelistAddresses(address)"(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   callStatic: {
-    appendWhitelist(
-      _addresses: string[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "appendWhitelist(address[])"(
-      _addresses: string[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    dummySetProxyAddress(
-      realAddresses: string[],
-      proxyAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "dummySetProxyAddress(address[],address)"(
-      realAddresses: string[],
-      proxyAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     getPlayerInfos(overrides?: CallOverrides): Promise<{
       0: string[];
       1: string[];
@@ -409,16 +265,6 @@ export class TinyWorldRegistry extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    isWhitelisted(
-      _address: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "isWhitelisted(address)"(
-      _address: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     proxyAddressToRealAddress(
       arg0: string,
       overrides?: CallOverrides
@@ -448,43 +294,11 @@ export class TinyWorldRegistry extends Contract {
       _proxyAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    whitelistAddresses(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "whitelistAddresses(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
   };
 
   filters: {};
 
   estimateGas: {
-    appendWhitelist(
-      _addresses: string[],
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "appendWhitelist(address[])"(
-      _addresses: string[],
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    dummySetProxyAddress(
-      realAddresses: string[],
-      proxyAddress: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "dummySetProxyAddress(address[],address)"(
-      realAddresses: string[],
-      proxyAddress: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     getPlayerInfos(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getPlayerInfos()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -509,16 +323,6 @@ export class TinyWorldRegistry extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isWhitelisted(
-      _address: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "isWhitelisted(address)"(
-      _address: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     proxyAddressToRealAddress(
       arg0: string,
       overrides?: CallOverrides
@@ -548,41 +352,9 @@ export class TinyWorldRegistry extends Contract {
       _proxyAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
-
-    whitelistAddresses(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "whitelistAddresses(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    appendWhitelist(
-      _addresses: string[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "appendWhitelist(address[])"(
-      _addresses: string[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    dummySetProxyAddress(
-      realAddresses: string[],
-      proxyAddress: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "dummySetProxyAddress(address[],address)"(
-      realAddresses: string[],
-      proxyAddress: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     getPlayerInfos(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getPlayerInfos()"(
@@ -609,16 +381,6 @@ export class TinyWorldRegistry extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    isWhitelisted(
-      _address: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "isWhitelisted(address)"(
-      _address: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     proxyAddressToRealAddress(
       arg0: string,
       overrides?: CallOverrides
@@ -647,16 +409,6 @@ export class TinyWorldRegistry extends Contract {
     "setProxyAddress(address)"(
       _proxyAddress: string,
       overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    whitelistAddresses(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "whitelistAddresses(address)"(
-      arg0: string,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

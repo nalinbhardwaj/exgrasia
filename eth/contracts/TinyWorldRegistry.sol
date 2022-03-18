@@ -4,7 +4,6 @@ pragma solidity ^0.8.4;
 contract TinyWorldRegistry {
     address admin;
     address[] registeredRealAddresses;
-    mapping(address => bool) public whitelistAddresses;
     mapping(address => address) public realAddressToProxyAddress;
     mapping(address => address) public proxyAddressToRealAddress;
 
@@ -17,18 +16,7 @@ contract TinyWorldRegistry {
         _;
     }
 
-    function appendWhitelist(address[] memory _addresses) public onlyAdmin {
-        for (uint256 i = 0; i < _addresses.length; i++) {
-            whitelistAddresses[_addresses[i]] = true;
-        }
-    }
-
-    function isWhitelisted(address _address) public view returns (bool) {
-        return whitelistAddresses[_address];
-    }
-
     function setProxyAddress(address _proxyAddress) public {
-        require(whitelistAddresses[msg.sender], "Only whitelisted addresses can play for now");
         require(realAddressToProxyAddress[msg.sender] == address(0), "Proxy address already set");
         require(proxyAddressToRealAddress[_proxyAddress] == address(0), "Real address already set");
         realAddressToProxyAddress[msg.sender] = _proxyAddress;
@@ -39,7 +27,6 @@ contract TinyWorldRegistry {
     function dummySetProxyAddress(address[] memory realAddresses, address proxyAddress) public {
         for (uint256 i = 0; i < realAddresses.length; i++) {
             address realAddress = realAddresses[i];
-            require(whitelistAddresses[realAddress], "Only whitelisted addresses can play for now");
             require(
                 realAddressToProxyAddress[realAddress] == address(0),
                 "Proxy address already set"

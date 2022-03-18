@@ -331,6 +331,18 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         emit PlayerUpdated(msg.sender, coords);
     }
 
+    function checkInterfaceFunction(address smartContract, bytes memory payload) internal view {
+        (bool success, bytes memory returnData) = smartContract.staticcall(payload);
+        require(success, "Failed to static call required function");
+    }
+
+    function checkInterface(address smartContract) internal view {
+        checkInterfaceFunction(smartContract, abi.encodeWithSignature("tileEmoji()"));
+        checkInterfaceFunction(smartContract, abi.encodeWithSignature("tileName()"));
+        checkInterfaceFunction(smartContract, abi.encodeWithSignature("tileDescription()"));
+        checkInterfaceFunction(smartContract, abi.encodeWithSignature("tileABI()"));
+    }
+
     function ownTile(Coords memory coords, address smartContract)
         public
         isClose(coords)
@@ -360,6 +372,12 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         );
         tile.owner = newOwner;
         cachedTiles[coords.x][coords.y] = tile;
+        emit TileUpdated(tile);
+    }
+
+    function forceTileUpdate(Coords memory coords) public {
+        Tile memory tile = getTile(coords);
+        require(tile.smartContract == msg.sender, "Not owner");
         emit TileUpdated(tile);
     }
 }
