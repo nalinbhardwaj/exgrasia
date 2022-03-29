@@ -9,8 +9,8 @@ const darkTheme = createTheme({
   type: 'dark',
   theme: {
     fonts: {
-      sans: 'monospace',
-      mono: 'monospace',
+      sans: 'League Mono, monospace',
+      mono: 'League Mono, monospace',
     },
     colors: {
       primary: '$cyan100',

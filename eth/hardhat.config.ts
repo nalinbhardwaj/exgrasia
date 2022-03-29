@@ -96,7 +96,12 @@ const config: HardhatUserConfig = {
         },
         // nibnalin.eth's generated account
         {
-          privateKey: '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470',
+          privateKey: '0xddd9ebbb84f1a21af6ae1c950b03ccce1f94ad38fcf0144105b7634e82263911',
+          balance: '100000000000000000000',
+        },
+        // nibnalin.eth's generated account
+        {
+          privateKey: '0x513b36249e2975807a536880acfce31d2efc106e30c5a9814478d4183c2995c7',
           balance: '100000000000000000000',
         },
       ],

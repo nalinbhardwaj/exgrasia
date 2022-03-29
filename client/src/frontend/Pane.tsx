@@ -303,7 +303,9 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
                   marginTop: 'auto',
                 }}
               >
-                <Text color='warning'>→ bytes32</Text>
+                <Text color='warning'>
+                  <span style={{ fontFamily: 'monospace' }}>→</span> bytes32
+                </Text>
               </Button>
             )}
 
@@ -334,7 +336,9 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
                   marginTop: 'auto',
                 }}
               >
-                <Text color='warning'>→ hex</Text>
+                <Text color='warning'>
+                  <span style={{ fontFamily: 'monospace' }}>→</span> hex
+                </Text>
               </Button>
             )}
 
@@ -362,7 +366,9 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
                   marginTop: 'auto',
                 }}
               >
-                <Text color='warning'>→ *= 10^18</Text>
+                <Text color='warning'>
+                  <span style={{ fontFamily: 'monospace' }}>→</span> *= 10^18
+                </Text>
               </Button>
             )}
           </Row>

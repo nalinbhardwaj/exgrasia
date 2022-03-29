@@ -24,16 +24,13 @@ function App() {
 }
 
 const GlobalStyle = createGlobalStyle`
-@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300,400&display=swap');
-
 body {
   color: "#ffffff";
   width: 100vw;
   min-height: 100vh;
   background-color: "#ffffff";
-  font-family: monospace;
-  font-weight: 300;
   overflow: hidden;
+  font-family: "League Mono", monospace;
 }
 `;
 

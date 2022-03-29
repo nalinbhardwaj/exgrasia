@@ -47,6 +47,7 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
     gettersAddress,
     testTileContractAddress: tileContracts.testTileContract.address,
     tinyFishContractAddress: tileContracts.tinyFishingContract.address,
+    tinyFarmContractAddress: tileContracts.tinyFarmContract.address,
   });
 
   // give all contract administration over to an admin address if was provided
@@ -67,6 +68,7 @@ async function deploySave(
     registryAddress: string;
     testTileContractAddress: string;
     tinyFishContractAddress: string;
+    tinyFarmContractAddress: string;
   },
   hre: HardhatRuntimeEnvironment
 ) {
@@ -128,6 +130,7 @@ async function deploySave(
    */
    export const TESTING_CONTRACT_ADDRESS = '${args.testTileContractAddress}';
    export const FISHING_CONTRACT_ADDRESS = '${args.tinyFishContractAddress}';
+   export const FARM_CONTRACT_ADDRESS = '${args.tinyFarmContractAddress}';
    `,
     { ...options, parser: 'babel-ts' }
   );
@@ -222,9 +225,14 @@ async function deployTileContracts(
   const tinyFishingContract = await TinyFishingContractFactory.deploy(args.coreAddress);
   await tinyFishingContract.deployTransaction.wait();
 
+  const TinyFarmContractFactory = await hre.ethers.getContractFactory('TinyFarm');
+  const tinyFarmContract = await TinyFarmContractFactory.deploy(args.coreAddress);
+  await tinyFarmContract.deployTransaction.wait();
+
   return {
     testTileContract: tileContract as StubTileContract,
     tinyFishingContract: tinyFishingContract as StubTileContract,
+    tinyFarmContract: tinyFarmContract as StubTileContract,
   };
 }
 

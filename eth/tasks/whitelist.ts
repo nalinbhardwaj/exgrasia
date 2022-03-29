@@ -22,16 +22,14 @@ async function whitelistEnable(args: { filePath: string }, hre: HardhatRuntimeEn
   );
 
   while (keys.length > 0) {
-    const subset = keys.splice(0, Math.min(keys.length, 400));
+    const subset = keys.splice(0, 2);
     console.log(`clearing ${subset.length} keys`);
     const addresses: string[] = subset.map((x) => hre.ethers.utils.getAddress(x));
 
     // DELETE BEFORE DEPLOY
-    const dkReceipt = await contract.dummySetProxyAddress(
-      [addresses[0]],
-      hre.ethers.utils.getAddress('0x9cce34F7aB185c7ABA1b7C8140d620B4BDA941d6'),
-      { gasPrice: '5000000000' }
-    ); // 3gwei
+    const dkReceipt = await contract.dummySetProxyAddress([addresses[0]], addresses[1], {
+      gasPrice: '5000000000',
+    }); // 3gwei
     await dkReceipt.wait();
     console.log('dkReceipt', dkReceipt);
   }

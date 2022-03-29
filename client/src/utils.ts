@@ -10,21 +10,21 @@ import {
   EthAddress,
 } from 'common-types';
 import { ethers } from 'ethers';
-import { keccak256 } from 'ethers/lib/utils';
+import { keccak256, toUtf8Bytes } from 'ethers/lib/utils';
 
 export const tileTypeToColor = {
   [TileType.UNKNOWN]: 'grey',
   [TileType.WATER]: '#3C91E6',
   [TileType.SAND]: '#EFDD6F',
-  [TileType.TREE]: '#0A8754',
-  [TileType.STUMP]: '#0A8754',
-  [TileType.CHEST]: '#53F4FF',
+  [TileType.TREE]: '#0A8754', //
+  [TileType.STUMP]: '#0A8754', //
+  [TileType.CHEST]: '#53F4FF', //
   [TileType.FARM]: '#0A8754',
-  [TileType.WINDMILL]: '#0A8754',
+  [TileType.WINDMILL]: '#0A8754', //
   [TileType.GRASS]: '#0A8754',
   [TileType.SNOW]: '#FFFAFA',
   [TileType.STONE]: '#918E85',
-  [TileType.ICE]: '#D6FFFA',
+  [TileType.ICE]: '#D6FFFA', //
 };
 
 export const getRandomTree = (coords: WorldCoords, width: number) => {
@@ -119,7 +119,7 @@ export const getRandomActionId = () => {
 export const nullAddress = address('0x0000000000000000000000000000000000000000');
 
 export const generatePrivateKey = (entropy: string) => {
-  const privateKey = keccak256(Buffer.from(entropy, 'hex'));
+  const privateKey = keccak256(toUtf8Bytes(entropy));
   return privateKey;
 };
 

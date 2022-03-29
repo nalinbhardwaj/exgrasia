@@ -35,6 +35,8 @@ import { Contract } from '@ethersproject/contracts';
 import { ethers } from 'ethers';
 import { Tooltip, useTheme, Text, Button } from '@nextui-org/react';
 import { SubTitle, Title } from './StyledComps';
+import Web3Modal from 'web3modal';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 
 const entropyMessage =
   'Sign this message as an entropy seed\nfor your proxy wallet.\n\nDO NOT SIGN this for any URL\nexcept the official Exgrasia\nwebsite: exgrasia.xyz';
@@ -46,11 +48,12 @@ export default function Splash() {
   const [liveMap, setLiveMap] = useState<TileType[][]>(SplashMap);
   const [ticks, setTicks] = useState(36);
   const [tickDirection, setTickDirection] = useState(true);
-  const { activateBrowserWallet, account } = useEthers();
+  const { account, activate, deactivate } = useEthers();
   const [whitelist, setWhitelist] = useState(false);
   const { library } = useEthers();
   const [proxyPrivKey, setProxyPrivKey] = useState('');
   const [proxyPubKey, setProxyPubKey] = useState('');
+  const [activateError, setActivateError] = useState('');
   const registryContract = new Contract(REGISTRY_CONTRACT_ADDRESS, registryContractAbi);
   const { state: registryState, send: registrySend } = useContractFunction(
     registryContract,
@@ -127,10 +130,41 @@ export default function Splash() {
     else return '🤨 Unknown';
   };
 
+  const activateProvider = async () => {
+    const providerOptions = {
+      injected: {
+        display: {
+          name: 'Metamask',
+          description: 'Connect with the provider in your Browser',
+        },
+        package: null,
+      },
+      walletconnect: {
+        package: WalletConnectProvider,
+        options: {
+          bridge: 'https://bridge.walletconnect.org',
+          infuraId: 'd8df2cb7844e4a54ab0a782f608749dd',
+        },
+      },
+    };
+
+    const web3Modal = new Web3Modal({
+      providerOptions,
+    });
+    try {
+      const provider = await web3Modal.connect();
+      await activate(provider);
+      setActivateError('');
+    } catch (error: any) {
+      setActivateError(error.message);
+    }
+  };
+
   useEffect(() => {
     if (!library || !account) return;
     const signer = library.getSigner();
     signer.signMessage(entropyMessage).then((sig) => {
+      console.log('sig', sig);
       const privKey = generatePrivateKey(sig);
       setProxyPrivKey(privKey);
       const pubKey = ethers.utils.computeAddress(privKey);
@@ -185,10 +219,10 @@ export default function Splash() {
         </Title>
         {nuxStepOneDone ? (
           <SubTitle>
-            <Text h2 color='primary' size={64}>
+            <Text h2 color='primary' size={48}>
               choose character
             </Text>
-            <Text h2 color='primary' size={64}>
+            <Text h2 color='primary' size={48}>
               {Object.keys(characterMapping).map((name) => {
                 return (
                   <Emoji
@@ -209,7 +243,7 @@ export default function Splash() {
         ) : (
           <SubTitle>
             {account ? (
-              <Text h2 color='primary' size={64}>
+              <Text h2 color='primary' size={48}>
                 connected
               </Text>
             ) : (
@@ -217,10 +251,10 @@ export default function Splash() {
                 bordered
                 color='primary'
                 auto
-                onClick={() => activateBrowserWallet()}
+                onClick={() => activateProvider()}
                 css={{ padding: '$xl' }}
               >
-                <Text h2 color='primary' size={64}>
+                <Text h2 color='primary' size={48}>
                   connect wallet
                 </Text>
               </Button>

@@ -3,12 +3,22 @@
 /* eslint-disable */
 export { Erc721UpgradeableFactory } from "./Erc721UpgradeableFactory";
 export type { Erc721Upgradeable } from "./Erc721Upgradeable";
+export { Erc20Factory } from "./Erc20Factory";
+export type { Erc20 } from "./Erc20";
 export { Erc721Factory } from "./Erc721Factory";
 export type { Erc721 } from "./Erc721";
 export { StubTileContractFactory } from "./StubTileContractFactory";
 export type { StubTileContract } from "./StubTileContract";
 export { TestTileContractFactory } from "./TestTileContractFactory";
 export type { TestTileContract } from "./TestTileContract";
+export { TinyCarrotFactory } from "./TinyCarrotFactory";
+export type { TinyCarrot } from "./TinyCarrot";
+export { TinyCornFactory } from "./TinyCornFactory";
+export type { TinyCorn } from "./TinyCorn";
+export { TinyFarmFactory } from "./TinyFarmFactory";
+export type { TinyFarm } from "./TinyFarm";
+export { TinyWheatFactory } from "./TinyWheatFactory";
+export type { TinyWheat } from "./TinyWheat";
 export { TinyFishFactory } from "./TinyFishFactory";
 export type { TinyFish } from "./TinyFish";
 export { TinyWorldFactory } from "./TinyWorldFactory";
