@@ -14,7 +14,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "embedded_plugins/*", "plugins/*"],
+  "include": ["src/**/*", "embedded_plugins/*", "plugins/*", "postcss.config.js"],
   "exclude": ["./node_modules", "./dist", "./declarations"],
   "typedocOptions": {
     "entryPoints": ["src"],

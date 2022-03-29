@@ -17,7 +17,7 @@ import './tasks/whitelist';
 
 require('dotenv').config();
 
-const { DEPLOYER_MNEMONIC, ADMIN_PUBLIC_ADDRESS } = process.env;
+const { DEPLOYER_MNEMONIC, DEPLOYER_PK, ADMIN_PUBLIC_ADDRESS } = process.env;
 
 // Ensure we can lookup the needed workspace packages
 const packageDirs = {
@@ -27,6 +27,7 @@ const packageDirs = {
 extendEnvironment((env: HardhatRuntimeEnvironment) => {
   env.DEPLOYER_MNEMONIC = DEPLOYER_MNEMONIC;
   env.ADMIN_PUBLIC_ADDRESS = ADMIN_PUBLIC_ADDRESS;
+  env.DEPLOYER_PK = DEPLOYER_PK;
 
   env.packageDirs = packageDirs;
 
@@ -60,6 +61,12 @@ const mainnet = {
   chainId: 1,
 };
 
+const optimismKovan = {
+  url: 'https://kovan.optimism.io',
+  accounts: [DEPLOYER_PK!],
+  chainId: 69,
+};
+
 const config: HardhatUserConfig = {
   defaultNetwork: 'hardhat',
   networks: {
@@ -68,6 +75,7 @@ const config: HardhatUserConfig = {
     // > Error HH100: Network xdai doesn't exist
     ...(DEPLOYER_MNEMONIC ? { xdai } : undefined),
     ...(DEPLOYER_MNEMONIC ? { mainnet } : undefined),
+    ...(DEPLOYER_PK ? { optimismKovan } : undefined),
     localhost: {
       url: 'http://localhost:8545/',
       accounts: {

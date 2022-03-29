@@ -597,7 +597,7 @@ function Plugins(props: { coords: WorldCoords; gm: GameManager; pm: PluginManage
   );
 }
 
-const EXPLORER_BASE_URL = 'https://blockscout.com/xdai/mainnet/address/';
+const EXPLORER_BASE_URL = 'https://kovan-optimistic.etherscan.io/address/';
 
 function shortenAddress(addr: EthAddress) {
   return addr.slice(0, 6) + '...' + addr.slice(-4);
