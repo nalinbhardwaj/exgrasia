@@ -2,7 +2,7 @@
   "name": "common-types",
   "version": "1.0.0",
   "engines": {
-    "node": "^14"
+    "node": "^16"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

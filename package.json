@@ -2,7 +2,7 @@
   "name": "tinyworld",
   "private": true,
   "engines": {
-    "node": "^14"
+    "node": "^16"
   },
   "workspaces": [
     "eth",

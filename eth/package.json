@@ -4,7 +4,7 @@
   "description": "tiny world contracts",
   "main": "index.js",
   "engines": {
-    "node": "^14"
+    "node": "^16"
   },
   "devDependencies": {
     "@iarna/toml": "^2.2.5",
