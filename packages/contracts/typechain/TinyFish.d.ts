@@ -27,11 +27,7 @@ interface TinyFishInterface extends ethers.utils.Interface {
     "castFishingRod()": FunctionFragment;
     "connectedWorld()": FunctionFragment;
     "currentPool(uint256)": FunctionFragment;
-    "getAdjective(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getHeight(uint256)": FunctionFragment;
-    "getName(uint256)": FunctionFragment;
-    "getWeight(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -41,10 +37,10 @@ interface TinyFishInterface extends ethers.utils.Interface {
     "setApprovalForAll(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
-    "tileABI()": FunctionFragment;
-    "tileDescription()": FunctionFragment;
-    "tileEmoji()": FunctionFragment;
-    "tileName()": FunctionFragment;
+    "tileABI(tuple)": FunctionFragment;
+    "tileDescription(tuple)": FunctionFragment;
+    "tileEmoji(tuple)": FunctionFragment;
+    "tileName(tuple)": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
     "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -70,23 +66,7 @@ interface TinyFishInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getAdjective",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getApproved",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getHeight",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getName",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getWeight",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -116,13 +96,22 @@ interface TinyFishInterface extends ethers.utils.Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(functionFragment: "tileABI", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "tileABI",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
   encodeFunctionData(
     functionFragment: "tileDescription",
-    values?: undefined
+    values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
-  encodeFunctionData(functionFragment: "tileEmoji", values?: undefined): string;
-  encodeFunctionData(functionFragment: "tileName", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "tileEmoji",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tileName",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
   encodeFunctionData(
     functionFragment: "tokenByIndex",
     values: [BigNumberish]
@@ -159,16 +148,9 @@ interface TinyFishInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getAdjective",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "getHeight", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getName", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getWeight", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -295,20 +277,6 @@ export class TinyFish extends Contract {
       0: BigNumber;
     }>;
 
-    getAdjective(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getAdjective(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -317,48 +285,6 @@ export class TinyFish extends Contract {
     }>;
 
     "getApproved(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    getHeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getHeight(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    getName(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getName(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    getWeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getWeight(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
@@ -470,35 +396,59 @@ export class TinyFish extends Contract {
       0: string;
     }>;
 
-    tileABI(overrides?: CallOverrides): Promise<{
+    tileABI(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    "tileABI()"(overrides?: CallOverrides): Promise<{
+    "tileABI(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    tileDescription(overrides?: CallOverrides): Promise<{
+    tileDescription(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    "tileDescription()"(overrides?: CallOverrides): Promise<{
+    "tileDescription(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    tileEmoji(overrides?: CallOverrides): Promise<{
+    tileEmoji(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    "tileEmoji()"(overrides?: CallOverrides): Promise<{
+    "tileEmoji(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    tileName(overrides?: CallOverrides): Promise<{
+    tileName(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    "tileName()"(overrides?: CallOverrides): Promise<{
+    "tileName(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
@@ -606,43 +556,12 @@ export class TinyFish extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getAdjective(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  "getAdjective(uint256)"(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
   "getApproved(uint256)"(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getHeight(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  "getHeight(uint256)"(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getName(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  "getName(uint256)"(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getWeight(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  "getWeight(uint256)"(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
@@ -722,21 +641,45 @@ export class TinyFish extends Contract {
 
   "symbol()"(overrides?: CallOverrides): Promise<string>;
 
-  tileABI(overrides?: CallOverrides): Promise<string>;
+  tileABI(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  "tileABI()"(overrides?: CallOverrides): Promise<string>;
+  "tileABI(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  tileDescription(overrides?: CallOverrides): Promise<string>;
+  tileDescription(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  "tileDescription()"(overrides?: CallOverrides): Promise<string>;
+  "tileDescription(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  tileEmoji(overrides?: CallOverrides): Promise<string>;
+  tileEmoji(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  "tileEmoji()"(overrides?: CallOverrides): Promise<string>;
+  "tileEmoji(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  tileName(overrides?: CallOverrides): Promise<string>;
+  tileName(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  "tileName()"(overrides?: CallOverrides): Promise<string>;
+  "tileName(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   tokenByIndex(
     index: BigNumberish,
@@ -823,49 +766,12 @@ export class TinyFish extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getAdjective(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "getAdjective(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
     "getApproved(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getHeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "getHeight(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getName(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    "getName(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getWeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "getWeight(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
@@ -945,21 +851,45 @@ export class TinyFish extends Contract {
 
     "symbol()"(overrides?: CallOverrides): Promise<string>;
 
-    tileABI(overrides?: CallOverrides): Promise<string>;
+    tileABI(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    "tileABI()"(overrides?: CallOverrides): Promise<string>;
+    "tileABI(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    tileDescription(overrides?: CallOverrides): Promise<string>;
+    tileDescription(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    "tileDescription()"(overrides?: CallOverrides): Promise<string>;
+    "tileDescription(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    tileEmoji(overrides?: CallOverrides): Promise<string>;
+    tileEmoji(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    "tileEmoji()"(overrides?: CallOverrides): Promise<string>;
+    "tileEmoji(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    tileName(overrides?: CallOverrides): Promise<string>;
+    tileName(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    "tileName()"(overrides?: CallOverrides): Promise<string>;
+    "tileName(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     tokenByIndex(
       index: BigNumberish,
@@ -1067,52 +997,12 @@ export class TinyFish extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getAdjective(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getAdjective(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "getApproved(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getHeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getHeight(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getName(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getName(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getWeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getWeight(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1195,21 +1085,45 @@ export class TinyFish extends Contract {
 
     "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    tileABI(overrides?: CallOverrides): Promise<BigNumber>;
+    tileABI(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    "tileABI()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "tileABI(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    tileDescription(overrides?: CallOverrides): Promise<BigNumber>;
+    tileDescription(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    "tileDescription()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "tileDescription(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    tileEmoji(overrides?: CallOverrides): Promise<BigNumber>;
+    tileEmoji(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    "tileEmoji()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "tileEmoji(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    tileName(overrides?: CallOverrides): Promise<BigNumber>;
+    tileName(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    "tileName()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "tileName(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     tokenByIndex(
       index: BigNumberish,
@@ -1305,52 +1219,12 @@ export class TinyFish extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getAdjective(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getAdjective(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "getApproved(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getHeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getHeight(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getName(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getName(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getWeight(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getWeight(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1436,23 +1310,45 @@ export class TinyFish extends Contract {
 
     "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    tileABI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tileABI()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tileDescription(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tileDescription()"(
+    tileABI(
+      coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    tileEmoji(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "tileABI(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    "tileEmoji()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    tileDescription(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    tileName(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "tileDescription(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    "tileName()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    tileEmoji(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tileEmoji(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tileName(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tileName(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     tokenByIndex(
       index: BigNumberish,

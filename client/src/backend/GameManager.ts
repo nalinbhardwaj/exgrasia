@@ -58,6 +58,7 @@ class GameManager extends EventEmitter {
   private readonly tiles: Tile[][];
   public selfInfo: PlayerInfo;
   public playerInfos: Map<EthAddress, PlayerInfo>;
+  public failureMessage: Map<string, string>;
 
   private readonly perlinConfig1: PerlinConfig;
   private readonly perlinConfig2: PerlinConfig;
@@ -106,6 +107,7 @@ class GameManager extends EventEmitter {
     this.tileUpdated$ = monomitter();
     this.playerUpdated$ = monomitter();
     this.tileTxUpdated$ = monomitter();
+    this.failureMessage = new Map();
 
     for (let i = 0; i < worldWidth; i++) {
       this.tiles.push([]);
@@ -217,6 +219,7 @@ class GameManager extends EventEmitter {
       .on(ContractsAPIEvent.TxReverted, async (unconfirmedTx: SubmittedTx, error: any) => {
         // todo: remove the tx from localStorage
         if (isUnconfirmedTileTx(unconfirmedTx)) {
+          gameManager.failureMessage.set(unconfirmedTx.actionId, error.message);
           gameManager.tileTxUpdated$.publish([unconfirmedTx, 'reverted']);
         }
         gameManager.onTxReverted(unconfirmedTx);
@@ -247,6 +250,7 @@ class GameManager extends EventEmitter {
     // if it was being displayed in UI
     console.log(`txIntent failed with error ${e.message}`);
     if (isUnconfirmedTileTx(txIntent)) {
+      this.failureMessage.set(txIntent.actionId, e.message);
       this.tileTxUpdated$.publish([txIntent, 'reverted']);
     }
     console.log(txIntent);

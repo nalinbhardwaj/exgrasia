@@ -337,10 +337,22 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     }
 
     function checkInterface(address smartContract) internal view {
-        checkInterfaceFunction(smartContract, abi.encodeWithSignature("tileEmoji()"));
-        checkInterfaceFunction(smartContract, abi.encodeWithSignature("tileName()"));
-        checkInterfaceFunction(smartContract, abi.encodeWithSignature("tileDescription()"));
-        checkInterfaceFunction(smartContract, abi.encodeWithSignature("tileABI()"));
+        checkInterfaceFunction(
+            smartContract,
+            abi.encodeWithSignature("tileEmoji(Coords memory coords)", Coords(1, 1))
+        );
+        checkInterfaceFunction(
+            smartContract,
+            abi.encodeWithSignature("tileName(Coords memory coords)", Coords(1, 1))
+        );
+        checkInterfaceFunction(
+            smartContract,
+            abi.encodeWithSignature("tileDescription(Coords memory coords)", Coords(1, 1))
+        );
+        checkInterfaceFunction(
+            smartContract,
+            abi.encodeWithSignature("tileABI(Coords memory coords)", Coords(1, 1))
+        );
     }
 
     function ownTile(Coords memory coords, address smartContract)

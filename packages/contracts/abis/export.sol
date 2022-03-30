@@ -1,0 +1,38 @@
+interface GeneratedInterface {
+  function cachedTiles ( uint256, uint256 ) external view returns ( tuple coords, uint256 raritySeed, uint8 tileType, uint8 temperatureType, uint8 altitudeType, address owner, address smartContract, uint256 lastPurchased );
+  function computePerlin ( uint32 x, uint32 y, uint32 seed, uint32 scale ) external view returns ( uint256 );
+  function dist ( tuple a, tuple b ) external pure returns ( uint256 );
+  function forceTileUpdate ( tuple coords ) external;
+  function getCachedTile ( tuple coords ) external view returns ( tuple );
+  function getCorners ( uint32 x, uint32 y, uint32 scale ) external pure returns ( uint32[2][4] );
+  function getGradientAt ( uint32 x, uint32 y, uint32 scale, uint32 seed ) external view returns ( int16[2] );
+  function getPlayerIds (  ) external view returns ( address[] );
+  function getPlayerInfos (  ) external view returns ( tuple[], string[] );
+  function getPlayerLocation ( address player ) external view returns ( tuple );
+  function getSingleScalePerlin ( uint32 x, uint32 y, uint32 scale, uint32 seed ) external view returns ( int128 );
+  function getTile ( tuple coords ) external returns ( tuple );
+  function getTouchedTiles (  ) external view returns ( tuple[] );
+  function getWeight ( uint32 cornerX, uint32 cornerY, uint32 x, uint32 y, uint32 scale ) external pure returns ( uint64 );
+  function initPlayerLocation ( string repr ) external;
+  function initialize ( uint256 _seed, uint256 _worldWidth, uint256 _worldScale, address _registryAddress ) external;
+  function movePlayer ( tuple coords ) external;
+  function ownTile ( tuple coords, address smartContract ) external;
+  function owner (  ) external view returns ( address );
+  function perlinMax (  ) external view returns ( uint16 );
+  function playerEmoji ( address ) external view returns ( string );
+  function playerIds ( uint256 ) external view returns ( address );
+  function playerInited ( address ) external view returns ( bool );
+  function playerLocation ( address ) external view returns ( uint256 x, uint256 y );
+  function registry (  ) external view returns ( address );
+  function renounceOwnership (  ) external;
+  function seed (  ) external view returns ( uint256 );
+  function smoothStep ( int128 x ) external pure returns ( int128 );
+  function touchedCoords ( uint256 ) external view returns ( uint256 x, uint256 y );
+  function transferOwnership ( address newOwner ) external;
+  function transferTile ( tuple coords, address newOwner ) external;
+  function validPlayerEmoji ( string ) external view returns ( string );
+  function vecs ( uint256, uint256 ) external view returns ( int16 );
+  function vecsDenom (  ) external view returns ( int16 );
+  function worldScale (  ) external view returns ( uint256 );
+  function worldWidth (  ) external view returns ( uint256 );
+}

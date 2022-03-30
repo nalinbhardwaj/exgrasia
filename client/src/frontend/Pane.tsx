@@ -73,6 +73,7 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
   );
   const [actionId, setActionId] = useState<string>('');
   const [result, setResult] = useState<any>(undefined);
+  const [error, setError] = useState<any>(undefined);
   const [inputs, setInputs] = useState<Map<number, string>>(new Map());
   const [buttonState, setButtonState] = useState<'none' | 'loading' | 'success' | 'reverted'>(
     'none'
@@ -173,10 +174,11 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
   useEffect(() => {
     if (tileTxStatus.reverted.value.includes(actionId)) {
       setButtonState('reverted');
+      setError(props.gm.failureMessage.get(actionId));
     }
     setTimeout(() => {
       setButtonState('none');
-    }, 2000);
+    }, 5000);
   }, [tileTxStatus.reverted, actionId]);
 
   const prettifyButtonState = () => {
@@ -202,6 +204,7 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
               setSelectedFuncName(selection);
               setInputs(new Map());
               setResult(undefined);
+              setError(undefined);
             }}
           >
             <div className='relative mt-1'>
@@ -390,6 +393,20 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
             }}
           >
             <Text>{renderData(result, 'output', 'output')}</Text>
+          </Card>
+        </Row>
+      )}
+      {error && (
+        <Row css={{ margin: '$4' }}>
+          <Card
+            css={{
+              bgBlur: '#111111',
+              borderStyle: 'none',
+              overflow: 'scroll',
+              maxHeight: '8em',
+            }}
+          >
+            <Text>{error}</Text>
           </Card>
         </Row>
       )}

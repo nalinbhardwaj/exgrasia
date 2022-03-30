@@ -17,6 +17,15 @@ function App() {
           <Route path='/' exact component={Splash} />
           <Route path='/game' exact component={Game} />
           <Route path='/game/:privKeyIdx' exact component={Game} />
+          <Route
+            path='/guide'
+            exact
+            component={() => {
+              window.location.href =
+                'https://gist.github.com/nalinbhardwaj/ea2a7ebde6ee922a4cb995b5c9580040';
+              return null;
+            }}
+          />
         </Switch>
       </Router>
     </>

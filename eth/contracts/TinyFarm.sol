@@ -125,24 +125,45 @@ contract TinyFarm is ITileContract {
         cactus = new TinyCactus(address(this), connectedWorld);
     }
 
-    function tileEmoji() public pure override returns (string memory) {
+    function tileEmoji(Coords memory coords) public view override returns (string memory) {
+        if (farm[coords.x][coords.y] == wheat) {
+            return unicode"🌾";
+        } else if (farm[coords.x][coords.y] == corn) {
+            return unicode"🌽";
+        } else if (farm[coords.x][coords.y] == cactus) {
+            return unicode"🌵";
+        }
         return unicode"🧑‍🌾";
     }
 
-    function tileName() public pure override returns (string memory) {
-        return "Farm Tile";
+    function tileName(Coords memory coords) public view override returns (string memory) {
+        if (farm[coords.x][coords.y] == wheat) {
+            return unicode"Tiny Wheat Farm";
+        } else if (farm[coords.x][coords.y] == corn) {
+            return unicode"Tiny Corn Farm";
+        } else if (farm[coords.x][coords.y] == cactus) {
+            return unicode"Tiny Cactus Farm";
+        }
+        return "Tiny Farm";
     }
 
-    function tileDescription() public pure override returns (string memory) {
-        return "Plant some crops here!";
+    function tileDescription(Coords memory coords) public view override returns (string memory) {
+        if (farm[coords.x][coords.y] == wheat) {
+            return unicode"🌾 is growing here. Use harvest to collect some wheat.";
+        } else if (farm[coords.x][coords.y] == corn) {
+            return unicode"🌽 is growing here. Use harvest to collect some corn.";
+        } else if (farm[coords.x][coords.y] == cactus) {
+            return unicode"🌵 is growing here. Use harvest to collect some cactus.";
+        }
+        return "Plant some crops here! Use plant to grow some wheat, corn or cactus.";
     }
 
-    function tileABI() public pure virtual override returns (string memory) {
+    function tileABI(Coords memory coords) public pure virtual override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/e5f3bed5edc0421047d761e8e1ff6a821295bf36/TinyFarm.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/611fdea6dcd9023b4d213e70f85c8c7ddadbfdde/TinyFarm.json";
     }
 
-    function getClosestSelf() public returns (Coords memory) {
+    function getClosestSelf() internal returns (Coords memory) {
         Coords memory playerLoc = connectedWorld.getPlayerLocation(msg.sender);
         Coords[4] memory neighbors = [
             Coords(playerLoc.x - 1, playerLoc.y),
@@ -164,15 +185,20 @@ contract TinyFarm is ITileContract {
         require(tileLoc.x != 0, "No closeby farm found");
         require(connectedWorld.getTile(tileLoc).owner == msg.sender, "Not your farm");
 
-        if (keccak256(bytes(_farmType)) == keccak256(bytes("wheat")))
-            farm[tileLoc.x][tileLoc.y] = wheat;
-        else if (keccak256(bytes(_farmType)) == keccak256(bytes("corn")))
-            farm[tileLoc.x][tileLoc.y] = corn;
+        if (
+            keccak256(bytes(_farmType)) == keccak256(bytes("wheat")) &&
+            connectedWorld.getTile(tileLoc).tileType == TileType.GRASS
+        ) farm[tileLoc.x][tileLoc.y] = wheat;
+        else if (
+            keccak256(bytes(_farmType)) == keccak256(bytes("corn")) &&
+            connectedWorld.getTile(tileLoc).tileType == TileType.GRASS
+        ) farm[tileLoc.x][tileLoc.y] = corn;
         else if (
             keccak256(bytes(_farmType)) == keccak256(bytes("cactus")) &&
             connectedWorld.getTile(tileLoc).tileType == TileType.SAND
         ) farm[tileLoc.x][tileLoc.y] = cactus;
         else revert("Invalid farm type");
+        connectedWorld.forceTileUpdate(tileLoc);
     }
 
     function harvest() public {

@@ -133,9 +133,13 @@ export class ContractsAPI extends EventEmitter {
   }
 
   private async decodeTile(rawTile: RawTile): Promise<Tile> {
-    const tileContractMetaData = await this.getTileContractMetaData(address(rawTile.smartContract));
+    const coords = decodeCoords(rawTile.coords);
+    const tileContractMetaData = await this.getTileContractMetaData(
+      address(rawTile.smartContract),
+      coords
+    );
     return {
-      coords: decodeCoords(rawTile.coords),
+      coords: coords,
       perlin: [rawTile.perlin[0].toNumber(), rawTile.perlin[1].toNumber()],
       raritySeed: rawTile.raritySeed.toNumber(),
       tileType: rawTile.tileType,
@@ -257,7 +261,10 @@ export class ContractsAPI extends EventEmitter {
     };
   }
 
-  public async getTileContractMetaData(addr: EthAddress): Promise<TileContractMetaData> {
+  public async getTileContractMetaData(
+    addr: EthAddress,
+    coords: WorldCoords
+  ): Promise<TileContractMetaData> {
     if (!this.txExecutor) {
       throw new Error('no signer, cannot execute tx');
     }
@@ -265,10 +272,10 @@ export class ContractsAPI extends EventEmitter {
     if (addr == nullAddress) return { emoji: '', name: '', description: '', extendedAbi: [] };
 
     const tileContract = await this.getStubTileContract(addr);
-    const emoji = await this.makeCall<string>(tileContract.tileEmoji);
-    const name = await this.makeCall<string>(tileContract.tileName);
-    const description = await this.makeCall<string>(tileContract.tileDescription);
-    const extendedAbiURL = await this.makeCall<string>(tileContract.tileABI);
+    const emoji = await this.makeCall<string>(tileContract.tileEmoji, [coords]);
+    const name = await this.makeCall<string>(tileContract.tileName, [coords]);
+    const description = await this.makeCall<string>(tileContract.tileDescription, [coords]);
+    const extendedAbiURL = await this.makeCall<string>(tileContract.tileABI, [coords]);
     const extendedAbi: any[] = await fetch(extendedAbiURL).then((res) => res.json());
 
     return { emoji, name, description, extendedAbi };

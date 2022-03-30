@@ -18,7 +18,25 @@ export class ITileContractFactory {
 
 const _abi = [
   {
-    inputs: [],
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "x",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "y",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Coords",
+        name: "coords",
+        type: "tuple",
+      },
+    ],
     name: "tileABI",
     outputs: [
       {
@@ -31,7 +49,25 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "x",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "y",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Coords",
+        name: "coords",
+        type: "tuple",
+      },
+    ],
     name: "tileDescription",
     outputs: [
       {
@@ -44,7 +80,25 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "x",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "y",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Coords",
+        name: "coords",
+        type: "tuple",
+      },
+    ],
     name: "tileEmoji",
     outputs: [
       {
@@ -57,7 +111,25 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "x",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "y",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Coords",
+        name: "coords",
+        type: "tuple",
+      },
+    ],
     name: "tileName",
     outputs: [
       {

@@ -127,20 +127,20 @@ contract TinyFish is ERC721Enumerable, ReentrancyGuard, ITileContract {
         return uint256(keccak256(abi.encodePacked(input)));
     }
 
-    function getName(uint256 tokenId) public view returns (string memory) {
+    function getName(uint256 tokenId) internal view returns (string memory) {
         return pluck(tokenId, "name", fishyNames);
     }
 
-    function getAdjective(uint256 tokenId) public view returns (string memory) {
+    function getAdjective(uint256 tokenId) internal view returns (string memory) {
         return pluck(tokenId, "adjective", fishyAdjs);
     }
 
-    function getHeight(uint256 tokenId) public view returns (string memory) {
+    function getHeight(uint256 tokenId) internal view returns (string memory) {
         uint256 rand = random(string(abi.encodePacked("height", toString(tokenId))));
         return string(abi.encodePacked(toString((rand % 50) + 6), " inches"));
     }
 
-    function getWeight(uint256 tokenId) public view returns (string memory) {
+    function getWeight(uint256 tokenId) internal view returns (string memory) {
         uint256 rand = random(string(abi.encodePacked("weight", toString(tokenId))));
         return string(abi.encodePacked(toString(50 + (rand % 100)), " lbs"));
     }
@@ -305,19 +305,20 @@ contract TinyFish is ERC721Enumerable, ReentrancyGuard, ITileContract {
         burnPoolFish(randFish);
     }
 
-    function tileEmoji() external view override returns (string memory) {
-        return unicode"🐠";
+    function tileEmoji(Coords memory coords) external view override returns (string memory) {
+        return unicode"🎣";
     }
 
-    function tileName() external view override returns (string memory) {
-        return "Tiny Fishing";
+    function tileName(Coords memory coords) external view override returns (string memory) {
+        return "Tiny Fishing Stand";
     }
 
-    function tileDescription() external view override returns (string memory) {
-        return "This is a fishing test";
+    function tileDescription(Coords memory coords) external view override returns (string memory) {
+        return
+            "This is a fishing stand.\nGet started by casting your rod into the nearby waters using castFishingRod.\nThen, you can reel in your fish using reelIn.\nFishes are NFTs so you can also use any ERC721 functions here.";
     }
 
-    function tileABI() external view virtual override returns (string memory) {
+    function tileABI(Coords memory coords) external view virtual override returns (string memory) {
         return
             "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/d09538a21e918ef2e629de05e025f4e16f65ec39/TinyFishing.json";
     }

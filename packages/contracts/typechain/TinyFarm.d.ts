@@ -22,33 +22,33 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface TinyFarmInterface extends ethers.utils.Interface {
   functions: {
-    "getClosestSelf()": FunctionFragment;
     "harvest()": FunctionFragment;
     "plant(string)": FunctionFragment;
-    "tileABI()": FunctionFragment;
-    "tileDescription()": FunctionFragment;
-    "tileEmoji()": FunctionFragment;
-    "tileName()": FunctionFragment;
+    "tileABI(tuple)": FunctionFragment;
+    "tileDescription(tuple)": FunctionFragment;
+    "tileEmoji(tuple)": FunctionFragment;
+    "tileName(tuple)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "getClosestSelf",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "harvest", values?: undefined): string;
   encodeFunctionData(functionFragment: "plant", values: [string]): string;
-  encodeFunctionData(functionFragment: "tileABI", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "tileABI",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
   encodeFunctionData(
     functionFragment: "tileDescription",
-    values?: undefined
+    values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
-  encodeFunctionData(functionFragment: "tileEmoji", values?: undefined): string;
-  encodeFunctionData(functionFragment: "tileName", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "tileEmoji",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tileName",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
 
-  decodeFunctionResult(
-    functionFragment: "getClosestSelf",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "harvest", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "plant", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tileABI", data: BytesLike): Result;
@@ -76,10 +76,6 @@ export class TinyFarm extends Contract {
   interface: TinyFarmInterface;
 
   functions: {
-    getClosestSelf(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "getClosestSelf()"(overrides?: Overrides): Promise<ContractTransaction>;
-
     harvest(overrides?: Overrides): Promise<ContractTransaction>;
 
     "harvest()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -94,42 +90,62 @@ export class TinyFarm extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    tileABI(overrides?: CallOverrides): Promise<{
+    tileABI(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    "tileABI()"(overrides?: CallOverrides): Promise<{
+    "tileABI(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    tileDescription(overrides?: CallOverrides): Promise<{
+    tileDescription(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    "tileDescription()"(overrides?: CallOverrides): Promise<{
+    "tileDescription(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    tileEmoji(overrides?: CallOverrides): Promise<{
+    tileEmoji(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    "tileEmoji()"(overrides?: CallOverrides): Promise<{
+    "tileEmoji(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    tileName(overrides?: CallOverrides): Promise<{
+    tileName(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
-    "tileName()"(overrides?: CallOverrides): Promise<{
+    "tileName(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
   };
-
-  getClosestSelf(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "getClosestSelf()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   harvest(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -142,31 +158,47 @@ export class TinyFarm extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  tileABI(overrides?: CallOverrides): Promise<string>;
+  tileABI(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  "tileABI()"(overrides?: CallOverrides): Promise<string>;
+  "tileABI(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  tileDescription(overrides?: CallOverrides): Promise<string>;
+  tileDescription(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  "tileDescription()"(overrides?: CallOverrides): Promise<string>;
+  "tileDescription(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  tileEmoji(overrides?: CallOverrides): Promise<string>;
+  tileEmoji(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  "tileEmoji()"(overrides?: CallOverrides): Promise<string>;
+  "tileEmoji(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  tileName(overrides?: CallOverrides): Promise<string>;
+  tileName(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  "tileName()"(overrides?: CallOverrides): Promise<string>;
+  "tileName(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   callStatic: {
-    getClosestSelf(
-      overrides?: CallOverrides
-    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }>;
-
-    "getClosestSelf()"(
-      overrides?: CallOverrides
-    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }>;
-
     harvest(overrides?: CallOverrides): Promise<void>;
 
     "harvest()"(overrides?: CallOverrides): Promise<void>;
@@ -178,30 +210,50 @@ export class TinyFarm extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    tileABI(overrides?: CallOverrides): Promise<string>;
+    tileABI(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    "tileABI()"(overrides?: CallOverrides): Promise<string>;
+    "tileABI(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    tileDescription(overrides?: CallOverrides): Promise<string>;
+    tileDescription(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    "tileDescription()"(overrides?: CallOverrides): Promise<string>;
+    "tileDescription(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    tileEmoji(overrides?: CallOverrides): Promise<string>;
+    tileEmoji(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    "tileEmoji()"(overrides?: CallOverrides): Promise<string>;
+    "tileEmoji(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    tileName(overrides?: CallOverrides): Promise<string>;
+    tileName(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    "tileName()"(overrides?: CallOverrides): Promise<string>;
+    "tileName(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
   };
 
   filters: {};
 
   estimateGas: {
-    getClosestSelf(overrides?: Overrides): Promise<BigNumber>;
-
-    "getClosestSelf()"(overrides?: Overrides): Promise<BigNumber>;
-
     harvest(overrides?: Overrides): Promise<BigNumber>;
 
     "harvest()"(overrides?: Overrides): Promise<BigNumber>;
@@ -213,28 +265,48 @@ export class TinyFarm extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    tileABI(overrides?: CallOverrides): Promise<BigNumber>;
+    tileABI(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    "tileABI()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "tileABI(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    tileDescription(overrides?: CallOverrides): Promise<BigNumber>;
+    tileDescription(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    "tileDescription()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "tileDescription(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    tileEmoji(overrides?: CallOverrides): Promise<BigNumber>;
+    tileEmoji(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    "tileEmoji()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "tileEmoji(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    tileName(overrides?: CallOverrides): Promise<BigNumber>;
+    tileName(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    "tileName()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "tileName(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    getClosestSelf(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "getClosestSelf()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
     harvest(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "harvest()"(overrides?: Overrides): Promise<PopulatedTransaction>;
@@ -249,22 +321,44 @@ export class TinyFarm extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    tileABI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tileABI()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tileDescription(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tileDescription()"(
+    tileABI(
+      coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    tileEmoji(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "tileABI(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    "tileEmoji()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    tileDescription(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    tileName(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "tileDescription(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    "tileName()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    tileEmoji(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tileEmoji(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tileName(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tileName(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
   };
 }

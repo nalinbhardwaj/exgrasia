@@ -2,31 +2,39 @@
 pragma solidity ^0.8.4;
 
 import "hardhat/console.sol";
+import "./Types.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 interface ITileContract {
-    function tileEmoji() external view returns (string memory);
+    function tileEmoji(Coords memory coords) external view returns (string memory);
 
-    function tileName() external view returns (string memory);
+    function tileName(Coords memory coords) external view returns (string memory);
 
-    function tileDescription() external view returns (string memory);
+    function tileDescription(Coords memory coords) external view returns (string memory);
 
-    function tileABI() external view returns (string memory);
+    function tileABI(Coords memory coords) external view returns (string memory);
 }
 
 contract StubTileContract is ITileContract {
-    function tileEmoji() external view override returns (string memory) {
+    function tileEmoji(Coords memory coords) external view override returns (string memory) {
         return unicode"🌃";
     }
 
-    function tileName() external view override returns (string memory) {
+    function tileName(Coords memory coords) external view override returns (string memory) {
         return "Test Tile";
     }
 
-    function tileDescription() external view override returns (string memory) {
+    function tileDescription(Coords memory coords)
+        external
+        view
+        virtual
+        override
+        returns (string memory)
+    {
         return "This is a test tile";
     }
 
-    function tileABI() external view virtual override returns (string memory) {
+    function tileABI(Coords memory coords) external view virtual override returns (string memory) {
         return "ipfs";
     }
 }
@@ -38,12 +46,25 @@ contract TestTileContract is StubTileContract {
     bytes c = "0x12345678";
     address d = 0xF05b5f04B7a77Ca549C0dE06beaF257f40C66FDB;
 
-    struct Coords {
-        uint256 x;
-        uint256 y;
+    function tileDescription(Coords memory coords)
+        external
+        pure
+        virtual
+        override
+        returns (string memory)
+    {
+        return
+            string(
+                abi.encodePacked(
+                    "this is a test tile on x:",
+                    Strings.toString(coords.x),
+                    " y:",
+                    Strings.toString(coords.y)
+                )
+            );
     }
 
-    function tileABI() external pure override returns (string memory) {
+    function tileABI(Coords memory coords) external pure override returns (string memory) {
         return
             "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/d9be0db4ac8c292f3430923c572e7e4e8382975d/TestTileContract.json";
     }
