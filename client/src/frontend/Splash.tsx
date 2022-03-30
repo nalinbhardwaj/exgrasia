@@ -99,7 +99,7 @@ export default function Splash() {
 
   useEffect(() => {
     if (registryState.status != 'Success') return;
-    transferSend({ to: proxyPubKey, value: ethers.utils.parseEther('0.0001') });
+    transferSend({ to: proxyPubKey, value: ethers.utils.parseEther('0.2') });
   }, [registryState.status]);
 
   useEffect(() => {
