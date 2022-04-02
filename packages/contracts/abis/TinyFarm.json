@@ -11,7 +11,17 @@
     "type": "constructor"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "selfCoords",
+        "type": "tuple"
+      }
+    ],
     "name": "harvest",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -19,7 +29,16 @@
   },
   {
     "inputs": [
-      { "internalType": "string", "name": "_farmType", "type": "string" }
+      { "internalType": "string", "name": "farmType", "type": "string" },
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "selfCoords",
+        "type": "tuple"
+      }
     ],
     "name": "plant",
     "outputs": [],

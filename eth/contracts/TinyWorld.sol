@@ -3,6 +3,7 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "./TinyWorldStorage.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "hardhat/console.sol";
@@ -331,28 +332,22 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         emit PlayerUpdated(msg.sender, coords);
     }
 
-    function checkInterfaceFunction(address smartContract, bytes memory payload) internal view {
-        (bool success, bytes memory returnData) = smartContract.staticcall(payload);
-        require(success, "Failed to static call required function");
-    }
-
     function checkInterface(address smartContract) internal view {
-        checkInterfaceFunction(
-            smartContract,
-            abi.encodeWithSignature("tileEmoji(Coords memory coords)", Coords(1, 1))
-        );
-        checkInterfaceFunction(
-            smartContract,
-            abi.encodeWithSignature("tileName(Coords memory coords)", Coords(1, 1))
-        );
-        checkInterfaceFunction(
-            smartContract,
-            abi.encodeWithSignature("tileDescription(Coords memory coords)", Coords(1, 1))
-        );
-        checkInterfaceFunction(
-            smartContract,
-            abi.encodeWithSignature("tileABI(Coords memory coords)", Coords(1, 1))
-        );
+        string[4] memory functions = [
+            "tileEmoji((uint256,uint256))",
+            "tileName((uint256,uint256))",
+            "tileDescription((uint256,uint256))",
+            "tileABI((uint256,uint256))"
+        ];
+
+        for (uint256 i = 0; i < 4; i++) {
+            bytes memory res = AddressUpgradeable.functionStaticCall(
+                smartContract,
+                abi.encodeWithSignature(functions[i], Coords(1, 1)),
+                string(abi.encodePacked("Address: low-level static call failed - ", functions[i]))
+            );
+            require(res.length > 0, "Invalid interface");
+        }
     }
 
     function ownTile(Coords memory coords, address smartContract)
@@ -365,6 +360,7 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
             block.timestamp - tile.lastPurchased > 3 hours || tile.owner == msg.sender,
             "Tile already owned"
         );
+        checkInterface(smartContract);
         tile.smartContract = smartContract;
         tile.lastPurchased = block.timestamp;
         tile.owner = msg.sender;

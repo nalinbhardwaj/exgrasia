@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import tinycolor from 'tinycolor2';
 import { CORE_CONTRACT_ADDRESS } from 'common-contracts';
@@ -58,6 +58,8 @@ export default function Game() {
     new Map()
   );
   const [openSettings, setOpenSettings] = useState<boolean>(false);
+  const [moveQueue, setMoveQueue] = useState<[number, number][]>([]);
+  const currentMove = useRef('');
 
   useEffect(() => {
     getEthConnection()
@@ -98,8 +100,33 @@ export default function Game() {
     if (!gameManager) return;
     const eve = event.target as HTMLElement;
     if (eve.tagName.toLowerCase() !== 'body') return;
-    gameManager.movePlayer(event.key.toLowerCase());
+    const key = event.key.toLowerCase();
+
+    console.debug('Key event', key);
+    const keyToDirection: any = {
+      w: [-1, 0],
+      a: [0, -1],
+      s: [1, 0],
+      d: [0, 1],
+    };
+
+    if (!(key in keyToDirection)) return;
+    setMoveQueue((x) => [...x, keyToDirection[key]]);
   };
+
+  useEffect(() => {
+    console.log('moveQueue', moveQueue);
+    if (!gameManager) return;
+    if (moveQueue.length === 0) return;
+    if (currentMove.current === '' || gameManager.resolvedMoves.includes(currentMove.current)) {
+      const push = async () => {
+        const moveId = await gameManager.movePlayer(moveQueue[0]);
+        setMoveQueue((x) => x.slice(1));
+        currentMove.current = moveId;
+      };
+      push();
+    }
+  }, [moveQueue, playerInfos]);
 
   useEffect(() => {
     if (gameManager && nuxCharacter) {

@@ -160,52 +160,39 @@ contract TinyFarm is ITileContract {
 
     function tileABI(Coords memory coords) public pure virtual override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/611fdea6dcd9023b4d213e70f85c8c7ddadbfdde/TinyFarm.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/9bd39332363c0d6109e8f889ca44bc4b5e879b94/TinyFarm.json";
     }
 
-    function getClosestSelf() internal returns (Coords memory) {
-        Coords memory playerLoc = connectedWorld.getPlayerLocation(msg.sender);
-        Coords[4] memory neighbors = [
-            Coords(playerLoc.x - 1, playerLoc.y),
-            Coords(playerLoc.x + 1, playerLoc.y),
-            Coords(playerLoc.x, playerLoc.y - 1),
-            Coords(playerLoc.x, playerLoc.y + 1)
-        ];
-
-        for (uint256 i = 0; i < neighbors.length; i++) {
-            if (connectedWorld.getTile(neighbors[i]).smartContract == address(this)) {
-                return neighbors[i];
-            }
-        }
-        return Coords(0, 0);
-    }
-
-    function plant(string memory _farmType) public {
-        Coords memory tileLoc = getClosestSelf();
-        require(tileLoc.x != 0, "No closeby farm found");
-        require(connectedWorld.getTile(tileLoc).owner == msg.sender, "Not your farm");
+    function plant(string memory farmType, Coords memory selfCoords) public {
+        require(
+            connectedWorld.dist(selfCoords, connectedWorld.getPlayerLocation(msg.sender)) <= 1,
+            "Too far to plant"
+        );
+        require(connectedWorld.getTile(selfCoords).owner == msg.sender, "Not your farm");
 
         if (
-            keccak256(bytes(_farmType)) == keccak256(bytes("wheat")) &&
-            connectedWorld.getTile(tileLoc).tileType == TileType.GRASS
-        ) farm[tileLoc.x][tileLoc.y] = wheat;
+            keccak256(bytes(farmType)) == keccak256(bytes("wheat")) &&
+            connectedWorld.getTile(selfCoords).tileType == TileType.GRASS
+        ) farm[selfCoords.x][selfCoords.y] = wheat;
         else if (
-            keccak256(bytes(_farmType)) == keccak256(bytes("corn")) &&
-            connectedWorld.getTile(tileLoc).tileType == TileType.GRASS
-        ) farm[tileLoc.x][tileLoc.y] = corn;
+            keccak256(bytes(farmType)) == keccak256(bytes("corn")) &&
+            connectedWorld.getTile(selfCoords).tileType == TileType.GRASS
+        ) farm[selfCoords.x][selfCoords.y] = corn;
         else if (
-            keccak256(bytes(_farmType)) == keccak256(bytes("cactus")) &&
-            connectedWorld.getTile(tileLoc).tileType == TileType.SAND
-        ) farm[tileLoc.x][tileLoc.y] = cactus;
+            keccak256(bytes(farmType)) == keccak256(bytes("cactus")) &&
+            connectedWorld.getTile(selfCoords).tileType == TileType.SAND
+        ) farm[selfCoords.x][selfCoords.y] = cactus;
         else revert("Invalid farm type");
-        connectedWorld.forceTileUpdate(tileLoc);
+        connectedWorld.forceTileUpdate(selfCoords);
     }
 
-    function harvest() public {
-        Coords memory tileLoc = getClosestSelf();
-        require(tileLoc.x != 0, "No closeby farm found");
-        require(connectedWorld.getTile(tileLoc).owner == msg.sender, "Not your farm");
-        require(farm[tileLoc.x][tileLoc.y] != TinyERC20(address(0)), "No farm found");
-        farm[tileLoc.x][tileLoc.y].mint(msg.sender);
+    function harvest(Coords memory selfCoords) public {
+        require(
+            connectedWorld.dist(selfCoords, connectedWorld.getPlayerLocation(msg.sender)) <= 1,
+            "Too far to harvest"
+        );
+        require(connectedWorld.getTile(selfCoords).owner == msg.sender, "Not your farm");
+        require(farm[selfCoords.x][selfCoords.y] != TinyERC20(address(0)), "No farm found");
+        farm[selfCoords.x][selfCoords.y].mint(msg.sender);
     }
 }

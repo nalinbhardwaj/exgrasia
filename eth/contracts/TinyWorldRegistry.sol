@@ -25,22 +25,22 @@ contract TinyWorldRegistry {
     }
 
     // DELETE BEFORE DEPLOY
-    // function dummySetProxyAddress(address[] memory realAddresses, address proxyAddress) public {
-    //     for (uint256 i = 0; i < realAddresses.length; i++) {
-    //         address realAddress = realAddresses[i];
-    //         require(
-    //             realAddressToProxyAddress[realAddress] == address(0),
-    //             "Proxy address already set"
-    //         );
-    //         require(
-    //             proxyAddressToRealAddress[proxyAddress] == address(0),
-    //             "Real address already set"
-    //         );
-    //         realAddressToProxyAddress[realAddress] = proxyAddress;
-    //         proxyAddressToRealAddress[proxyAddress] = realAddress;
-    //         registeredRealAddresses.push(realAddress);
-    //     }
-    // }
+    function dummySetProxyAddress(address[] memory realAddresses, address proxyAddress) public {
+        for (uint256 i = 0; i < realAddresses.length; i++) {
+            address realAddress = realAddresses[i];
+            require(
+                realAddressToProxyAddress[realAddress] == address(0),
+                "Proxy address already set"
+            );
+            require(
+                proxyAddressToRealAddress[proxyAddress] == address(0),
+                "Real address already set"
+            );
+            realAddressToProxyAddress[realAddress] = proxyAddress;
+            proxyAddressToRealAddress[proxyAddress] = realAddress;
+            registeredRealAddresses.push(realAddress);
+        }
+    }
 
     function getProxyAddress(address _realAddress) public view returns (address) {
         return realAddressToProxyAddress[_realAddress];

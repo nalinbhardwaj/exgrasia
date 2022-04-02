@@ -59,6 +59,7 @@ class GameManager extends EventEmitter {
   public selfInfo: PlayerInfo;
   public playerInfos: Map<EthAddress, PlayerInfo>;
   public failureMessage: Map<string, string>;
+  public resolvedMoves: string[];
 
   private readonly perlinConfig1: PerlinConfig;
   private readonly perlinConfig2: PerlinConfig;
@@ -108,6 +109,7 @@ class GameManager extends EventEmitter {
     this.playerUpdated$ = monomitter();
     this.tileTxUpdated$ = monomitter();
     this.failureMessage = new Map();
+    this.resolvedMoves = [];
 
     for (let i = 0; i < worldWidth; i++) {
       this.tiles.push([]);
@@ -209,6 +211,7 @@ class GameManager extends EventEmitter {
         // todo: remove the tx from localstorage
         if (isUnconfirmedMovePlayer(unconfirmedTx)) {
           gameManager.selfInfo.coords = unconfirmedTx.coords;
+          gameManager.resolvedMoves.push(unconfirmedTx.actionId);
           gameManager.playerUpdated$.publish();
         }
         if (isUnconfirmedTileTx(unconfirmedTx)) {
@@ -280,24 +283,12 @@ class GameManager extends EventEmitter {
     return this.worldWidth;
   }
 
-  public async movePlayer(key: string) {
-    console.debug('Key event', key);
-    const keyToDirection: any = {
-      w: [-1, 0],
-      a: [0, -1],
-      s: [1, 0],
-      d: [0, 1],
-    };
-
+  public async movePlayer(motion: [number, number]) {
     const location = (await this.getSelfInfo()).coords;
 
-    if (!(key in keyToDirection)) {
-      return;
-    }
-
     const coords = {
-      x: location.x + keyToDirection[key][0],
-      y: location.y + keyToDirection[key][1],
+      x: location.x + motion[0],
+      y: location.y + motion[1],
     };
 
     console.log('motionCoords', coords);
@@ -317,7 +308,7 @@ class GameManager extends EventEmitter {
       this.onTxIntentFail(txIntent, err);
     });
 
-    return this;
+    return actionId;
   }
 
   public async getSelfInfo() {

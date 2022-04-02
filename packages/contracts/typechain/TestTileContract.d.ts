@@ -28,6 +28,7 @@ interface TestTileContractInterface extends ethers.utils.Interface {
     "logger_c()": FunctionFragment;
     "logger_d()": FunctionFragment;
     "test(string)": FunctionFragment;
+    "testSelfCoords(tuple)": FunctionFragment;
     "test_a(uint256)": FunctionFragment;
     "test_b(bytes32)": FunctionFragment;
     "test_c(bytes)": FunctionFragment;
@@ -44,6 +45,10 @@ interface TestTileContractInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "logger_c", values?: undefined): string;
   encodeFunctionData(functionFragment: "logger_d", values?: undefined): string;
   encodeFunctionData(functionFragment: "test", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "testSelfCoords",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
   encodeFunctionData(
     functionFragment: "test_a",
     values: [BigNumberish]
@@ -74,6 +79,10 @@ interface TestTileContractInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "logger_c", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "logger_d", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "test", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "testSelfCoords",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "test_a", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "test_b", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "test_c", data: BytesLike): Result;
@@ -151,6 +160,20 @@ export class TestTileContract extends Contract {
       inp: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    testSelfCoords(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "testSelfCoords(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
     test_a(
       inp: BigNumberish,
@@ -273,6 +296,16 @@ export class TestTileContract extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  testSelfCoords(
+    selfCoords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "testSelfCoords(tuple)"(
+    selfCoords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   test_a(
     inp: BigNumberish,
     overrides?: Overrides
@@ -375,6 +408,16 @@ export class TestTileContract extends Contract {
 
     "test(string)"(inp: string, overrides?: CallOverrides): Promise<void>;
 
+    testSelfCoords(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "testSelfCoords(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     test_a(inp: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     "test_a(uint256)"(
@@ -461,6 +504,16 @@ export class TestTileContract extends Contract {
     test(inp: string, overrides?: Overrides): Promise<BigNumber>;
 
     "test(string)"(inp: string, overrides?: Overrides): Promise<BigNumber>;
+
+    testSelfCoords(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "testSelfCoords(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     test_a(inp: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
@@ -551,6 +604,16 @@ export class TestTileContract extends Contract {
     "test(string)"(
       inp: string,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    testSelfCoords(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "testSelfCoords(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     test_a(

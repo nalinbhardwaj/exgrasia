@@ -142,12 +142,18 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
     const moddedInput = new Array<any>(selectedFunc.inputs.length);
     for (const [idx, v] of inputs) {
       moddedInput[idx] = v;
-      if (selectedFunc.inputs[idx].type.endsWith('[]')) {
+      if (selectedFunc.inputs[idx].name === 'selfCoords') {
+        moddedInput[idx] = props.coords;
+      } else if (selectedFunc.inputs[idx].type.endsWith('[]')) {
         moddedInput[idx] = JSON.parse(moddedInput[idx]);
       } else if (selectedFunc.inputs[idx].type == 'bool') {
         moddedInput[idx] = moddedInput[idx] === 'true' || moddedInput[idx] === '1';
       }
     }
+    for (const [idx, func] of selectedFunc.inputs.entries()) {
+      if (func.name === 'selfCoords') moddedInput[idx] = props.coords;
+    }
+    console.log('moddedInput', moddedInput);
 
     if (selectedFuncLookupOnly) {
       setResult(await props.gm.tileCall(props.coords, selectedFunc.name, moddedInput));
@@ -260,121 +266,126 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
       </Row>
       {selectedFunc.inputs.map((input, inputIdx) => {
         return (
-          <Row key={inputIdx} css={{ margin: '$4' }}>
-            <Input
-              size='sm'
-              label={input.name}
-              placeholder={input.type}
-              value={inputs.get(inputIdx) || ''}
-              status='default'
-              onChange={(event) => {
-                const newInputs = new Map(inputs);
-                newInputs.set(inputIdx, event.target.value);
-                setInputs(newInputs);
-              }}
-              css={{
-                $$inputPlaceholderColor: '$colors$foreground',
-              }}
-            />
-            {input.type === 'bytes32' && (
-              <Button
-                flat
-                auto
-                rounded
+          input.name !== 'selfCoords' && (
+            <Row key={inputIdx} css={{ margin: '$4' }}>
+              <Input
                 size='sm'
-                color='warning'
-                onClick={() => {
+                label={input.name}
+                placeholder={input.type}
+                value={inputs.get(inputIdx) || ''}
+                status='default'
+                onChange={(event) => {
                   const newInputs = new Map(inputs);
-                  if (ethers.utils.isHexString(inputs.get(inputIdx))) {
-                    newInputs.set(
-                      inputIdx,
-                      ethers.utils.parseBytes32String(inputs.get(inputIdx) || '')
-                    );
-                    setInputs(newInputs);
-                  } else {
-                    newInputs.set(
-                      inputIdx,
-                      ethers.utils.formatBytes32String(inputs.get(inputIdx) || '')
-                    );
-                    setInputs(newInputs);
-                  }
-                }}
-                css={{
-                  marginRight: '0px',
-                  marginLeft: 'auto',
-                  marginBottom: '0px',
-                  marginTop: 'auto',
-                }}
-              >
-                <Text color='warning'>
-                  <span style={{ fontFamily: 'monospace' }}>→</span> bytes32
-                </Text>
-              </Button>
-            )}
-
-            {input.type === 'bytes' && (
-              <Button
-                flat
-                auto
-                rounded
-                size='sm'
-                color='warning'
-                onClick={() => {
-                  const newInputs = new Map(inputs);
-                  if (ethers.utils.isHexString(inputs.get(inputIdx))) {
-                    newInputs.set(inputIdx, ethers.utils.toUtf8String(inputs.get(inputIdx) || ''));
-                    setInputs(newInputs);
-                  } else {
-                    newInputs.set(
-                      inputIdx,
-                      ethers.utils.hexlify(ethers.utils.toUtf8Bytes(inputs.get(inputIdx) || ''))
-                    );
-                    setInputs(newInputs);
-                  }
-                }}
-                css={{
-                  marginRight: '0px',
-                  marginLeft: 'auto',
-                  marginBottom: '0px',
-                  marginTop: 'auto',
-                }}
-              >
-                <Text color='warning'>
-                  <span style={{ fontFamily: 'monospace' }}>→</span> hex
-                </Text>
-              </Button>
-            )}
-
-            {input.type === 'uint256' && (
-              <Button
-                flat
-                auto
-                rounded
-                size='sm'
-                color='warning'
-                onClick={() => {
-                  const newInputs = new Map(inputs);
-                  console.log('inp', inputs.get(inputIdx));
-                  newInputs.set(
-                    inputIdx,
-                    ethers.utils.parseEther(inputs.get(inputIdx) || '0').toString()
-                  );
-                  console.log('new', newInputs.get(inputIdx));
+                  newInputs.set(inputIdx, event.target.value);
                   setInputs(newInputs);
                 }}
                 css={{
-                  marginRight: '0px',
-                  marginLeft: 'auto',
-                  marginBottom: '0px',
-                  marginTop: 'auto',
+                  $$inputPlaceholderColor: '$colors$foreground',
                 }}
-              >
-                <Text color='warning'>
-                  <span style={{ fontFamily: 'monospace' }}>→</span> *= 10^18
-                </Text>
-              </Button>
-            )}
-          </Row>
+              />
+              {input.type === 'bytes32' && (
+                <Button
+                  flat
+                  auto
+                  rounded
+                  size='sm'
+                  color='warning'
+                  onClick={() => {
+                    const newInputs = new Map(inputs);
+                    if (ethers.utils.isHexString(inputs.get(inputIdx))) {
+                      newInputs.set(
+                        inputIdx,
+                        ethers.utils.parseBytes32String(inputs.get(inputIdx) || '')
+                      );
+                      setInputs(newInputs);
+                    } else {
+                      newInputs.set(
+                        inputIdx,
+                        ethers.utils.formatBytes32String(inputs.get(inputIdx) || '')
+                      );
+                      setInputs(newInputs);
+                    }
+                  }}
+                  css={{
+                    marginRight: '0px',
+                    marginLeft: 'auto',
+                    marginBottom: '0px',
+                    marginTop: 'auto',
+                  }}
+                >
+                  <Text color='warning'>
+                    <span style={{ fontFamily: 'monospace' }}>→</span> bytes32
+                  </Text>
+                </Button>
+              )}
+
+              {input.type === 'bytes' && (
+                <Button
+                  flat
+                  auto
+                  rounded
+                  size='sm'
+                  color='warning'
+                  onClick={() => {
+                    const newInputs = new Map(inputs);
+                    if (ethers.utils.isHexString(inputs.get(inputIdx))) {
+                      newInputs.set(
+                        inputIdx,
+                        ethers.utils.toUtf8String(inputs.get(inputIdx) || '')
+                      );
+                      setInputs(newInputs);
+                    } else {
+                      newInputs.set(
+                        inputIdx,
+                        ethers.utils.hexlify(ethers.utils.toUtf8Bytes(inputs.get(inputIdx) || ''))
+                      );
+                      setInputs(newInputs);
+                    }
+                  }}
+                  css={{
+                    marginRight: '0px',
+                    marginLeft: 'auto',
+                    marginBottom: '0px',
+                    marginTop: 'auto',
+                  }}
+                >
+                  <Text color='warning'>
+                    <span style={{ fontFamily: 'monospace' }}>→</span> hex
+                  </Text>
+                </Button>
+              )}
+
+              {input.type === 'uint256' && (
+                <Button
+                  flat
+                  auto
+                  rounded
+                  size='sm'
+                  color='warning'
+                  onClick={() => {
+                    const newInputs = new Map(inputs);
+                    console.log('inp', inputs.get(inputIdx));
+                    newInputs.set(
+                      inputIdx,
+                      ethers.utils.parseEther(inputs.get(inputIdx) || '0').toString()
+                    );
+                    console.log('new', newInputs.get(inputIdx));
+                    setInputs(newInputs);
+                  }}
+                  css={{
+                    marginRight: '0px',
+                    marginLeft: 'auto',
+                    marginBottom: '0px',
+                    marginTop: 'auto',
+                  }}
+                >
+                  <Text color='warning'>
+                    <span style={{ fontFamily: 'monospace' }}>→</span> *= 10^18
+                  </Text>
+                </Button>
+              )}
+            </Row>
+          )
         );
       })}
       <Row css={{ margin: '$4' }}>

@@ -271,12 +271,23 @@ export class ContractsAPI extends EventEmitter {
 
     if (addr == nullAddress) return { emoji: '', name: '', description: '', extendedAbi: [] };
 
-    const tileContract = await this.getStubTileContract(addr);
-    const emoji = await this.makeCall<string>(tileContract.tileEmoji, [coords]);
-    const name = await this.makeCall<string>(tileContract.tileName, [coords]);
-    const description = await this.makeCall<string>(tileContract.tileDescription, [coords]);
-    const extendedAbiURL = await this.makeCall<string>(tileContract.tileABI, [coords]);
-    const extendedAbi: any[] = await fetch(extendedAbiURL).then((res) => res.json());
+    console.log('addr', addr);
+    let tileContract = await this.getStubTileContract(addr);
+    let emoji = '🔮';
+    let name = 'unknown';
+    let description = 'mystery tile';
+    let extendedAbiURL = '';
+    let extendedAbi: any[] = [];
+    try {
+      emoji = await this.makeCall<string>(tileContract.tileEmoji, [coords]);
+      name = await this.makeCall<string>(tileContract.tileName, [coords]);
+      description = await this.makeCall<string>(tileContract.tileDescription, [coords]);
+      extendedAbiURL = await this.makeCall<string>(tileContract.tileABI, [coords]);
+      extendedAbi = await fetch(extendedAbiURL).then((res) => res.json());
+    } catch (e) {
+      console.log('error parsing', e);
+    }
+    console.log('addr done', addr);
 
     return { emoji, name, description, extendedAbi };
   }

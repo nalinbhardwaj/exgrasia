@@ -22,16 +22,22 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface TinyFarmInterface extends ethers.utils.Interface {
   functions: {
-    "harvest()": FunctionFragment;
-    "plant(string)": FunctionFragment;
+    "harvest(tuple)": FunctionFragment;
+    "plant(string,tuple)": FunctionFragment;
     "tileABI(tuple)": FunctionFragment;
     "tileDescription(tuple)": FunctionFragment;
     "tileEmoji(tuple)": FunctionFragment;
     "tileName(tuple)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "harvest", values?: undefined): string;
-  encodeFunctionData(functionFragment: "plant", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "harvest",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "plant",
+    values: [string, { x: BigNumberish; y: BigNumberish }]
+  ): string;
   encodeFunctionData(
     functionFragment: "tileABI",
     values: [{ x: BigNumberish; y: BigNumberish }]
@@ -76,17 +82,25 @@ export class TinyFarm extends Contract {
   interface: TinyFarmInterface;
 
   functions: {
-    harvest(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "harvest()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-    plant(
-      _farmType: string,
+    harvest(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "plant(string)"(
-      _farmType: string,
+    "harvest(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    plant(
+      farmType: string,
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "plant(string,tuple)"(
+      farmType: string,
+      selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -147,14 +161,25 @@ export class TinyFarm extends Contract {
     }>;
   };
 
-  harvest(overrides?: Overrides): Promise<ContractTransaction>;
+  harvest(
+    selfCoords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "harvest()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "harvest(tuple)"(
+    selfCoords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  plant(_farmType: string, overrides?: Overrides): Promise<ContractTransaction>;
+  plant(
+    farmType: string,
+    selfCoords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "plant(string)"(
-    _farmType: string,
+  "plant(string,tuple)"(
+    farmType: string,
+    selfCoords: { x: BigNumberish; y: BigNumberish },
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -199,14 +224,25 @@ export class TinyFarm extends Contract {
   ): Promise<string>;
 
   callStatic: {
-    harvest(overrides?: CallOverrides): Promise<void>;
+    harvest(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    "harvest()"(overrides?: CallOverrides): Promise<void>;
+    "harvest(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    plant(_farmType: string, overrides?: CallOverrides): Promise<void>;
+    plant(
+      farmType: string,
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    "plant(string)"(
-      _farmType: string,
+    "plant(string,tuple)"(
+      farmType: string,
+      selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -254,14 +290,25 @@ export class TinyFarm extends Contract {
   filters: {};
 
   estimateGas: {
-    harvest(overrides?: Overrides): Promise<BigNumber>;
+    harvest(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "harvest()"(overrides?: Overrides): Promise<BigNumber>;
+    "harvest(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    plant(_farmType: string, overrides?: Overrides): Promise<BigNumber>;
+    plant(
+      farmType: string,
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "plant(string)"(
-      _farmType: string,
+    "plant(string,tuple)"(
+      farmType: string,
+      selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -307,17 +354,25 @@ export class TinyFarm extends Contract {
   };
 
   populateTransaction: {
-    harvest(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "harvest()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    plant(
-      _farmType: string,
+    harvest(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "plant(string)"(
-      _farmType: string,
+    "harvest(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    plant(
+      farmType: string,
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "plant(string,tuple)"(
+      farmType: string,
+      selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

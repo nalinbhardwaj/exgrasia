@@ -66,11 +66,23 @@ contract TestTileContract is StubTileContract {
 
     function tileABI(Coords memory coords) external pure override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/d9be0db4ac8c292f3430923c572e7e4e8382975d/TestTileContract.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/76ec73c2a759c80d7786dffaf7780c48139d079b/TestTileContract.json";
     }
 
     function test(string memory inp) public {
         world = inp;
+    }
+
+    function testSelfCoords(Coords memory selfCoords) public view returns (string memory) {
+        return
+            string(
+                abi.encodePacked(
+                    "selfCoords:",
+                    Strings.toString(selfCoords.x),
+                    ",",
+                    Strings.toString(selfCoords.y)
+                )
+            );
     }
 
     function logger() public view returns (string memory, Coords memory) {
