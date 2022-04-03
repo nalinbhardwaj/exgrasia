@@ -21,30 +21,30 @@
 /**
  * The name of the network where these contracts are deployed.
  */
-export const NETWORK = 'localhost';
+export const NETWORK = 'optimismKovan';
 /**
  * The id of the network where these contracts are deployed.
  */
-export const NETWORK_ID = 31337;
+export const NETWORK_ID = 69;
 /**
  * The block in which the TinyWorld contract was deployed.
  */
-export const START_BLOCK = 0;
+export const START_BLOCK = 1849367;
 /**
  * The address for the TinyWorld contract.
  */
-export const CORE_CONTRACT_ADDRESS = '0x05bc9678C41a3E89cA0ca6D837565a4bCb5D0E5c';
+export const CORE_CONTRACT_ADDRESS = '0x9095e5d267bF2355d5F5d2c0486Af24ee93aB4ad';
 /**
  * The address for the TinyWorldGetters contract.
  */
-export const GETTERS_CONTRACT_ADDRESS = '0x1aE9623899dDc2bB42217eF985a3d98E6E7623C1';
+export const GETTERS_CONTRACT_ADDRESS = '0x4156e7B02306312E1CDA82FA0F44f1bc9d2e5D3a';
 /**
  * The address for the TinyWorldRegistry contract.
  */
-export const REGISTRY_CONTRACT_ADDRESS = '0x7706819605B8Cc8272372A7C83e65E6c0733b2Ec';
+export const REGISTRY_CONTRACT_ADDRESS = '0xe02E90993AEe5fBF10FA34A105d5A3e05900c8BD';
 /**
  * The addresses for the Tile contracts.
  */
-export const TESTING_CONTRACT_ADDRESS = '0x6c452936A27F5Afc41bCC9Dd49a5bdedBdfA9b7A';
-export const FISHING_CONTRACT_ADDRESS = '0x8950bab77f29E8f81e6F78AEA0a79bADD88Eeb13';
-export const FARM_CONTRACT_ADDRESS = '0x500cf53555c09948f4345594F9523E7B444cD67E';
+export const TESTING_CONTRACT_ADDRESS = '0x0fF3Fe1c1BDb35552A699C66985161F024709cE6';
+export const FISHING_CONTRACT_ADDRESS = '0xC5150709095e3df27F318a18ACa7FA13e3dcf720';
+export const FARM_CONTRACT_ADDRESS = '0x561077Dc21bfD1D64c002fe527034E280eB61041';

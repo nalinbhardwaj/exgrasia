@@ -21,9 +21,9 @@ const darkTheme = createTheme({
 });
 
 const config: Config = {
-  readOnlyChainId: ChainId.xDai,
+  readOnlyChainId: 69,
   readOnlyUrls: {
-    [ChainId.xDai]: 'https://poa-xdai.gateway.pokt.network/v1/lb/621ed98c4e140e003a32d166',
+    [ChainId.xDai]: 'https://kovan.optimism.io',
   },
 };
 

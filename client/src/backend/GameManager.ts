@@ -4,7 +4,7 @@ import { perlin, PerlinConfig, getRaritySeed } from 'common-procgen-utils';
 import { address, EthAddress, FuncABI, PlayerInfo, Tile, WorldCoords } from 'common-types';
 import { EventEmitter } from 'events';
 import { ContractsAPI, makeContractsAPI, RawTile } from './ContractsAPI';
-import { getRandomActionId, getRandomTree, nullAddress, seedToTileAttrs } from '../utils';
+import { getRandomActionId, nullAddress, seedToTileAttrs } from '../utils';
 import {
   ContractMethodName,
   ContractsAPIEvent,
@@ -221,6 +221,9 @@ class GameManager extends EventEmitter {
       })
       .on(ContractsAPIEvent.TxReverted, async (unconfirmedTx: SubmittedTx, error: any) => {
         // todo: remove the tx from localStorage
+        if (isUnconfirmedMovePlayer(unconfirmedTx)) {
+          gameManager.resolvedMoves.push(unconfirmedTx.actionId);
+        }
         if (isUnconfirmedTileTx(unconfirmedTx)) {
           gameManager.failureMessage.set(unconfirmedTx.actionId, error.message);
           gameManager.tileTxUpdated$.publish([unconfirmedTx, 'reverted']);
@@ -255,6 +258,9 @@ class GameManager extends EventEmitter {
     if (isUnconfirmedTileTx(txIntent)) {
       this.failureMessage.set(txIntent.actionId, e.message);
       this.tileTxUpdated$.publish([txIntent, 'reverted']);
+    }
+    if (isUnconfirmedMovePlayer(txIntent)) {
+      this.resolvedMoves.push(txIntent.actionId);
     }
     console.log(txIntent);
   }

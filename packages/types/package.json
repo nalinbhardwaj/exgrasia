@@ -18,6 +18,7 @@
     "docs": "typedoc && npm run format"
   },
   "dependencies": {
+    "ts-toolbelt": "^9.6.0",
     "typedoc": "^0.20.36",
     "typedoc-plugin-markdown": "^3.8.2"
   },

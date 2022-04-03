@@ -27,14 +27,19 @@ export const tileTypeToColor = {
   [TileType.ICE]: '#D6FFFA', //
 };
 
-export const getRandomTree = (coords: WorldCoords, width: number) => {
-  const trees = ['🌲', '🌴', '🌳', '🎄'];
-  const random = 1;
-  return trees[random];
-};
-
-export const getTileEmoji = (tile: Tile, width: number) => {
-  return '';
+export const getRandomMotionMessage = (): string => {
+  const messages = [
+    ' checking for insects',
+    ' tightening shoelaces',
+    ' eating berries',
+    ' refilling water',
+    ' brushing off dirt',
+    ' testing flashlight',
+    ' wiping sweat beads',
+    ' gripping shoulder straps',
+    ' surveying the lands',
+  ];
+  return messages[Math.floor(Math.random() * messages.length)];
 };
 
 export const seedToTileAttrs = (

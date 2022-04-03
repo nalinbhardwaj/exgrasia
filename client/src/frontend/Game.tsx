@@ -14,7 +14,7 @@ import {
   TileType,
   WorldCoords,
 } from 'common-types';
-import { tileTypeToColor, getTileEmoji, nullAddress, prettifyAddress } from '../utils';
+import { tileTypeToColor, nullAddress, prettifyAddress, getRandomMotionMessage } from '../utils';
 import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
 import { useLocation, useParams } from 'react-router-dom';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
@@ -60,6 +60,7 @@ export default function Game() {
   const [openSettings, setOpenSettings] = useState<boolean>(false);
   const [moveQueue, setMoveQueue] = useState<[number, number][]>([]);
   const currentMove = useRef('');
+  const [motionMessage, setMotionMessage] = useState<[WorldCoords, string]>([{ x: 0, y: 0 }, '']);
 
   useEffect(() => {
     getEthConnection()
@@ -120,6 +121,7 @@ export default function Game() {
     if (moveQueue.length === 0) return;
     if (currentMove.current === '' || gameManager.resolvedMoves.includes(currentMove.current)) {
       const push = async () => {
+        setMotionMessage([(await gameManager.getSelfInfo()).coords, getRandomMotionMessage()]);
         const moveId = await gameManager.movePlayer(moveQueue[0]);
         setMoveQueue((x) => x.slice(1));
         currentMove.current = moveId;
@@ -127,6 +129,18 @@ export default function Game() {
       push();
     }
   }, [moveQueue, playerInfos]);
+
+  useEffect(() => {
+    if (!gameManager) return;
+    const swapMessage = async () => {
+      const coords = (await gameManager.getSelfInfo()).coords;
+      console.log('coords', coords);
+      if (coords.x !== motionMessage[0].x || coords.y !== motionMessage[0].y) {
+        setMotionMessage([coords, '']);
+      }
+    };
+    swapMessage();
+  }, [playerInfos]);
 
   useEffect(() => {
     if (gameManager && nuxCharacter) {
@@ -217,9 +231,12 @@ export default function Game() {
                                     return (
                                       <Tooltip
                                         trigger='hover'
-                                        content={prettifiedAddresses.get(addr) || addr}
+                                        content={`${prettifiedAddresses.get(addr) || addr}${
+                                          motionMessage[1]
+                                        }`}
                                         key={100 * i + j}
                                         placement='top'
+                                        visible={motionMessage[1] !== ''}
                                       >
                                         <span
                                           key={100 * i + j}

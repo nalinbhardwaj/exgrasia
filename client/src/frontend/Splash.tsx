@@ -13,7 +13,7 @@ import {
   TileType,
   WorldCoords,
 } from 'common-types';
-import { tileTypeToColor, getTileEmoji, nullAddress, generatePrivateKey } from '../utils';
+import { tileTypeToColor, nullAddress, generatePrivateKey } from '../utils';
 import { useInfo, useInitted, useTiles } from './Utils/AppHooks';
 import { useHistory, useParams } from 'react-router-dom';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';

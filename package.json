@@ -8,7 +8,6 @@
     "eth",
     "packages/contracts",
     "packages/types",
-    "packages/zk",
     "packages/procgen-utils",
     "client"
   ],
