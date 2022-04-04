@@ -1,4 +1,4 @@
-import { EthConnection } from '@darkforest_eth/network';
+import { EthConnection } from 'exgrasia-network';
 import { monomitter, Monomitter, Subscription } from '@darkforest_eth/events';
 import { perlin, PerlinConfig, getRaritySeed } from 'common-procgen-utils';
 import { address, EthAddress, FuncABI, PlayerInfo, Tile, WorldCoords } from 'common-types';

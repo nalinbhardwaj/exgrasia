@@ -21,9 +21,10 @@ const darkTheme = createTheme({
 });
 
 const config: Config = {
-  readOnlyChainId: 69,
+  readOnlyChainId: 300,
   readOnlyUrls: {
-    [ChainId.xDai]: 'https://kovan.optimism.io',
+    [69]: 'https://kovan.optimism.io',
+    [300]: 'https://optimism.gnosischain.com',
   },
 };
 

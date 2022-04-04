@@ -9,6 +9,7 @@
     "packages/contracts",
     "packages/types",
     "packages/procgen-utils",
+    "packages/network",
     "client"
   ],
   "scripts": {

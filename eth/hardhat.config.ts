@@ -67,6 +67,12 @@ const optimismKovan = {
   chainId: 69,
 };
 
+const optimismXdai = {
+  url: 'https://optimism.gnosischain.com',
+  accounts: [DEPLOYER_PK!],
+  chainId: 300,
+};
+
 const config: HardhatUserConfig = {
   defaultNetwork: 'hardhat',
   networks: {
@@ -76,6 +82,7 @@ const config: HardhatUserConfig = {
     ...(DEPLOYER_MNEMONIC ? { xdai } : undefined),
     ...(DEPLOYER_MNEMONIC ? { mainnet } : undefined),
     ...(DEPLOYER_PK ? { optimismKovan } : undefined),
+    ...(DEPLOYER_PK ? { optimismXdai } : undefined),
     localhost: {
       url: 'http://localhost:8545/',
       accounts: {

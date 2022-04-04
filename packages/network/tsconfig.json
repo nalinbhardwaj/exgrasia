@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "CommonJS",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "inlineSourceMap": true
+  },
+  "typedocOptions": {
+    "entryPoints": ["src/index.ts"],
+    "out": ".",
+    "hideBreadcrumbs": true,
+    "readme": "none",
+    "disableSources": true,
+    "disableOutputCheck": true
+  }
+}

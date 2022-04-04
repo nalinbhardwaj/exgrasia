@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import tinycolor from 'tinycolor2';
 import { CORE_CONTRACT_ADDRESS } from 'common-contracts';
 import GameManager from '../backend/GameManager';
-import { EthConnection } from '@darkforest_eth/network';
+import { EthConnection } from 'exgrasia-network';
 import { getEthConnection } from '../backend/Blockchain';
 import {
   address,
@@ -121,6 +121,7 @@ export default function Game() {
     if (moveQueue.length === 0) return;
     if (currentMove.current === '' || gameManager.resolvedMoves.includes(currentMove.current)) {
       const push = async () => {
+        console.log('unSwapMessage coords', (await gameManager.getSelfInfo()).coords);
         setMotionMessage([(await gameManager.getSelfInfo()).coords, getRandomMotionMessage()]);
         const moveId = await gameManager.movePlayer(moveQueue[0]);
         setMoveQueue((x) => x.slice(1));
@@ -134,7 +135,7 @@ export default function Game() {
     if (!gameManager) return;
     const swapMessage = async () => {
       const coords = (await gameManager.getSelfInfo()).coords;
-      console.log('coords', coords);
+      console.log('swapMessage coords', coords);
       if (coords.x !== motionMessage[0].x || coords.y !== motionMessage[0].y) {
         setMotionMessage([coords, '']);
       }

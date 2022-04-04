@@ -1,0 +1,51 @@
+{
+  "name": "exgrasia-network",
+  "version": "6.6.6",
+  "license": "MIT",
+  "author": "Clown Town Labs Inc. <brian@clowntown.dev>",
+  "engines": {
+    "node": ">=14"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "prepublishOnly": "npm run docs",
+    "prepare": "tsc -p .",
+    "test": "exit 0",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "docs": "typedoc && npm run format"
+  },
+  "dependencies": {
+    "@darkforest_eth/constants": "6.6.6",
+    "@darkforest_eth/contracts": "6.6.6",
+    "@darkforest_eth/events": "6.6.6",
+    "@darkforest_eth/serde": "6.6.6",
+    "@darkforest_eth/types": "6.6.6",
+    "@ethersproject/providers": "^5.0.17",
+    "ethers": "^5.0.7",
+    "json-stable-stringify": "^1.0.1",
+    "just-debounce": "^1.1.0",
+    "mnemonist": "^0.38.1",
+    "p-defer": "^3.0.0",
+    "p-retry": "^4.6.1",
+    "p-timeout": "^4.0.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/json-stable-stringify": "^1.0.34",
+    "@types/uuid": "^8.3.0",
+    "eslint": "^7.26.0",
+    "prettier": "^2.3.0",
+    "typedoc": "^0.21.4",
+    "typedoc-plugin-markdown": "^3.10.3",
+    "typescript": "^4.3.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "8afce392bd60e3b340e96a4bf136a35a670b4a36"
+}

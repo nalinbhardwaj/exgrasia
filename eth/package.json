@@ -43,6 +43,7 @@
     "hardhat:node": "hardhat node --hostname 0.0.0.0",
     "hardhat:dev": "hardhat --network localhost",
     "hardhat:optimism": "hardhat --network optimismKovan",
+    "hardhat:optimismXdai": "hardhat --network optimismXdai",
     "hardhat:xdai": "hardhat --network xdai",
     "hardhat:mainnet": "hardhat --network mainnet"
   },

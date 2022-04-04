@@ -22,7 +22,7 @@ import {
   ethToWei,
   // QueuedTransaction,
   TxExecutor,
-} from '@darkforest_eth/network';
+} from 'exgrasia-network';
 import { EventEmitter } from 'events';
 import {
   BigNumber as EthersBN,

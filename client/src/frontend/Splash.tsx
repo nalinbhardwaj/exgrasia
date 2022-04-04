@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import tinycolor from 'tinycolor2';
 import { CORE_CONTRACT_ADDRESS, REGISTRY_CONTRACT_ADDRESS } from 'common-contracts';
 import GameManager from '../backend/GameManager';
-import { EthConnection } from '@darkforest_eth/network';
+import { EthConnection } from 'exgrasia-network';
 import { getEthConnection, loadRegistryContract } from '../backend/Blockchain';
 import {
   address,

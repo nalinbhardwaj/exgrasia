@@ -23,19 +23,14 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface TinyWorldInterface extends ethers.utils.Interface {
   functions: {
     "cachedTiles(uint256,uint256)": FunctionFragment;
-    "computePerlin(uint32,uint32,uint32,uint32)": FunctionFragment;
     "dist(tuple,tuple)": FunctionFragment;
     "forceTileUpdate(tuple)": FunctionFragment;
     "getCachedTile(tuple)": FunctionFragment;
-    "getCorners(uint32,uint32,uint32)": FunctionFragment;
-    "getGradientAt(uint32,uint32,uint32,uint32)": FunctionFragment;
     "getPlayerIds()": FunctionFragment;
     "getPlayerInfos()": FunctionFragment;
     "getPlayerLocation(address)": FunctionFragment;
-    "getSingleScalePerlin(uint32,uint32,uint32,uint32)": FunctionFragment;
     "getTile(tuple)": FunctionFragment;
     "getTouchedTiles()": FunctionFragment;
-    "getWeight(uint32,uint32,uint32,uint32,uint32)": FunctionFragment;
     "initPlayerLocation(string)": FunctionFragment;
     "initialize(uint256,uint256,uint256,address)": FunctionFragment;
     "movePlayer(tuple)": FunctionFragment;
@@ -49,7 +44,6 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "registry()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "seed()": FunctionFragment;
-    "smoothStep(int128)": FunctionFragment;
     "touchedCoords(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "transferTile(tuple,address)": FunctionFragment;
@@ -63,10 +57,6 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "cachedTiles",
     values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "computePerlin",
-    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "dist",
@@ -84,14 +74,6 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(
-    functionFragment: "getCorners",
-    values: [BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getGradientAt",
-    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getPlayerIds",
     values?: undefined
   ): string;
@@ -104,26 +86,12 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "getSingleScalePerlin",
-    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getTile",
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(
     functionFragment: "getTouchedTiles",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getWeight",
-    values: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ]
   ): string;
   encodeFunctionData(
     functionFragment: "initPlayerLocation",
@@ -163,10 +131,6 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "seed", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "smoothStep",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "touchedCoords",
     values: [BigNumberish]
   ): string;
@@ -200,10 +164,6 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     functionFragment: "cachedTiles",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "computePerlin",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "dist", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "forceTileUpdate",
@@ -211,11 +171,6 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getCachedTile",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "getCorners", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getGradientAt",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -230,16 +185,11 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     functionFragment: "getPlayerLocation",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getSingleScalePerlin",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "getTile", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getTouchedTiles",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "getWeight", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "initPlayerLocation",
     data: BytesLike
@@ -268,7 +218,6 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "seed", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "smoothStep", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "touchedCoords",
     data: BytesLike
@@ -361,26 +310,6 @@ export class TinyWorld extends Contract {
       7: BigNumber;
     }>;
 
-    computePerlin(
-      x: BigNumberish,
-      y: BigNumberish,
-      seed: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "computePerlin(uint32,uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      seed: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
     dist(
       a: { x: BigNumberish; y: BigNumberish },
       b: { x: BigNumberish; y: BigNumberish },
@@ -459,54 +388,6 @@ export class TinyWorld extends Contract {
       };
     }>;
 
-    getCorners(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: [
-        [number, number],
-        [number, number],
-        [number, number],
-        [number, number]
-      ];
-    }>;
-
-    "getCorners(uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: [
-        [number, number],
-        [number, number],
-        [number, number],
-        [number, number]
-      ];
-    }>;
-
-    getGradientAt(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: [number, number];
-    }>;
-
-    "getGradientAt(uint32,uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: [number, number];
-    }>;
-
     getPlayerIds(overrides?: CallOverrides): Promise<{
       0: string[];
     }>;
@@ -537,26 +418,6 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber };
-    }>;
-
-    getSingleScalePerlin(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "getSingleScalePerlin(uint32,uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
     }>;
 
     getTile(
@@ -613,28 +474,6 @@ export class TinyWorld extends Contract {
         7: string;
         8: BigNumber;
       }[];
-    }>;
-
-    getWeight(
-      cornerX: BigNumberish,
-      cornerY: BigNumberish,
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "getWeight(uint32,uint32,uint32,uint32,uint32)"(
-      cornerX: BigNumberish,
-      cornerY: BigNumberish,
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
     }>;
 
     initPlayerLocation(
@@ -783,20 +622,6 @@ export class TinyWorld extends Contract {
       0: BigNumber;
     }>;
 
-    smoothStep(
-      x: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "smoothStep(int128)"(
-      x: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
     touchedCoords(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -940,22 +765,6 @@ export class TinyWorld extends Contract {
     7: BigNumber;
   }>;
 
-  computePerlin(
-    x: BigNumberish,
-    y: BigNumberish,
-    seed: BigNumberish,
-    scale: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "computePerlin(uint32,uint32,uint32,uint32)"(
-    x: BigNumberish,
-    y: BigNumberish,
-    seed: BigNumberish,
-    scale: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   dist(
     a: { x: BigNumberish; y: BigNumberish },
     b: { x: BigNumberish; y: BigNumberish },
@@ -1026,40 +835,6 @@ export class TinyWorld extends Contract {
     8: BigNumber;
   }>;
 
-  getCorners(
-    x: BigNumberish,
-    y: BigNumberish,
-    scale: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<
-    [[number, number], [number, number], [number, number], [number, number]]
-  >;
-
-  "getCorners(uint32,uint32,uint32)"(
-    x: BigNumberish,
-    y: BigNumberish,
-    scale: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<
-    [[number, number], [number, number], [number, number], [number, number]]
-  >;
-
-  getGradientAt(
-    x: BigNumberish,
-    y: BigNumberish,
-    scale: BigNumberish,
-    seed: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<[number, number]>;
-
-  "getGradientAt(uint32,uint32,uint32,uint32)"(
-    x: BigNumberish,
-    y: BigNumberish,
-    scale: BigNumberish,
-    seed: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<[number, number]>;
-
   getPlayerIds(overrides?: CallOverrides): Promise<string[]>;
 
   "getPlayerIds()"(overrides?: CallOverrides): Promise<string[]>;
@@ -1083,22 +858,6 @@ export class TinyWorld extends Contract {
     player: string,
     overrides?: CallOverrides
   ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }>;
-
-  getSingleScalePerlin(
-    x: BigNumberish,
-    y: BigNumberish,
-    scale: BigNumberish,
-    seed: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "getSingleScalePerlin(uint32,uint32,uint32,uint32)"(
-    x: BigNumberish,
-    y: BigNumberish,
-    scale: BigNumberish,
-    seed: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   getTile(
     coords: { x: BigNumberish; y: BigNumberish },
@@ -1159,24 +918,6 @@ export class TinyWorld extends Contract {
       8: BigNumber;
     }[]
   >;
-
-  getWeight(
-    cornerX: BigNumberish,
-    cornerY: BigNumberish,
-    x: BigNumberish,
-    y: BigNumberish,
-    scale: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "getWeight(uint32,uint32,uint32,uint32,uint32)"(
-    cornerX: BigNumberish,
-    cornerY: BigNumberish,
-    x: BigNumberish,
-    y: BigNumberish,
-    scale: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   initPlayerLocation(
     repr: string,
@@ -1286,13 +1027,6 @@ export class TinyWorld extends Contract {
   seed(overrides?: CallOverrides): Promise<BigNumber>;
 
   "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  smoothStep(x: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-  "smoothStep(int128)"(
-    x: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   touchedCoords(
     arg0: BigNumberish,
@@ -1414,22 +1148,6 @@ export class TinyWorld extends Contract {
       7: BigNumber;
     }>;
 
-    computePerlin(
-      x: BigNumberish,
-      y: BigNumberish,
-      seed: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "computePerlin(uint32,uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      seed: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     dist(
       a: { x: BigNumberish; y: BigNumberish },
       b: { x: BigNumberish; y: BigNumberish },
@@ -1500,40 +1218,6 @@ export class TinyWorld extends Contract {
       8: BigNumber;
     }>;
 
-    getCorners(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [[number, number], [number, number], [number, number], [number, number]]
-    >;
-
-    "getCorners(uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [[number, number], [number, number], [number, number], [number, number]]
-    >;
-
-    getGradientAt(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[number, number]>;
-
-    "getGradientAt(uint32,uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[number, number]>;
-
     getPlayerIds(overrides?: CallOverrides): Promise<string[]>;
 
     "getPlayerIds()"(overrides?: CallOverrides): Promise<string[]>;
@@ -1557,22 +1241,6 @@ export class TinyWorld extends Contract {
       player: string,
       overrides?: CallOverrides
     ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }>;
-
-    getSingleScalePerlin(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getSingleScalePerlin(uint32,uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     getTile(
       coords: { x: BigNumberish; y: BigNumberish },
@@ -1671,24 +1339,6 @@ export class TinyWorld extends Contract {
         8: BigNumber;
       }[]
     >;
-
-    getWeight(
-      cornerX: BigNumberish,
-      cornerY: BigNumberish,
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getWeight(uint32,uint32,uint32,uint32,uint32)"(
-      cornerX: BigNumberish,
-      cornerY: BigNumberish,
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     initPlayerLocation(repr: string, overrides?: CallOverrides): Promise<void>;
 
@@ -1796,13 +1446,6 @@ export class TinyWorld extends Contract {
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    smoothStep(x: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "smoothStep(int128)"(
-      x: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     touchedCoords(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -1901,22 +1544,6 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    computePerlin(
-      x: BigNumberish,
-      y: BigNumberish,
-      seed: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "computePerlin(uint32,uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      seed: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     dist(
       a: { x: BigNumberish; y: BigNumberish },
       b: { x: BigNumberish; y: BigNumberish },
@@ -1949,36 +1576,6 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCorners(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getCorners(uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getGradientAt(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getGradientAt(uint32,uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getPlayerIds(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getPlayerIds()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1997,22 +1594,6 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getSingleScalePerlin(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getSingleScalePerlin(uint32,uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getTile(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
@@ -2026,24 +1607,6 @@ export class TinyWorld extends Contract {
     getTouchedTiles(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getTouchedTiles()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getWeight(
-      cornerX: BigNumberish,
-      cornerY: BigNumberish,
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getWeight(uint32,uint32,uint32,uint32,uint32)"(
-      cornerX: BigNumberish,
-      cornerY: BigNumberish,
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     initPlayerLocation(repr: string, overrides?: Overrides): Promise<BigNumber>;
 
@@ -2141,13 +1704,6 @@ export class TinyWorld extends Contract {
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    smoothStep(x: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "smoothStep(int128)"(
-      x: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     touchedCoords(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -2228,22 +1784,6 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    computePerlin(
-      x: BigNumberish,
-      y: BigNumberish,
-      seed: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "computePerlin(uint32,uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      seed: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     dist(
       a: { x: BigNumberish; y: BigNumberish },
       b: { x: BigNumberish; y: BigNumberish },
@@ -2276,36 +1816,6 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getCorners(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getCorners(uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getGradientAt(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getGradientAt(uint32,uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getPlayerIds(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getPlayerIds()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -2326,22 +1836,6 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getSingleScalePerlin(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getSingleScalePerlin(uint32,uint32,uint32,uint32)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      seed: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getTile(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
@@ -2355,24 +1849,6 @@ export class TinyWorld extends Contract {
     getTouchedTiles(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getTouchedTiles()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getWeight(
-      cornerX: BigNumberish,
-      cornerY: BigNumberish,
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getWeight(uint32,uint32,uint32,uint32,uint32)"(
-      cornerX: BigNumberish,
-      cornerY: BigNumberish,
-      x: BigNumberish,
-      y: BigNumberish,
-      scale: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2483,16 +1959,6 @@ export class TinyWorld extends Contract {
     seed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "seed()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    smoothStep(
-      x: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "smoothStep(int128)"(
-      x: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     touchedCoords(
       arg0: BigNumberish,

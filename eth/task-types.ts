@@ -4,9 +4,10 @@ import type {
   TinyWorldGetters,
   TinyWorldRegistry,
   StubTileContract,
+  Perlin,
 } from 'common-contracts/typechain';
 
-export { TinyWorld, TinyWorldGetters, StubTileContract, TinyWorldRegistry };
+export { TinyWorld, TinyWorldGetters, StubTileContract, TinyWorldRegistry, Perlin };
 export interface TinyWorldCoreReturn {
   blockNumber: number;
   contract: TinyWorld;
@@ -14,10 +15,12 @@ export interface TinyWorldCoreReturn {
 
 export interface LibraryContracts {
   registry: TinyWorldRegistry;
+  perlin: Perlin;
 }
 
 export interface TileContracts {
   testTileContract: StubTileContract;
   tinyFishingContract: StubTileContract;
   tinyFarmContract: StubTileContract;
+  tinyMineContract: StubTileContract;
 }

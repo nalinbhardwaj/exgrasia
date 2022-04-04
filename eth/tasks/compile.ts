@@ -43,6 +43,10 @@ async function copyAbi(
     JSON.stringify((await hre.artifacts.readArtifact('TinyFarm')).abi),
     { semi: false, parser: 'json' }
   );
+  const tinyMineAbi = prettier.format(
+    JSON.stringify((await hre.artifacts.readArtifact('TinyMine')).abi),
+    { semi: false, parser: 'json' }
+  );
   const registryAbi = prettier.format(
     JSON.stringify((await hre.artifacts.readArtifact('TinyWorldRegistry')).abi),
     { semi: false, parser: 'json' }
@@ -58,6 +62,7 @@ async function copyAbi(
   await fs.writeFile(path.join(abisDir, 'TestTileContract.json'), testTileAbi);
   await fs.writeFile(path.join(abisDir, 'TinyFishing.json'), tinyFishingAbi);
   await fs.writeFile(path.join(abisDir, 'TinyFarm.json'), tinyFarmAbi);
+  await fs.writeFile(path.join(abisDir, 'TinyMine.json'), tinyMineAbi);
   await fs.writeFile(path.join(abisDir, 'TinyWorldRegistry.json'), registryAbi);
 }
 

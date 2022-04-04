@@ -9,7 +9,7 @@ import type {
   TinyWorldGetters,
   TinyWorldRegistry,
 } from 'common-contracts/typechain';
-import { createContract, createEthConnection, EthConnection } from '@darkforest_eth/network';
+import { createContract, createEthConnection, EthConnection } from 'exgrasia-network';
 import type { Contract, providers, Wallet } from 'ethers';
 
 /**
