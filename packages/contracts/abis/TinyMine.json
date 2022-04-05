@@ -122,6 +122,24 @@
           { "internalType": "uint256", "name": "y", "type": "uint256" }
         ],
         "internalType": "struct Coords",
+        "name": "selfCoords",
+        "type": "tuple"
+      },
+      { "internalType": "string", "name": "resource", "type": "string" }
+    ],
+    "name": "selectResource",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
         "name": "coords",
         "type": "tuple"
       }

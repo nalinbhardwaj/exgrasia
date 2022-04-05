@@ -154,6 +154,7 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
       if (func.name === 'selfCoords') moddedInput[idx] = props.coords;
     }
     console.log('moddedInput', moddedInput);
+    setError(undefined);
 
     if (selectedFuncLookupOnly) {
       setResult(await props.gm.tileCall(props.coords, selectedFunc.name, moddedInput));

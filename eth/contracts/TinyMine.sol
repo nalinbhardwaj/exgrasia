@@ -26,6 +26,44 @@ contract TinyIron is TinyERC20 {
     }
 }
 
+contract TinyGold is TinyERC20 {
+    address mineshaft;
+
+    constructor(address _mineshaft, TinyWorld _connnectedWorld)
+        TinyERC20("TinyGold", "TGLD", _connnectedWorld)
+    {
+        mineshaft = _mineshaft;
+    }
+
+    modifier onlyMineshaft() {
+        require(msg.sender == mineshaft, "Caller is not a mineshaft tile");
+        _;
+    }
+
+    function mint(address miner) public override onlyMineshaft {
+        _mint(miner, 10**18);
+    }
+}
+
+contract TinyDiamond is TinyERC20 {
+    address mineshaft;
+
+    constructor(address _mineshaft, TinyWorld _connnectedWorld)
+        TinyERC20("TinyDiamond", "TDIA", _connnectedWorld)
+    {
+        mineshaft = _mineshaft;
+    }
+
+    modifier onlyMineshaft() {
+        require(msg.sender == mineshaft, "Caller is not a mineshaft tile");
+        _;
+    }
+
+    function mint(address miner) public override onlyMineshaft {
+        _mint(miner, 10**18);
+    }
+}
+
 contract TinyMine is ITileContract {
     function tileEmoji(Coords memory coords) external view override returns (string memory) {
         return unicode"⛰️";
@@ -42,15 +80,39 @@ contract TinyMine is ITileContract {
         override
         returns (string memory)
     {
-        return "This is a tiny mine";
+        return
+            "This is a mine shaft. You can mine precious metals here. To get started, use rollMine to open the door to a mine. You can then view the map using the mine function and move around to the resource cells using the move functions. You can reroll when you are done, or select a new resource to mine using selectResource.";
     }
 
     function tileABI(Coords memory coords) external view override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/36d6a01d7afc793ddd72ec7b0980172fa9010723/TinyMine.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/8c66c1fd614adf96529b82c8b104e19ac52fc423/TinyMine.json";
     }
 
-    uint256 constant WIDTH = 10;
+    modifier closeToMyself(Coords memory selfCoords) {
+        require(connectedWorld.playerInited(msg.sender), "Not an exgrasia player");
+        Coords memory playerLoc = connectedWorld.getPlayerLocation(msg.sender);
+        Coords[4] memory neighbors = [
+            Coords(playerLoc.x - 1, playerLoc.y),
+            Coords(playerLoc.x + 1, playerLoc.y),
+            Coords(playerLoc.x, playerLoc.y - 1),
+            Coords(playerLoc.x, playerLoc.y + 1)
+        ];
+        bool closeToSelf = false;
+        for (uint256 i = 0; i < neighbors.length; i++) {
+            if (
+                connectedWorld.getTile(neighbors[i]).smartContract == address(this) &&
+                neighbors[i].x == selfCoords.x &&
+                neighbors[i].y == selfCoords.y
+            ) {
+                closeToSelf = true;
+            }
+        }
+        require(closeToSelf, "You need to be next to the mineshaft to mine");
+        _;
+    }
+
+    uint256 constant WIDTH = 20;
     uint256 constant HEIGHT = 5;
     enum MazeTileType {
         UNKNOWN,
@@ -66,21 +128,38 @@ contract TinyMine is ITileContract {
     mapping(address => TinyERC20) private currentResource;
     TinyWorld connectedWorld;
     TinyERC20 iron;
+    TinyERC20 gold;
+    TinyERC20 diamond;
 
     function random(string memory input) internal pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(input)));
     }
 
+    function getResourceRarity(TinyERC20 resource) internal view returns (uint256) {
+        if (resource == iron) {
+            return 7;
+        }
+        if (resource == gold) {
+            return 10;
+        }
+        if (resource == diamond) {
+            return 15;
+        }
+        return 0;
+    }
+
     function getProcGenMazeValue(
         uint256 x,
         uint256 y,
-        uint32 seeder
+        uint32 seeder,
+        uint256 resourceRarity
     ) internal view returns (MazeTileType) {
+        bool isResource = random(string(abi.encodePacked(x, y, seeder))) % resourceRarity == 0;
         uint256 perlin = Perlin.computePerlin(uint32(x), uint32(y), uint32(seeder), uint32(8));
         return
-            perlin > 30
-                ? (perlin > 35 ? MazeTileType.RESOURCE : MazeTileType.EMPTY)
-                : MazeTileType.WALL;
+            isResource
+                ? MazeTileType.RESOURCE
+                : (perlin > 30 ? MazeTileType.EMPTY : MazeTileType.WALL);
     }
 
     function getMazeValue(
@@ -89,7 +168,12 @@ contract TinyMine is ITileContract {
         uint32 seeder
     ) internal returns (MazeTileType) {
         if (currentCachedTiles[msg.sender][seeder][x][y] == MazeTileType.UNKNOWN) {
-            currentCachedTiles[msg.sender][seeder][x][y] = getProcGenMazeValue(x, y, seeder);
+            currentCachedTiles[msg.sender][seeder][x][y] = getProcGenMazeValue(
+                x,
+                y,
+                seeder,
+                getResourceRarity(currentResource[msg.sender])
+            );
         }
         return currentCachedTiles[msg.sender][seeder][x][y];
     }
@@ -100,7 +184,8 @@ contract TinyMine is ITileContract {
         uint32 seeder
     ) internal view returns (MazeTileType) {
         if (currentCachedTiles[msg.sender][seeder][x][y] == MazeTileType.UNKNOWN) {
-            return getProcGenMazeValue(x, y, seeder);
+            return
+                getProcGenMazeValue(x, y, seeder, getResourceRarity(currentResource[msg.sender]));
         } else return currentCachedTiles[msg.sender][seeder][x][y];
     }
 
@@ -108,7 +193,7 @@ contract TinyMine is ITileContract {
         Coords memory selfCoords,
         int256 deltaX,
         int256 deltaY
-    ) internal {
+    ) internal closeToMyself(selfCoords) {
         uint32 seeder = currentSeeder[msg.sender][selfCoords.x][selfCoords.y];
         Coords memory loc = currentLocation[msg.sender][seeder];
 
@@ -149,15 +234,48 @@ contract TinyMine is ITileContract {
         move(selfCoords, 0, 1);
     }
 
-    function rollMine(Coords memory selfCoords) public {
+    function rollMine(Coords memory selfCoords) public closeToMyself(selfCoords) {
+        require(
+            connectedWorld.getTile(selfCoords).tileType == TileType.STONE,
+            "A mineshaft can only be mined on stone"
+        );
         uint256 seeder = random(
             string(abi.encodePacked(selfCoords.x, selfCoords.y, block.timestamp, msg.sender))
         );
-        currentSeeder[msg.sender][selfCoords.x][selfCoords.y] = uint32(seeder % uint256(10**8));
-        currentResource[msg.sender] = iron;
+        currentSeeder[msg.sender][selfCoords.x][selfCoords.y] = uint32(
+            (seeder % uint256(10**8)) + 1
+        );
+        if (currentResource[msg.sender] == TinyERC20(address(0))) {
+            currentResource[msg.sender] = iron;
+        }
+    }
+
+    function selectResource(Coords memory selfCoords, string memory resource)
+        public
+        closeToMyself(selfCoords)
+    {
+        if (keccak256(bytes(resource)) == keccak256(bytes("iron"))) {
+            currentResource[msg.sender] = iron;
+        } else if (keccak256(bytes(resource)) == keccak256(bytes("gold"))) {
+            require(iron.balanceOf(msg.sender) > 10**19, "Don't have enough iron to go deeper");
+            currentResource[msg.sender] = gold;
+        } else if (keccak256(bytes(resource)) == keccak256(bytes("diamond"))) {
+            require(iron.balanceOf(msg.sender) > 10**19, "Don't have enough iron to go deeper");
+            require(
+                gold.balanceOf(msg.sender) > 15 * 10**18,
+                "Don't have enough gold to go deeper"
+            );
+            currentResource[msg.sender] = diamond;
+        } else {
+            revert("Invalid resource");
+        }
     }
 
     function mine(Coords memory selfCoords) public view returns (string[HEIGHT] memory) {
+        require(
+            currentSeeder[msg.sender][selfCoords.x][selfCoords.y] != 0,
+            "rollMine before entering"
+        );
         uint32 seeder = currentSeeder[msg.sender][selfCoords.x][selfCoords.y];
 
         string[HEIGHT] memory prettyMaze;
@@ -173,7 +291,13 @@ contract TinyMine is ITileContract {
                 } else if (mazeVal == MazeTileType.EMPTY) {
                     row = string(abi.encodePacked(row, "."));
                 } else if (mazeVal == MazeTileType.RESOURCE) {
-                    row = string(abi.encodePacked(row, "I"));
+                    if (currentResource[msg.sender] == gold) {
+                        row = string(abi.encodePacked(row, "G"));
+                    } else if (currentResource[msg.sender] == diamond) {
+                        row = string(abi.encodePacked(row, "D"));
+                    } else {
+                        row = string(abi.encodePacked(row, "I"));
+                    }
                 } else {
                     row = string(abi.encodePacked(row, "#"));
                 }
@@ -186,5 +310,7 @@ contract TinyMine is ITileContract {
     constructor(TinyWorld _connectedWorld) {
         connectedWorld = _connectedWorld;
         iron = new TinyIron(address(this), connectedWorld);
+        gold = new TinyGold(address(this), connectedWorld);
+        diamond = new TinyDiamond(address(this), connectedWorld);
     }
 }

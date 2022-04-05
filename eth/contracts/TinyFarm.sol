@@ -163,7 +163,33 @@ contract TinyFarm is ITileContract {
             "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/9bd39332363c0d6109e8f889ca44bc4b5e879b94/TinyFarm.json";
     }
 
-    function plant(string memory farmType, Coords memory selfCoords) public {
+    modifier closeToMyself(Coords memory selfCoords) {
+        require(connectedWorld.playerInited(msg.sender), "Not an exgrasia player");
+        Coords memory playerLoc = connectedWorld.getPlayerLocation(msg.sender);
+        Coords[4] memory neighbors = [
+            Coords(playerLoc.x - 1, playerLoc.y),
+            Coords(playerLoc.x + 1, playerLoc.y),
+            Coords(playerLoc.x, playerLoc.y - 1),
+            Coords(playerLoc.x, playerLoc.y + 1)
+        ];
+        bool closeToSelf = false;
+        for (uint256 i = 0; i < neighbors.length; i++) {
+            if (
+                connectedWorld.getTile(neighbors[i]).smartContract == address(this) &&
+                neighbors[i].x == selfCoords.x &&
+                neighbors[i].y == selfCoords.y
+            ) {
+                closeToSelf = true;
+            }
+        }
+        require(closeToSelf, "You need to be next to the farm to farm");
+        _;
+    }
+
+    function plant(string memory farmType, Coords memory selfCoords)
+        public
+        closeToMyself(selfCoords)
+    {
         require(
             connectedWorld.dist(selfCoords, connectedWorld.getPlayerLocation(msg.sender)) <= 1,
             "Too far to plant"
@@ -186,7 +212,7 @@ contract TinyFarm is ITileContract {
         connectedWorld.forceTileUpdate(selfCoords);
     }
 
-    function harvest(Coords memory selfCoords) public {
+    function harvest(Coords memory selfCoords) public closeToMyself(selfCoords) {
         require(
             connectedWorld.dist(selfCoords, connectedWorld.getPlayerLocation(msg.sender)) <= 1,
             "Too far to harvest"

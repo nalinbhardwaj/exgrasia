@@ -28,6 +28,7 @@ interface TinyMineInterface extends ethers.utils.Interface {
     "moveRight(tuple)": FunctionFragment;
     "moveUp(tuple)": FunctionFragment;
     "rollMine(tuple)": FunctionFragment;
+    "selectResource(tuple,string)": FunctionFragment;
     "tileABI(tuple)": FunctionFragment;
     "tileDescription(tuple)": FunctionFragment;
     "tileEmoji(tuple)": FunctionFragment;
@@ -59,6 +60,10 @@ interface TinyMineInterface extends ethers.utils.Interface {
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(
+    functionFragment: "selectResource",
+    values: [{ x: BigNumberish; y: BigNumberish }, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "tileABI",
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
@@ -81,6 +86,10 @@ interface TinyMineInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "moveRight", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "moveUp", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "rollMine", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "selectResource",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "tileABI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "tileDescription",
@@ -167,6 +176,18 @@ export class TinyMine extends Contract {
 
     "rollMine(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    selectResource(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      resource: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "selectResource(tuple,string)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      resource: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -287,6 +308,18 @@ export class TinyMine extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  selectResource(
+    selfCoords: { x: BigNumberish; y: BigNumberish },
+    resource: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "selectResource(tuple,string)"(
+    selfCoords: { x: BigNumberish; y: BigNumberish },
+    resource: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   tileABI(
     coords: { x: BigNumberish; y: BigNumberish },
     overrides?: CallOverrides
@@ -385,6 +418,18 @@ export class TinyMine extends Contract {
 
     "rollMine(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    selectResource(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      resource: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "selectResource(tuple,string)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      resource: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -492,6 +537,18 @@ export class TinyMine extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    selectResource(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      resource: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "selectResource(tuple,string)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      resource: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     tileABI(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -591,6 +648,18 @@ export class TinyMine extends Contract {
 
     "rollMine(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    selectResource(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      resource: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "selectResource(tuple,string)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      resource: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

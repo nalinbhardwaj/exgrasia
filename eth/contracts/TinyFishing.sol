@@ -269,8 +269,8 @@ contract TinyFish is ERC721Enumerable, ReentrancyGuard, ITileContract {
                 closeToWater = true;
             }
         }
-        require(closeToSelf, "You need to next to the fishing tile to cast");
-        require(closeToWater, "You need to next to a water tile to cast");
+        require(closeToSelf, "You need to be next to the fishing tile to fish");
+        require(closeToWater, "You need to be next to a water tile to fish");
         _;
     }
 
