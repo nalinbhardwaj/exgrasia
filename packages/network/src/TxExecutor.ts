@@ -165,7 +165,7 @@ export class TxExecutor {
    * be sent with.
    */
   private defaultTxOptions: providers.TransactionRequest = {
-    gasLimit: 50_000_000,
+    gasLimit: 15_000_000,
   };
 
   constructor(
@@ -199,7 +199,7 @@ export class TxExecutor {
     args: unknown[],
     overrides: providers.TransactionRequest = {
       gasPrice: undefined,
-      gasLimit: 50000000,
+      gasLimit: 15000000,
     }
   ): PendingTransaction {
     this.diagnosticsUpdater?.updateDiagnostics((d) => {
@@ -315,7 +315,14 @@ export class TxExecutor {
       const confirmed = await this.ethConnection.waitForTransaction(submitted.hash);
       if (confirmed.status !== 1) {
         time_errored = Date.now();
-        throw new Error('transaction reverted');
+        const errTx = await this.ethConnection.getProvider().getTransaction(submitted.hash);
+        try {
+          //@ts-expect-error
+          await this.ethConnection.getProvider().call(errTx);
+        } catch (err: any) {
+          console.error(err.error.message);
+          throw new Error(err.error.message);
+        }
       } else {
         time_confirmed = Date.now();
         txRequest.onTransactionReceipt(confirmed);

@@ -47,10 +47,10 @@ contract TinyMine is ITileContract {
 
     function tileABI(Coords memory coords) external view override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/1755e45240ae85f393ea0ef9d3ce2f6c0bdcfc8e/TinyMine.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/36d6a01d7afc793ddd72ec7b0980172fa9010723/TinyMine.json";
     }
 
-    uint256 constant WIDTH = 5;
+    uint256 constant WIDTH = 10;
     uint256 constant HEIGHT = 5;
     enum MazeTileType {
         UNKNOWN,
@@ -76,10 +76,10 @@ contract TinyMine is ITileContract {
         uint256 y,
         uint32 seeder
     ) internal view returns (MazeTileType) {
-        uint256 perlin = Perlin.computePerlin(uint32(x), uint32(y), uint32(seeder), uint32(4));
+        uint256 perlin = Perlin.computePerlin(uint32(x), uint32(y), uint32(seeder), uint32(8));
         return
-            perlin < 20
-                ? (perlin < 5 ? MazeTileType.RESOURCE : MazeTileType.EMPTY)
+            perlin > 30
+                ? (perlin > 35 ? MazeTileType.RESOURCE : MazeTileType.EMPTY)
                 : MazeTileType.WALL;
     }
 
@@ -134,19 +134,19 @@ contract TinyMine is ITileContract {
     }
 
     function moveUp(Coords memory selfCoords) public {
-        move(selfCoords, 0, -1);
-    }
-
-    function moveDown(Coords memory selfCoords) public {
-        move(selfCoords, 0, 1);
-    }
-
-    function moveLeft(Coords memory selfCoords) public {
         move(selfCoords, -1, 0);
     }
 
-    function moveRight(Coords memory selfCoords) public {
+    function moveDown(Coords memory selfCoords) public {
         move(selfCoords, 1, 0);
+    }
+
+    function moveLeft(Coords memory selfCoords) public {
+        move(selfCoords, 0, -1);
+    }
+
+    function moveRight(Coords memory selfCoords) public {
+        move(selfCoords, 0, 1);
     }
 
     function rollMine(Coords memory selfCoords) public {
