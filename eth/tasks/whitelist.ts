@@ -30,7 +30,10 @@ async function whitelistEnable(args: { filePath: string }, hre: HardhatRuntimeEn
     const dkReceipt = await contract.dummySetProxyAddress([addresses[0]], addresses[1], {
       gasPrice: '5000000000',
     }); // 3gwei
+    const t1 = performance.now();
     await dkReceipt.wait();
+    const t2 = performance.now();
+    console.log('took ms', t2 - t1);
     console.log('dkReceipt', dkReceipt);
   }
 }

@@ -46,3 +46,13 @@ struct Coords {
     uint256 x;
     uint256 y;
 }
+
+enum PlayerLevel {
+    VAGABOND,
+    EXPLORER,
+    HUNTSMAN,
+    FORAGER,
+    WIZARD,
+    DEMIGOD,
+    GOD
+}

@@ -247,7 +247,7 @@ export class TxExecutor {
         d.transactionsInQueue--;
       });
 
-      return this.execute(txRequest);
+      return this.stress(txRequest);
     });
 
     return {
@@ -312,7 +312,7 @@ export class TxExecutor {
       this.lastTransactionTimestamp = time_submitted;
       txRequest.onTransactionResponse(submitted);
 
-      const confirmed = await this.ethConnection.waitForTransaction(submitted.hash);
+      const confirmed = await this.ethConnection.getProvider().waitForTransaction(submitted.hash);
       if (confirmed.status !== 1) {
         time_errored = Date.now();
         const errTx = await this.ethConnection.getProvider().getTransaction(submitted.hash);
@@ -380,6 +380,48 @@ export class TxExecutor {
     logEvent.user_address = this.ethConnection.getAddress();
 
     this.afterTransaction && this.afterTransaction(txRequest, logEvent);
+  };
+
+  public stress = async (txRequest: QueuedTransaction) => {
+    const t1 = performance.now();
+    console.log('starting stress', t1);
+    const requestWithDefaults = Object.assign(
+      JSON.parse(JSON.stringify(this.defaultTxOptions)),
+      txRequest.overrides
+    );
+
+    const tx = await txRequest.contract[txRequest.methodName](...txRequest.args, {
+      ...requestWithDefaults,
+      nonce: this.nonce,
+    });
+    const rec = await tx.wait();
+    const t4 = performance.now();
+    console.log('double stress', t4 - t1, rec);
+
+    const submitted = await timeout<providers.TransactionResponse>(
+      txRequest.contract[txRequest.methodName](...txRequest.args, {
+        ...requestWithDefaults,
+        nonce: this.nonce,
+      }),
+      TxExecutor.TX_SUBMIT_TIMEOUT,
+      `tx request ${txRequest.actionId} failed to submit: timed out}`
+    );
+    const t2 = performance.now();
+    console.log('submitted', t2);
+    console.log('delta t2-t1', t2 - t1);
+    let receipt = null;
+    while (!receipt) {
+      receipt = await timeout(
+        this.ethConnection.getProvider().getTransactionReceipt(submitted.hash),
+        30 * 1000
+      );
+      console.log('receipt', receipt);
+    }
+
+    const t3 = performance.now();
+    console.log('receipted', t2);
+    console.log('delta t3-t1', t3 - t1);
+    console.log('delta t3-t2', t3 - t2);
   };
 
   public setDiagnosticUpdater(diagnosticUpdater?: DiagnosticUpdater) {

@@ -434,10 +434,14 @@ export class ContractsAPI extends EventEmitter {
    * [[ContractsAPIEvent]].
    */
   public waitFor(submitted: SubmittedTx, receiptPromise: Promise<providers.TransactionReceipt>) {
+    const t1 = performance.now();
+    console.log('waitFor', submitted, t1);
     this.emit(ContractsAPIEvent.TxSubmitted, submitted);
 
     return receiptPromise
       .then((receipt) => {
+        const t2 = performance.now();
+        console.log('done waitFor', submitted, t2, t2 - t1);
         this.emit(ContractsAPIEvent.TxConfirmed, submitted);
         return receipt;
       })

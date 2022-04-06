@@ -146,7 +146,7 @@ export function waitForTransaction(
     {
       // TODO: Should we set maxRetryTime?
       retries: DEFAULT_MAX_CALL_RETRIES,
-      minTimeout: 5000,
+      minTimeout: 500,
       maxTimeout: 60_000,
       factor: 1.5,
       onFailedAttempt(e) {
