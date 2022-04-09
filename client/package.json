@@ -39,7 +39,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "start:dev": "webpack-dev-server --mode development --open --hot",
-    "start:prod": "NODE_ENV=production DEFAULT_RPC=https://optimism-kovan.infura.io/v3/661cfe1251ae47d2a6cd6d883750f357 webpack-dev-server --mode development --open --hot",
+    "start:prod": "NODE_ENV=production DEFAULT_RPC=wss://ws-kovan.optimism.io webpack-dev-server --mode development --open --hot",
     "start:prodXdai": "NODE_ENV=production DEFAULT_RPC=https://optimism.gnosischain.com webpack-dev-server --mode development --open --hot",
     "build": "NODE_ENV=production DEFAULT_RPC=https://kovan.optimism.io webpack --mode production"
   },
