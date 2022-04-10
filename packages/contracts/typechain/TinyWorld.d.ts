@@ -23,6 +23,8 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface TinyWorldInterface extends ethers.utils.Interface {
   functions: {
     "cachedTiles(uint256,uint256)": FunctionFragment;
+    "canMoveSnow(address)": FunctionFragment;
+    "canMoveWater(address)": FunctionFragment;
     "dist(tuple,tuple)": FunctionFragment;
     "forceTileUpdate(tuple)": FunctionFragment;
     "getCachedTile(tuple)": FunctionFragment;
@@ -32,7 +34,8 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "getTile(tuple)": FunctionFragment;
     "getTouchedTiles()": FunctionFragment;
     "initPlayerLocation(string)": FunctionFragment;
-    "initialize(uint256,uint256,uint256,address)": FunctionFragment;
+    "initialize(uint256,uint256,uint256,address,address[])": FunctionFragment;
+    "isAdmin(address)": FunctionFragment;
     "movePlayer(tuple)": FunctionFragment;
     "ownTile(tuple,address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -44,6 +47,9 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "registry()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "seed()": FunctionFragment;
+    "setCanMoveSnow(address,bool)": FunctionFragment;
+    "setCanMoveWater(address,bool)": FunctionFragment;
+    "setQuestMaster(address)": FunctionFragment;
     "touchedCoords(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "transferTile(tuple,address)": FunctionFragment;
@@ -57,6 +63,11 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "cachedTiles",
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "canMoveSnow", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "canMoveWater",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "dist",
@@ -99,8 +110,9 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [BigNumberish, BigNumberish, BigNumberish, string]
+    values: [BigNumberish, BigNumberish, BigNumberish, string, string[]]
   ): string;
+  encodeFunctionData(functionFragment: "isAdmin", values: [string]): string;
   encodeFunctionData(
     functionFragment: "movePlayer",
     values: [{ x: BigNumberish; y: BigNumberish }]
@@ -130,6 +142,18 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "seed", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "setCanMoveSnow",
+    values: [string, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setCanMoveWater",
+    values: [string, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setQuestMaster",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "touchedCoords",
     values: [BigNumberish]
@@ -164,6 +188,14 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     functionFragment: "cachedTiles",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "canMoveSnow",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "canMoveWater",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "dist", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "forceTileUpdate",
@@ -195,6 +227,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isAdmin", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "movePlayer", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownTile", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -218,6 +251,18 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "seed", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setCanMoveSnow",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setCanMoveWater",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setQuestMaster",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "touchedCoords",
     data: BytesLike
@@ -310,6 +355,34 @@ export class TinyWorld extends Contract {
       7: BigNumber;
     }>;
 
+    canMoveSnow(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "canMoveSnow(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    canMoveWater(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
     dist(
       a: { x: BigNumberish; y: BigNumberish },
       b: { x: BigNumberish; y: BigNumberish },
@@ -399,11 +472,15 @@ export class TinyWorld extends Contract {
     getPlayerInfos(overrides?: CallOverrides): Promise<{
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
       1: string[];
+      2: boolean[];
+      3: boolean[];
     }>;
 
     "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
       1: string[];
+      2: boolean[];
+      3: boolean[];
     }>;
 
     getPlayerLocation(
@@ -491,16 +568,32 @@ export class TinyWorld extends Contract {
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
       _registryAddress: string,
+      _admins: string[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(uint256,uint256,uint256,address)"(
+    "initialize(uint256,uint256,uint256,address,address[])"(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
       _registryAddress: string,
+      _admins: string[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    isAdmin(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "isAdmin(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
 
     movePlayer(
       coords: { x: BigNumberish; y: BigNumberish },
@@ -621,6 +714,40 @@ export class TinyWorld extends Contract {
     "seed()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
+
+    setCanMoveSnow(
+      player: string,
+      canMove: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setCanMoveSnow(address,bool)"(
+      player: string,
+      canMove: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    setCanMoveWater(
+      player: string,
+      canMove: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setCanMoveWater(address,bool)"(
+      player: string,
+      canMove: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    setQuestMaster(
+      master: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setQuestMaster(address)"(
+      master: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     touchedCoords(
       arg0: BigNumberish,
@@ -765,6 +892,20 @@ export class TinyWorld extends Contract {
     7: BigNumber;
   }>;
 
+  canMoveSnow(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "canMoveSnow(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  canMoveWater(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "canMoveWater(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   dist(
     a: { x: BigNumberish; y: BigNumberish },
     b: { x: BigNumberish; y: BigNumberish },
@@ -842,11 +983,15 @@ export class TinyWorld extends Contract {
   getPlayerInfos(overrides?: CallOverrides): Promise<{
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
     1: string[];
+    2: boolean[];
+    3: boolean[];
   }>;
 
   "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
     1: string[];
+    2: boolean[];
+    3: boolean[];
   }>;
 
   getPlayerLocation(
@@ -934,16 +1079,22 @@ export class TinyWorld extends Contract {
     _worldWidth: BigNumberish,
     _worldScale: BigNumberish,
     _registryAddress: string,
+    _admins: string[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(uint256,uint256,uint256,address)"(
+  "initialize(uint256,uint256,uint256,address,address[])"(
     _seed: BigNumberish,
     _worldWidth: BigNumberish,
     _worldScale: BigNumberish,
     _registryAddress: string,
+    _admins: string[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  isAdmin(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isAdmin(address)"(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
   movePlayer(
     coords: { x: BigNumberish; y: BigNumberish },
@@ -1027,6 +1178,40 @@ export class TinyWorld extends Contract {
   seed(overrides?: CallOverrides): Promise<BigNumber>;
 
   "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  setCanMoveSnow(
+    player: string,
+    canMove: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setCanMoveSnow(address,bool)"(
+    player: string,
+    canMove: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  setCanMoveWater(
+    player: string,
+    canMove: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setCanMoveWater(address,bool)"(
+    player: string,
+    canMove: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  setQuestMaster(
+    master: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setQuestMaster(address)"(
+    master: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   touchedCoords(
     arg0: BigNumberish,
@@ -1148,6 +1333,20 @@ export class TinyWorld extends Contract {
       7: BigNumber;
     }>;
 
+    canMoveSnow(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "canMoveSnow(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    canMoveWater(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     dist(
       a: { x: BigNumberish; y: BigNumberish },
       b: { x: BigNumberish; y: BigNumberish },
@@ -1225,11 +1424,15 @@ export class TinyWorld extends Contract {
     getPlayerInfos(overrides?: CallOverrides): Promise<{
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
       1: string[];
+      2: boolean[];
+      3: boolean[];
     }>;
 
     "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
       1: string[];
+      2: boolean[];
+      3: boolean[];
     }>;
 
     getPlayerLocation(
@@ -1352,16 +1555,25 @@ export class TinyWorld extends Contract {
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
       _registryAddress: string,
+      _admins: string[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(uint256,uint256,uint256,address)"(
+    "initialize(uint256,uint256,uint256,address,address[])"(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
       _registryAddress: string,
+      _admins: string[],
       overrides?: CallOverrides
     ): Promise<void>;
+
+    isAdmin(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "isAdmin(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     movePlayer(
       coords: { x: BigNumberish; y: BigNumberish },
@@ -1445,6 +1657,37 @@ export class TinyWorld extends Contract {
     seed(overrides?: CallOverrides): Promise<BigNumber>;
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    setCanMoveSnow(
+      player: string,
+      canMove: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setCanMoveSnow(address,bool)"(
+      player: string,
+      canMove: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setCanMoveWater(
+      player: string,
+      canMove: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setCanMoveWater(address,bool)"(
+      player: string,
+      canMove: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setQuestMaster(master: string, overrides?: CallOverrides): Promise<void>;
+
+    "setQuestMaster(address)"(
+      master: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     touchedCoords(
       arg0: BigNumberish,
@@ -1544,6 +1787,20 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    canMoveSnow(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "canMoveSnow(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    canMoveWater(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     dist(
       a: { x: BigNumberish; y: BigNumberish },
       b: { x: BigNumberish; y: BigNumberish },
@@ -1620,15 +1877,24 @@ export class TinyWorld extends Contract {
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
       _registryAddress: string,
+      _admins: string[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(uint256,uint256,uint256,address)"(
+    "initialize(uint256,uint256,uint256,address,address[])"(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
       _registryAddress: string,
+      _admins: string[],
       overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    isAdmin(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "isAdmin(address)"(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     movePlayer(
@@ -1703,6 +1969,37 @@ export class TinyWorld extends Contract {
     seed(overrides?: CallOverrides): Promise<BigNumber>;
 
     "seed()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    setCanMoveSnow(
+      player: string,
+      canMove: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setCanMoveSnow(address,bool)"(
+      player: string,
+      canMove: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    setCanMoveWater(
+      player: string,
+      canMove: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setCanMoveWater(address,bool)"(
+      player: string,
+      canMove: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    setQuestMaster(master: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "setQuestMaster(address)"(
+      master: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     touchedCoords(
       arg0: BigNumberish,
@@ -1781,6 +2078,26 @@ export class TinyWorld extends Contract {
     "cachedTiles(uint256,uint256)"(
       arg0: BigNumberish,
       arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    canMoveSnow(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "canMoveSnow(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    canMoveWater(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "canMoveWater(address)"(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1867,15 +2184,27 @@ export class TinyWorld extends Contract {
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
       _registryAddress: string,
+      _admins: string[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(uint256,uint256,uint256,address)"(
+    "initialize(uint256,uint256,uint256,address,address[])"(
       _seed: BigNumberish,
       _worldWidth: BigNumberish,
       _worldScale: BigNumberish,
       _registryAddress: string,
+      _admins: string[],
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    isAdmin(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isAdmin(address)"(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     movePlayer(
@@ -1959,6 +2288,40 @@ export class TinyWorld extends Contract {
     seed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "seed()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    setCanMoveSnow(
+      player: string,
+      canMove: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setCanMoveSnow(address,bool)"(
+      player: string,
+      canMove: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setCanMoveWater(
+      player: string,
+      canMove: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setCanMoveWater(address,bool)"(
+      player: string,
+      canMove: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setQuestMaster(
+      master: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setQuestMaster(address)"(
+      master: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
     touchedCoords(
       arg0: BigNumberish,

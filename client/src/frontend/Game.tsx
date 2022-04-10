@@ -9,6 +9,7 @@ import {
   address,
   DEV_TEST_PRIVATE_KEY,
   EthAddress,
+  PlayerInfo,
   Tile,
   TileContractMetaData,
   TileType,
@@ -115,17 +116,38 @@ export default function Game() {
     setMoveQueue((x) => [...x, keyToDirection[key]]);
   };
 
+  const canMove = (coords: WorldCoords, selfInfo: PlayerInfo) => {
+    if (!gameManager) return false;
+    const tile = tiles.value[coords.x][coords.y];
+    if (tile.tileType == TileType.WATER) return selfInfo.canMoveWater;
+    if (tile.tileType == TileType.SNOW) return selfInfo.canMoveSnow;
+    return true;
+  };
+
   useEffect(() => {
     console.log('moveQueue', moveQueue);
     if (!gameManager) return;
     if (moveQueue.length === 0) return;
     if (currentMove.current === '' || gameManager.resolvedMoves.includes(currentMove.current)) {
       const push = async () => {
-        console.log('unSwapMessage coords', (await gameManager.getSelfInfo()).coords);
-        setMotionMessage([(await gameManager.getSelfInfo()).coords, getRandomMotionMessage()]);
-        const moveId = await gameManager.movePlayer(moveQueue[0]);
+        const selfInfo = await gameManager.getSelfInfo();
+        const location = selfInfo.coords;
+        console.log('location', location);
+        console.log('moveQueue', moveQueue[0]);
+        const coords: WorldCoords = {
+          x: location.x + moveQueue[0][0],
+          y: location.y + moveQueue[0][1],
+        };
+        console.log('coords', coords);
+
+        if (!canMove(coords, selfInfo)) {
+          setMotionMessage([selfInfo.coords, ' does not have a boat']);
+        } else {
+          setMotionMessage([selfInfo.coords, getRandomMotionMessage()]);
+          const moveId = await gameManager.movePlayer(coords);
+          currentMove.current = moveId;
+        }
         setMoveQueue((x) => x.slice(1));
-        currentMove.current = moveId;
       };
       push();
     }
@@ -232,9 +254,14 @@ export default function Game() {
                                     return (
                                       <Tooltip
                                         trigger='hover'
-                                        content={`${prettifiedAddresses.get(addr) || addr}${
-                                          motionMessage[1]
-                                        }`}
+                                        content={
+                                          <>
+                                            {prettifiedAddresses.get(addr) || addr}
+                                            <span style={{ color: '#666666' }}>
+                                              <i>{motionMessage[1]}</i>
+                                            </span>
+                                          </>
+                                        }
                                         key={100 * i + j}
                                         placement='top'
                                         visible={motionMessage[1] !== ''}

@@ -289,14 +289,7 @@ class GameManager extends EventEmitter {
     return this.worldWidth;
   }
 
-  public async movePlayer(motion: [number, number]) {
-    const location = (await this.getSelfInfo()).coords;
-
-    const coords = {
-      x: location.x + motion[0],
-      y: location.y + motion[1],
-    };
-
+  public async movePlayer(coords: WorldCoords) {
     console.log('motionCoords', coords);
 
     if (!this.account) {

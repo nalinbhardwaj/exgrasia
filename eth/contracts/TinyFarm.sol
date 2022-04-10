@@ -4,59 +4,13 @@ pragma solidity ^0.8.4;
 import "./TinyWorld.sol";
 import "./Types.sol";
 import "./TileContract.sol";
-
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
-abstract contract TinyERC20 is ERC20 {
-    TinyWorld connectedWorld;
-
-    constructor(
-        string memory name_,
-        string memory symbol_,
-        TinyWorld _connectedWorld
-    ) ERC20(name_, symbol_) {
-        connectedWorld = _connectedWorld;
-    }
-
-    modifier areUserClose(address from, address to) {
-        require(connectedWorld.playerInited(from), "Not an exgrasia player");
-        require(connectedWorld.playerInited(to), "Not an exgrasia player");
-        require(
-            connectedWorld.dist(
-                connectedWorld.getPlayerLocation(from),
-                connectedWorld.getPlayerLocation(to)
-            ) <= 1,
-            "Players are too far"
-        );
-        _;
-    }
-
-    function transfer(address to, uint256 amount)
-        public
-        virtual
-        override
-        areUserClose(msg.sender, to)
-        returns (bool)
-    {
-        return ERC20.transfer(to, amount);
-    }
-
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) public virtual override areUserClose(from, to) returns (bool) {
-        return ERC20.transferFrom(from, to, amount);
-    }
-
-    function mint(address to) public virtual;
-}
+import "./TinyExtensions.sol";
 
 contract TinyWheat is TinyERC20 {
     address farmland;
 
-    constructor(address _farmland, TinyWorld _connnectedWorld)
-        TinyERC20("TinyWheat", "TWH", _connnectedWorld)
+    constructor(address _farmland, TinyWorld _connectedWorld)
+        TinyERC20("TinyWheat", "TWH", _connectedWorld)
     {
         farmland = _farmland;
     }
@@ -74,8 +28,8 @@ contract TinyWheat is TinyERC20 {
 contract TinyCorn is TinyERC20 {
     address farmland;
 
-    constructor(address _farmland, TinyWorld _connnectedWorld)
-        TinyERC20("TinyCorn", "TCN", _connnectedWorld)
+    constructor(address _farmland, TinyWorld _connectedWorld)
+        TinyERC20("TinyCorn", "TCN", _connectedWorld)
     {
         farmland = _farmland;
     }
@@ -93,8 +47,8 @@ contract TinyCorn is TinyERC20 {
 contract TinyCactus is TinyERC20 {
     address farmland;
 
-    constructor(address _farmland, TinyWorld _connnectedWorld)
-        TinyERC20("TinyCactus", "TCT", _connnectedWorld)
+    constructor(address _farmland, TinyWorld _connectedWorld)
+        TinyERC20("TinyCactus", "TCT", _connectedWorld)
     {
         farmland = _farmland;
     }
@@ -109,6 +63,21 @@ contract TinyCactus is TinyERC20 {
     }
 }
 
+contract TinyCow is TinyERC721 {
+    address ranch;
+
+    constructor(address _ranch, TinyWorld _connectedWorld)
+        TinyERC721("TinyCow", "TCOW", _connectedWorld)
+    {
+        ranch = _ranch;
+    }
+
+    modifier onlyRanch() {
+        require(msg.sender == ranch, "Caller is not a ranch tile");
+        _;
+    }
+}
+
 contract TinyFarm is ITileContract {
     TinyWorld connectedWorld;
     TinyWheat wheat;
@@ -117,8 +86,8 @@ contract TinyFarm is ITileContract {
 
     mapping(uint256 => mapping(uint256 => TinyERC20)) farm;
 
-    constructor(TinyWorld _connnectedWorld) {
-        connectedWorld = _connnectedWorld;
+    constructor(TinyWorld _connectedWorld) {
+        connectedWorld = _connectedWorld;
 
         wheat = new TinyWheat(address(this), connectedWorld);
         corn = new TinyCorn(address(this), connectedWorld);
@@ -220,5 +189,6 @@ contract TinyFarm is ITileContract {
         require(connectedWorld.getTile(selfCoords).owner == msg.sender, "Not your farm");
         require(farm[selfCoords.x][selfCoords.y] != TinyERC20(address(0)), "No farm found");
         farm[selfCoords.x][selfCoords.y].mint(msg.sender);
+        farm[selfCoords.x][selfCoords.y] = TinyERC20(address(0));
     }
 }

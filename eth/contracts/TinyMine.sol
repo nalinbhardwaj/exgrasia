@@ -5,13 +5,13 @@ import "./TinyWorld.sol";
 import "./Perlin.sol";
 import "./Types.sol";
 import "./TileContract.sol";
-import "./TinyFarm.sol";
+import "./TinyExtensions.sol";
 
 contract TinyIron is TinyERC20 {
     address mineshaft;
 
-    constructor(address _mineshaft, TinyWorld _connnectedWorld)
-        TinyERC20("TinyIron", "TIRN", _connnectedWorld)
+    constructor(address _mineshaft, TinyWorld _connectedWorld)
+        TinyERC20("TinyIron", "TIRN", _connectedWorld)
     {
         mineshaft = _mineshaft;
     }
@@ -29,8 +29,8 @@ contract TinyIron is TinyERC20 {
 contract TinyGold is TinyERC20 {
     address mineshaft;
 
-    constructor(address _mineshaft, TinyWorld _connnectedWorld)
-        TinyERC20("TinyGold", "TGLD", _connnectedWorld)
+    constructor(address _mineshaft, TinyWorld _connectedWorld)
+        TinyERC20("TinyGold", "TGLD", _connectedWorld)
     {
         mineshaft = _mineshaft;
     }
@@ -48,8 +48,8 @@ contract TinyGold is TinyERC20 {
 contract TinyDiamond is TinyERC20 {
     address mineshaft;
 
-    constructor(address _mineshaft, TinyWorld _connnectedWorld)
-        TinyERC20("TinyDiamond", "TDIA", _connnectedWorld)
+    constructor(address _mineshaft, TinyWorld _connectedWorld)
+        TinyERC20("TinyDiamond", "TDIA", _connectedWorld)
     {
         mineshaft = _mineshaft;
     }

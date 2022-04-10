@@ -187,8 +187,13 @@ async function deployCore(
       hre.initializers.WORLD_WIDTH,
       hre.initializers.WORLD_SCALE,
       args.registryAddress,
+      [
+        '0xF05b5f04B7a77Ca549C0dE06beaF257f40C66FDB', // nibnalin.eth
+        '0x62b1273bd0e441980f951e16bf558fbd13e9de25', // nibnalin.eth's proxy
+        '0xB6510c1b362728b334AA92e64DFcAb4f3e04054b', // exgrasia deployer
+      ],
     ],
-    // Linking external libraries like `DarkForestUtils` is not yet supported, or
+    // Linking external libraries like `Perlin` is not yet supported, or
     // skip this check with the `unsafeAllowLinkedLibraries` flag
     deployOptions: { unsafeAllowLinkedLibraries: true },
     retries: 5,

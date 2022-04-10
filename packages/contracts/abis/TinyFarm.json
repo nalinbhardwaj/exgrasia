@@ -3,7 +3,7 @@
     "inputs": [
       {
         "internalType": "contract TinyWorld",
-        "name": "_connnectedWorld",
+        "name": "_connectedWorld",
         "type": "address"
       }
     ],

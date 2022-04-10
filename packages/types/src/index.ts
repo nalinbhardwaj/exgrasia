@@ -81,6 +81,8 @@ export type PlayerInfo = {
   proxyAddress: EthAddress;
   realAddress: EthAddress;
   emoji: string;
+  canMoveWater: boolean;
+  canMoveSnow: boolean;
 };
 
 /**

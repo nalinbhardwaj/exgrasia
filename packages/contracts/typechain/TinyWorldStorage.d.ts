@@ -22,11 +22,14 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface TinyWorldStorageInterface extends ethers.utils.Interface {
   functions: {
     "cachedTiles(uint256,uint256)": FunctionFragment;
+    "canMoveSnow(address)": FunctionFragment;
+    "canMoveWater(address)": FunctionFragment;
     "getCachedTile(tuple)": FunctionFragment;
     "getPlayerIds()": FunctionFragment;
     "getPlayerInfos()": FunctionFragment;
     "getPlayerLocation(address)": FunctionFragment;
     "getTouchedTiles()": FunctionFragment;
+    "isAdmin(address)": FunctionFragment;
     "perlinMax()": FunctionFragment;
     "playerEmoji(address)": FunctionFragment;
     "playerIds(uint256)": FunctionFragment;
@@ -44,6 +47,11 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "cachedTiles",
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "canMoveSnow", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "canMoveWater",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "getCachedTile",
@@ -65,6 +73,7 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     functionFragment: "getTouchedTiles",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "isAdmin", values: [string]): string;
   encodeFunctionData(functionFragment: "perlinMax", values?: undefined): string;
   encodeFunctionData(functionFragment: "playerEmoji", values: [string]): string;
   encodeFunctionData(
@@ -107,6 +116,14 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "canMoveSnow",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "canMoveWater",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getCachedTile",
     data: BytesLike
   ): Result;
@@ -126,6 +143,7 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     functionFragment: "getTouchedTiles",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "isAdmin", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "perlinMax", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "playerEmoji",
@@ -217,6 +235,34 @@ export class TinyWorldStorage extends Contract {
       7: BigNumber;
     }>;
 
+    canMoveSnow(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "canMoveSnow(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    canMoveWater(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -280,11 +326,15 @@ export class TinyWorldStorage extends Contract {
     getPlayerInfos(overrides?: CallOverrides): Promise<{
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
       1: string[];
+      2: boolean[];
+      3: boolean[];
     }>;
 
     "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
       1: string[];
+      2: boolean[];
+      3: boolean[];
     }>;
 
     getPlayerLocation(
@@ -345,6 +395,20 @@ export class TinyWorldStorage extends Contract {
         7: string;
         8: BigNumber;
       }[];
+    }>;
+
+    isAdmin(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "isAdmin(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
     }>;
 
     perlinMax(overrides?: CallOverrides): Promise<{
@@ -546,6 +610,20 @@ export class TinyWorldStorage extends Contract {
     7: BigNumber;
   }>;
 
+  canMoveSnow(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "canMoveSnow(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  canMoveWater(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "canMoveWater(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   getCachedTile(
     coords: { x: BigNumberish; y: BigNumberish },
     overrides?: CallOverrides
@@ -601,11 +679,15 @@ export class TinyWorldStorage extends Contract {
   getPlayerInfos(overrides?: CallOverrides): Promise<{
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
     1: string[];
+    2: boolean[];
+    3: boolean[];
   }>;
 
   "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
     0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
     1: string[];
+    2: boolean[];
+    3: boolean[];
   }>;
 
   getPlayerLocation(
@@ -667,6 +749,10 @@ export class TinyWorldStorage extends Contract {
       8: BigNumber;
     }[]
   >;
+
+  isAdmin(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isAdmin(address)"(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
   perlinMax(overrides?: CallOverrides): Promise<number>;
 
@@ -815,6 +901,20 @@ export class TinyWorldStorage extends Contract {
       7: BigNumber;
     }>;
 
+    canMoveSnow(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "canMoveSnow(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    canMoveWater(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -870,11 +970,15 @@ export class TinyWorldStorage extends Contract {
     getPlayerInfos(overrides?: CallOverrides): Promise<{
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
       1: string[];
+      2: boolean[];
+      3: boolean[];
     }>;
 
     "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
       0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
       1: string[];
+      2: boolean[];
+      3: boolean[];
     }>;
 
     getPlayerLocation(
@@ -936,6 +1040,13 @@ export class TinyWorldStorage extends Contract {
         8: BigNumber;
       }[]
     >;
+
+    isAdmin(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "isAdmin(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     perlinMax(overrides?: CallOverrides): Promise<number>;
 
@@ -1053,6 +1164,20 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    canMoveSnow(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "canMoveSnow(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    canMoveWater(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -1084,6 +1209,13 @@ export class TinyWorldStorage extends Contract {
     getTouchedTiles(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getTouchedTiles()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    isAdmin(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "isAdmin(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     perlinMax(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1182,6 +1314,26 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    canMoveSnow(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "canMoveSnow(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    canMoveWater(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -1215,6 +1367,16 @@ export class TinyWorldStorage extends Contract {
     getTouchedTiles(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getTouchedTiles()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isAdmin(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isAdmin(address)"(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

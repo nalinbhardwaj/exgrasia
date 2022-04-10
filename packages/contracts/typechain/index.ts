@@ -17,6 +17,8 @@ export { TinyCactusFactory } from "./TinyCactusFactory";
 export type { TinyCactus } from "./TinyCactus";
 export { TinyCornFactory } from "./TinyCornFactory";
 export type { TinyCorn } from "./TinyCorn";
+export { TinyCowFactory } from "./TinyCowFactory";
+export type { TinyCow } from "./TinyCow";
 export { TinyFarmFactory } from "./TinyFarmFactory";
 export type { TinyFarm } from "./TinyFarm";
 export { TinyWheatFactory } from "./TinyWheatFactory";

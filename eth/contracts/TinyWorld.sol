@@ -19,7 +19,8 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         uint256 _seed,
         uint256 _worldWidth,
         uint256 _worldScale,
-        address _registryAddress
+        address _registryAddress,
+        address[] memory _admins
     ) public initializer {
         __Ownable_init();
         seed = _seed;
@@ -33,6 +34,9 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         validPlayerEmoji["mouse"] = unicode"🐭";
 
         registry = TinyWorldRegistry(address(_registryAddress));
+        for (uint256 i = 0; i < _admins.length; i++) {
+            isAdmin[_admins[i]] = true;
+        }
     }
 
     // Map parametrisation
@@ -149,7 +153,7 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
                     uint256(block.timestamp)
                 )
             )
-        ) % 8);
+        ) % 10);
         uint256 y = (uint256(
             keccak256(
                 abi.encodePacked(
@@ -158,8 +162,8 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
                     uint256(block.timestamp)
                 )
             )
-        ) % worldWidth);
-        return Coords(worldWidth - x - 1, worldWidth - y - 1);
+        ) % 30);
+        return Coords(worldWidth - x - 1, y);
     }
 
     function abs(int256 x) private pure returns (uint256) {
@@ -172,7 +176,10 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
 
     modifier isClose(Coords memory loc) {
         require(playerInited[msg.sender], "Player not inited");
-        require(dist(playerLocation[msg.sender], loc) <= 1, "Location too far");
+        require(
+            dist(playerLocation[msg.sender], loc) <= 1 || isAdmin[msg.sender],
+            "Location too far"
+        );
         _;
     }
 
@@ -197,6 +204,12 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     }
 
     function movePlayer(Coords memory coords) public isClose(coords) isInBounds(coords) {
+        Tile memory tile = getTile(coords);
+        require(
+            tile.tileType != TileType.WATER || canMoveWater[msg.sender],
+            "Cannot move to Water"
+        );
+        require(tile.tileType != TileType.SNOW || canMoveSnow[msg.sender], "Cannot move to Snow");
         playerLocation[msg.sender] = coords;
         emit PlayerUpdated(msg.sender, coords);
     }
@@ -256,5 +269,25 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         Tile memory tile = getTile(coords);
         require(tile.smartContract == msg.sender, "Not owner");
         emit TileUpdated(tile);
+    }
+
+    // Quest Master
+    function setQuestMaster(address master) public {
+        require(isAdmin[msg.sender], "Not admin");
+        questMaster = master;
+    }
+
+    function setCanMoveWater(address player, bool canMove) public {
+        require(playerInited[player], "Player not inited");
+        require(isAdmin[msg.sender], "Not quest master");
+        canMoveWater[player] = canMove;
+        emit PlayerUpdated(player, playerLocation[player]);
+    }
+
+    function setCanMoveSnow(address player, bool canMove) public {
+        require(playerInited[player], "Player not inited");
+        require(isAdmin[msg.sender], "Not quest master");
+        canMoveSnow[player] = canMove;
+        emit PlayerUpdated(player, playerLocation[player]);
     }
 }

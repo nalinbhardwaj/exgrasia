@@ -137,6 +137,20 @@
     "type": "function"
   },
   {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "canMoveSnow",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "canMoveWater",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "components": [
@@ -271,7 +285,9 @@
         "name": "",
         "type": "tuple[]"
       },
-      { "internalType": "string[]", "name": "", "type": "string[]" }
+      { "internalType": "string[]", "name": "", "type": "string[]" },
+      { "internalType": "bool[]", "name": "", "type": "bool[]" },
+      { "internalType": "bool[]", "name": "", "type": "bool[]" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -441,11 +457,19 @@
         "internalType": "address",
         "name": "_registryAddress",
         "type": "address"
-      }
+      },
+      { "internalType": "address[]", "name": "_admins", "type": "address[]" }
     ],
     "name": "initialize",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "isAdmin",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -553,6 +577,35 @@
     "name": "seed",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "player", "type": "address" },
+      { "internalType": "bool", "name": "canMove", "type": "bool" }
+    ],
+    "name": "setCanMoveSnow",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "player", "type": "address" },
+      { "internalType": "bool", "name": "canMove", "type": "bool" }
+    ],
+    "name": "setCanMoveWater",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "master", "type": "address" }
+    ],
+    "name": "setQuestMaster",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
