@@ -20,24 +20,18 @@ import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface TinyDiamondInterface extends ethers.utils.Interface {
+interface Erc20BurnableInterface extends ethers.utils.Interface {
   functions: {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
-    "approveAll(address)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
     "burnFrom(address,uint256)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
-    "mint(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "symbol()": FunctionFragment;
-    "tileABI(tuple)": FunctionFragment;
-    "tileDescription(tuple)": FunctionFragment;
-    "tileEmoji(tuple)": FunctionFragment;
-    "tileName(tuple)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
@@ -51,7 +45,6 @@ interface TinyDiamondInterface extends ethers.utils.Interface {
     functionFragment: "approve",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "approveAll", values: [string]): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
   encodeFunctionData(
@@ -67,28 +60,8 @@ interface TinyDiamondInterface extends ethers.utils.Interface {
     functionFragment: "increaseAllowance",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "mint",
-    values: [string, BigNumberish]
-  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "tileABI",
-    values: [{ x: BigNumberish; y: BigNumberish }]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tileDescription",
-    values: [{ x: BigNumberish; y: BigNumberish }]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tileEmoji",
-    values: [{ x: BigNumberish; y: BigNumberish }]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tileName",
-    values: [{ x: BigNumberish; y: BigNumberish }]
-  ): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
@@ -104,7 +77,6 @@ interface TinyDiamondInterface extends ethers.utils.Interface {
 
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "approveAll", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burnFrom", data: BytesLike): Result;
@@ -117,16 +89,8 @@ interface TinyDiamondInterface extends ethers.utils.Interface {
     functionFragment: "increaseAllowance",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tileABI", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "tileDescription",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "tileEmoji", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tileName", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -146,7 +110,7 @@ interface TinyDiamondInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
-export class TinyDiamond extends Contract {
+export class Erc20Burnable extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -157,7 +121,7 @@ export class TinyDiamond extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: TinyDiamondInterface;
+  interface: Erc20BurnableInterface;
 
   functions: {
     allowance(
@@ -185,16 +149,6 @@ export class TinyDiamond extends Contract {
     "approve(address,uint256)"(
       spender: string,
       amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    approveAll(
-      aprovee: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "approveAll(address)"(
-      aprovee: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -266,18 +220,6 @@ export class TinyDiamond extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    mint(
-      miner: string,
-      count: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "mint(address,uint256)"(
-      miner: string,
-      count: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     name(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
@@ -291,62 +233,6 @@ export class TinyDiamond extends Contract {
     }>;
 
     "symbol()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    tileABI(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "tileABI(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    tileDescription(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "tileDescription(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    tileEmoji(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "tileEmoji(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    tileName(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "tileName(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<{
       0: string;
     }>;
 
@@ -409,16 +295,6 @@ export class TinyDiamond extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  approveAll(
-    aprovee: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "approveAll(address)"(
-    aprovee: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   "balanceOf(address)"(
@@ -476,18 +352,6 @@ export class TinyDiamond extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  mint(
-    miner: string,
-    count: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "mint(address,uint256)"(
-    miner: string,
-    count: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   name(overrides?: CallOverrides): Promise<string>;
 
   "name()"(overrides?: CallOverrides): Promise<string>;
@@ -495,46 +359,6 @@ export class TinyDiamond extends Contract {
   symbol(overrides?: CallOverrides): Promise<string>;
 
   "symbol()"(overrides?: CallOverrides): Promise<string>;
-
-  tileABI(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  "tileABI(tuple)"(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  tileDescription(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  "tileDescription(tuple)"(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  tileEmoji(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  "tileEmoji(tuple)"(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  tileName(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  "tileName(tuple)"(
-    coords: { x: BigNumberish; y: BigNumberish },
-    overrides?: CallOverrides
-  ): Promise<string>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -591,13 +415,6 @@ export class TinyDiamond extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    approveAll(aprovee: string, overrides?: CallOverrides): Promise<void>;
-
-    "approveAll(address)"(
-      aprovee: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "balanceOf(address)"(
@@ -652,18 +469,6 @@ export class TinyDiamond extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    mint(
-      miner: string,
-      count: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "mint(address,uint256)"(
-      miner: string,
-      count: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     name(overrides?: CallOverrides): Promise<string>;
 
     "name()"(overrides?: CallOverrides): Promise<string>;
@@ -671,46 +476,6 @@ export class TinyDiamond extends Contract {
     symbol(overrides?: CallOverrides): Promise<string>;
 
     "symbol()"(overrides?: CallOverrides): Promise<string>;
-
-    tileABI(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "tileABI(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    tileDescription(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "tileDescription(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    tileEmoji(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "tileEmoji(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    tileName(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "tileName(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -778,13 +543,6 @@ export class TinyDiamond extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    approveAll(aprovee: string, overrides?: Overrides): Promise<BigNumber>;
-
-    "approveAll(address)"(
-      aprovee: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "balanceOf(address)"(
@@ -839,18 +597,6 @@ export class TinyDiamond extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    mint(
-      miner: string,
-      count: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "mint(address,uint256)"(
-      miner: string,
-      count: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     "name()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -858,46 +604,6 @@ export class TinyDiamond extends Contract {
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tileABI(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tileABI(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tileDescription(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tileDescription(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tileEmoji(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tileEmoji(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tileName(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tileName(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -952,16 +658,6 @@ export class TinyDiamond extends Contract {
     "approve(address,uint256)"(
       spender: string,
       amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    approveAll(
-      aprovee: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "approveAll(address)"(
-      aprovee: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1025,18 +721,6 @@ export class TinyDiamond extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    mint(
-      miner: string,
-      count: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "mint(address,uint256)"(
-      miner: string,
-      count: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "name()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1044,46 +728,6 @@ export class TinyDiamond extends Contract {
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tileABI(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "tileABI(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tileDescription(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "tileDescription(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tileEmoji(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "tileEmoji(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tileName(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "tileName(tuple)"(
-      coords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

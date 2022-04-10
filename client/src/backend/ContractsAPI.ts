@@ -51,7 +51,7 @@ import {
   loadFullTileContract,
   loadRegistryContract,
 } from './Blockchain';
-import { nullAddress } from '../utils';
+import { nullAddress, promiseWithTimeout } from '../utils';
 
 export type RawTile = Awaited<ReturnType<TinyWorld['getCachedTile(tuple)']>>;
 export type RawCoords = Awaited<ReturnType<TinyWorld['playerLocation']>>;
@@ -270,6 +270,15 @@ export class ContractsAPI extends EventEmitter {
     };
   }
 
+  async makeStubCalls(tileContract: Contract, coords: WorldCoords) {
+    const emoji = await this.makeCall<string>(tileContract.tileEmoji, [coords]);
+    const name = await this.makeCall<string>(tileContract.tileName, [coords]);
+    const description = await this.makeCall<string>(tileContract.tileDescription, [coords]);
+    const extendedAbiURL = await this.makeCall<string>(tileContract.tileABI, [coords]);
+    const extendedAbi = await fetch(extendedAbiURL).then((res) => res.json());
+    return { emoji, name, description, extendedAbi };
+  }
+
   public async getTileContractMetaData(
     addr: EthAddress,
     coords: WorldCoords
@@ -283,16 +292,15 @@ export class ContractsAPI extends EventEmitter {
     console.log('addr', addr);
     let tileContract = await this.getStubTileContract(addr);
     let emoji = '🔮';
-    let name = 'unknown';
-    let description = 'mystery tile';
-    let extendedAbiURL = '';
+    let name = 'Unknown';
+    let description = 'This tile has an air of mystery to it';
     let extendedAbi: any[] = [];
     try {
-      emoji = await this.makeCall<string>(tileContract.tileEmoji, [coords]);
-      name = await this.makeCall<string>(tileContract.tileName, [coords]);
-      description = await this.makeCall<string>(tileContract.tileDescription, [coords]);
-      extendedAbiURL = await this.makeCall<string>(tileContract.tileABI, [coords]);
-      extendedAbi = await fetch(extendedAbiURL).then((res) => res.json());
+      const result = await promiseWithTimeout(this.makeStubCalls(tileContract, coords), 5000);
+      emoji = result.emoji;
+      name = result.name;
+      description = result.description;
+      extendedAbi = result.extendedAbi;
     } catch (e) {
       console.log('error parsing', e);
     }

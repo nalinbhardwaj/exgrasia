@@ -24,13 +24,20 @@ interface TinyGoldInterface extends ethers.utils.Interface {
   functions: {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
+    "approveAll(address)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "burn(uint256)": FunctionFragment;
+    "burnFrom(address,uint256)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
-    "mint(address)": FunctionFragment;
+    "mint(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "symbol()": FunctionFragment;
+    "tileABI(tuple)": FunctionFragment;
+    "tileDescription(tuple)": FunctionFragment;
+    "tileEmoji(tuple)": FunctionFragment;
+    "tileName(tuple)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
@@ -44,7 +51,13 @@ interface TinyGoldInterface extends ethers.utils.Interface {
     functionFragment: "approve",
     values: [string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "approveAll", values: [string]): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+  encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "burnFrom",
+    values: [string, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
@@ -54,9 +67,28 @@ interface TinyGoldInterface extends ethers.utils.Interface {
     functionFragment: "increaseAllowance",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "mint", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "mint",
+    values: [string, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "tileABI",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tileDescription",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tileEmoji",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tileName",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
@@ -72,7 +104,10 @@ interface TinyGoldInterface extends ethers.utils.Interface {
 
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "approveAll", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "burnFrom", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
@@ -85,6 +120,13 @@ interface TinyGoldInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "tileABI", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "tileDescription",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "tileEmoji", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "tileName", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -146,6 +188,16 @@ export class TinyGold extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    approveAll(
+      aprovee: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "approveAll(address)"(
+      aprovee: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     balanceOf(
       account: string,
       overrides?: CallOverrides
@@ -159,6 +211,28 @@ export class TinyGold extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
+
+    burn(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "burn(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    burnFrom(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "burnFrom(address,uint256)"(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     decimals(overrides?: CallOverrides): Promise<{
       0: number;
@@ -192,10 +266,15 @@ export class TinyGold extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    mint(miner: string, overrides?: Overrides): Promise<ContractTransaction>;
-
-    "mint(address)"(
+    mint(
       miner: string,
+      count: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "mint(address,uint256)"(
+      miner: string,
+      count: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -212,6 +291,62 @@ export class TinyGold extends Contract {
     }>;
 
     "symbol()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    tileABI(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "tileABI(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    tileDescription(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "tileDescription(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    tileEmoji(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "tileEmoji(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    tileName(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "tileName(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
@@ -274,12 +409,44 @@ export class TinyGold extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  approveAll(
+    aprovee: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "approveAll(address)"(
+    aprovee: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   "balanceOf(address)"(
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  burn(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "burn(uint256)"(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  burnFrom(
+    account: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "burnFrom(address,uint256)"(
+    account: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -309,10 +476,15 @@ export class TinyGold extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  mint(miner: string, overrides?: Overrides): Promise<ContractTransaction>;
-
-  "mint(address)"(
+  mint(
     miner: string,
+    count: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "mint(address,uint256)"(
+    miner: string,
+    count: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -323,6 +495,46 @@ export class TinyGold extends Contract {
   symbol(overrides?: CallOverrides): Promise<string>;
 
   "symbol()"(overrides?: CallOverrides): Promise<string>;
+
+  tileABI(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "tileABI(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  tileDescription(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "tileDescription(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  tileEmoji(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "tileEmoji(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  tileName(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "tileName(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -379,12 +591,38 @@ export class TinyGold extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    approveAll(aprovee: string, overrides?: CallOverrides): Promise<void>;
+
+    "approveAll(address)"(
+      aprovee: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "balanceOf(address)"(
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    burn(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    "burn(uint256)"(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    burnFrom(
+      account: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "burnFrom(address,uint256)"(
+      account: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -414,9 +652,17 @@ export class TinyGold extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    mint(miner: string, overrides?: CallOverrides): Promise<void>;
+    mint(
+      miner: string,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    "mint(address)"(miner: string, overrides?: CallOverrides): Promise<void>;
+    "mint(address,uint256)"(
+      miner: string,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -425,6 +671,46 @@ export class TinyGold extends Contract {
     symbol(overrides?: CallOverrides): Promise<string>;
 
     "symbol()"(overrides?: CallOverrides): Promise<string>;
+
+    tileABI(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "tileABI(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    tileDescription(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "tileDescription(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    tileEmoji(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "tileEmoji(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    tileName(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "tileName(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -492,11 +778,37 @@ export class TinyGold extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    approveAll(aprovee: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "approveAll(address)"(
+      aprovee: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "balanceOf(address)"(
       account: string,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    burn(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+
+    "burn(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    burnFrom(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "burnFrom(address,uint256)"(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
@@ -527,9 +839,17 @@ export class TinyGold extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    mint(miner: string, overrides?: Overrides): Promise<BigNumber>;
+    mint(
+      miner: string,
+      count: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "mint(address)"(miner: string, overrides?: Overrides): Promise<BigNumber>;
+    "mint(address,uint256)"(
+      miner: string,
+      count: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -538,6 +858,46 @@ export class TinyGold extends Contract {
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    tileABI(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tileABI(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tileDescription(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tileDescription(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tileEmoji(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tileEmoji(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tileName(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tileName(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -595,6 +955,16 @@ export class TinyGold extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    approveAll(
+      aprovee: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "approveAll(address)"(
+      aprovee: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     balanceOf(
       account: string,
       overrides?: CallOverrides
@@ -603,6 +973,28 @@ export class TinyGold extends Contract {
     "balanceOf(address)"(
       account: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    burn(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "burn(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    burnFrom(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "burnFrom(address,uint256)"(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -633,10 +1025,15 @@ export class TinyGold extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    mint(miner: string, overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "mint(address)"(
+    mint(
       miner: string,
+      count: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "mint(address,uint256)"(
+      miner: string,
+      count: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -647,6 +1044,46 @@ export class TinyGold extends Contract {
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    tileABI(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tileABI(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tileDescription(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tileDescription(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tileEmoji(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tileEmoji(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tileName(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tileName(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

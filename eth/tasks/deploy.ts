@@ -53,6 +53,12 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
     testTileContractAddress: tileContracts.testTileContract.address,
     tinyFishContractAddress: tileContracts.tinyFishingContract.address,
     tinyFarmContractAddress: tileContracts.tinyFarmContract.address,
+    tinyWheatContractAddress: tileContracts.tinyWheatContract.address,
+    tinyCornContractAddress: tileContracts.tinyCornContract.address,
+    tinyCactusContractAddress: tileContracts.tinyCactusContract.address,
+    tinyRanchContractAddress: tileContracts.tinyRanchContract.address,
+    tinyMilkContractAddress: tileContracts.tinyMilkContract.address,
+    tinyEggContractAddress: tileContracts.tinyEggContract.address,
     tinyMineContractAddress: tileContracts.tinyMineContract.address,
   });
 
@@ -75,6 +81,12 @@ async function deploySave(
     testTileContractAddress: string;
     tinyFishContractAddress: string;
     tinyFarmContractAddress: string;
+    tinyWheatContractAddress: string;
+    tinyCornContractAddress: string;
+    tinyCactusContractAddress: string;
+    tinyRanchContractAddress: string;
+    tinyMilkContractAddress: string;
+    tinyEggContractAddress: string;
     tinyMineContractAddress: string;
   },
   hre: HardhatRuntimeEnvironment
@@ -138,6 +150,12 @@ async function deploySave(
    export const TESTING_CONTRACT_ADDRESS = '${args.testTileContractAddress}';
    export const FISHING_CONTRACT_ADDRESS = '${args.tinyFishContractAddress}';
    export const FARM_CONTRACT_ADDRESS = '${args.tinyFarmContractAddress}';
+   export const WHEAT_CONTRACT_ADDRESS = '${args.tinyWheatContractAddress}';
+   export const CORN_CONTRACT_ADDRESS = '${args.tinyCornContractAddress}';
+   export const CACTUS_CONTRACT_ADDRESS = '${args.tinyCactusContractAddress}';
+   export const RANCH_CONTRACT_ADDRESS = '${args.tinyRanchContractAddress}';
+   export const MILK_CONTRACT_ADDRESS = '${args.tinyMilkContractAddress}';
+   export const EGG_CONTRACT_ADDRESS = '${args.tinyEggContractAddress}';
    export const MINE_CONTRACT_ADDRESS = '${args.tinyMineContractAddress}';
    `,
     { ...options, parser: 'babel-ts' }
@@ -255,6 +273,29 @@ async function deployTileContracts(
   const tinyFarmContract = await TinyFarmContractFactory.deploy(args.coreAddress);
   await tinyFarmContract.deployTransaction.wait();
 
+  const farmContract = await hre.ethers.getContractAt('TinyFarm', tinyFarmContract.address);
+  const farmCrops: Contract[] = await Promise.all(
+    (
+      await farmContract.getCrops()
+    ).map(async (addr: string) => await hre.ethers.getContractAt('TinyERC20', addr))
+  );
+
+  const TinyRanchContractFactory = await hre.ethers.getContractFactory('TinyRanch');
+  const tinyRanchContract = await TinyRanchContractFactory.deploy(
+    args.coreAddress,
+    farmCrops[0].address,
+    farmCrops[1].address,
+    farmCrops[2].address
+  );
+  await tinyRanchContract.deployTransaction.wait();
+
+  const ranchContract = await hre.ethers.getContractAt('TinyRanch', tinyRanchContract.address);
+  const ranchProduce: Contract[] = await Promise.all(
+    (
+      await ranchContract.getProduce()
+    ).map(async (addr: string) => await hre.ethers.getContractAt('TinyERC20', addr))
+  );
+
   const TinyMineContractFactory = await hre.ethers.getContractFactory('TinyMine', {
     libraries: {
       Perlin: args.perlinAddress,
@@ -267,6 +308,12 @@ async function deployTileContracts(
     testTileContract: tileContract as StubTileContract,
     tinyFishingContract: tinyFishingContract as StubTileContract,
     tinyFarmContract: tinyFarmContract as StubTileContract,
+    tinyWheatContract: farmCrops[0] as StubTileContract,
+    tinyCornContract: farmCrops[1] as StubTileContract,
+    tinyCactusContract: farmCrops[2] as StubTileContract,
+    tinyRanchContract: tinyRanchContract as StubTileContract,
+    tinyMilkContract: ranchProduce[0] as StubTileContract,
+    tinyEggContract: ranchProduce[1] as StubTileContract,
     tinyMineContract: tinyMineContract as StubTileContract,
   };
 }

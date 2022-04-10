@@ -5,14 +5,14 @@
 import { Contract, Signer } from "ethers";
 import { Provider } from "@ethersproject/providers";
 
-import type { TinyErc20 } from "./TinyErc20";
+import type { Erc20Burnable } from "./Erc20Burnable";
 
-export class TinyErc20Factory {
+export class Erc20BurnableFactory {
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): TinyErc20 {
-    return new Contract(address, _abi, signerOrProvider) as TinyErc20;
+  ): Erc20Burnable {
+    return new Contract(address, _abi, signerOrProvider) as Erc20Burnable;
   }
 }
 
@@ -112,19 +112,6 @@ const _abi = [
         type: "bool",
       },
     ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "aprovee",
-        type: "address",
-      },
-    ],
-    name: "approveAll",
-    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -240,24 +227,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "count",
-        type: "uint256",
-      },
-    ],
-    name: "mint",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
     inputs: [],
     name: "name",
     outputs: [
@@ -273,130 +242,6 @@ const _abi = [
   {
     inputs: [],
     name: "symbol",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "x",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "y",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct Coords",
-        name: "coords",
-        type: "tuple",
-      },
-    ],
-    name: "tileABI",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "x",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "y",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct Coords",
-        name: "coords",
-        type: "tuple",
-      },
-    ],
-    name: "tileDescription",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "x",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "y",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct Coords",
-        name: "coords",
-        type: "tuple",
-      },
-    ],
-    name: "tileEmoji",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "x",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "y",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct Coords",
-        name: "coords",
-        type: "tuple",
-      },
-    ],
-    name: "tileName",
     outputs: [
       {
         internalType: "string",

@@ -20,24 +20,37 @@ import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface TinyFarmInterface extends ethers.utils.Interface {
+interface TinyRanchInterface extends ethers.utils.Interface {
   functions: {
-    "getCrops()": FunctionFragment;
-    "harvest(tuple)": FunctionFragment;
-    "plant(string,tuple)": FunctionFragment;
+    "egg(tuple)": FunctionFragment;
+    "feed(tuple)": FunctionFragment;
+    "getProduce()": FunctionFragment;
+    "milk(tuple)": FunctionFragment;
+    "startRanch(string,tuple)": FunctionFragment;
     "tileABI(tuple)": FunctionFragment;
     "tileDescription(tuple)": FunctionFragment;
     "tileEmoji(tuple)": FunctionFragment;
     "tileName(tuple)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "getCrops", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "harvest",
+    functionFragment: "egg",
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(
-    functionFragment: "plant",
+    functionFragment: "feed",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getProduce",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "milk",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "startRanch",
     values: [string, { x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(
@@ -57,9 +70,11 @@ interface TinyFarmInterface extends ethers.utils.Interface {
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
 
-  decodeFunctionResult(functionFragment: "getCrops", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "harvest", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "plant", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "egg", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "feed", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getProduce", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "milk", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "startRanch", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tileABI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "tileDescription",
@@ -71,7 +86,7 @@ interface TinyFarmInterface extends ethers.utils.Interface {
   events: {};
 }
 
-export class TinyFarm extends Contract {
+export class TinyRanch extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -82,39 +97,57 @@ export class TinyFarm extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: TinyFarmInterface;
+  interface: TinyRanchInterface;
 
   functions: {
-    getCrops(overrides?: CallOverrides): Promise<{
+    egg(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "egg(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    feed(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "feed(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    getProduce(overrides?: CallOverrides): Promise<{
       0: string;
       1: string;
-      2: string;
     }>;
 
-    "getCrops()"(overrides?: CallOverrides): Promise<{
+    "getProduce()"(overrides?: CallOverrides): Promise<{
       0: string;
       1: string;
-      2: string;
     }>;
 
-    harvest(
+    milk(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "harvest(tuple)"(
+    "milk(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    plant(
-      farmType: string,
+    startRanch(
+      ranchType: string,
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "plant(string,tuple)"(
-      farmType: string,
+    "startRanch(string,tuple)"(
+      ranchType: string,
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -176,36 +209,54 @@ export class TinyFarm extends Contract {
     }>;
   };
 
-  getCrops(overrides?: CallOverrides): Promise<{
+  egg(
+    selfCoords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "egg(tuple)"(
+    selfCoords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  feed(
+    selfCoords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "feed(tuple)"(
+    selfCoords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  getProduce(overrides?: CallOverrides): Promise<{
     0: string;
     1: string;
-    2: string;
   }>;
 
-  "getCrops()"(overrides?: CallOverrides): Promise<{
+  "getProduce()"(overrides?: CallOverrides): Promise<{
     0: string;
     1: string;
-    2: string;
   }>;
 
-  harvest(
+  milk(
     selfCoords: { x: BigNumberish; y: BigNumberish },
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "harvest(tuple)"(
+  "milk(tuple)"(
     selfCoords: { x: BigNumberish; y: BigNumberish },
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  plant(
-    farmType: string,
+  startRanch(
+    ranchType: string,
     selfCoords: { x: BigNumberish; y: BigNumberish },
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "plant(string,tuple)"(
-    farmType: string,
+  "startRanch(string,tuple)"(
+    ranchType: string,
     selfCoords: { x: BigNumberish; y: BigNumberish },
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -251,36 +302,54 @@ export class TinyFarm extends Contract {
   ): Promise<string>;
 
   callStatic: {
-    getCrops(overrides?: CallOverrides): Promise<{
+    egg(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "egg(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    feed(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "feed(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    getProduce(overrides?: CallOverrides): Promise<{
       0: string;
       1: string;
-      2: string;
     }>;
 
-    "getCrops()"(overrides?: CallOverrides): Promise<{
+    "getProduce()"(overrides?: CallOverrides): Promise<{
       0: string;
       1: string;
-      2: string;
     }>;
 
-    harvest(
+    milk(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "harvest(tuple)"(
+    "milk(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<void>;
 
-    plant(
-      farmType: string,
+    startRanch(
+      ranchType: string,
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "plant(string,tuple)"(
-      farmType: string,
+    "startRanch(string,tuple)"(
+      ranchType: string,
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<void>;
@@ -329,28 +398,48 @@ export class TinyFarm extends Contract {
   filters: {};
 
   estimateGas: {
-    getCrops(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getCrops()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    harvest(
+    egg(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "harvest(tuple)"(
+    "egg(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    plant(
-      farmType: string,
+    feed(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "plant(string,tuple)"(
-      farmType: string,
+    "feed(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    getProduce(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getProduce()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    milk(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "milk(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    startRanch(
+      ranchType: string,
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "startRanch(string,tuple)"(
+      ranchType: string,
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -397,28 +486,48 @@ export class TinyFarm extends Contract {
   };
 
   populateTransaction: {
-    getCrops(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "getCrops()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    harvest(
+    egg(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "harvest(tuple)"(
+    "egg(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    plant(
-      farmType: string,
+    feed(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "plant(string,tuple)"(
-      farmType: string,
+    "feed(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    getProduce(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getProduce()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    milk(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "milk(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    startRanch(
+      ranchType: string,
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "startRanch(string,tuple)"(
+      ranchType: string,
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

@@ -21,8 +21,8 @@ contract TinyIron is TinyERC20 {
         _;
     }
 
-    function mint(address miner) public override onlyMineshaft {
-        _mint(miner, 10**18);
+    function mint(address miner, uint256 count) public override onlyMineshaft {
+        _mint(miner, count * 10**18);
     }
 }
 
@@ -40,8 +40,8 @@ contract TinyGold is TinyERC20 {
         _;
     }
 
-    function mint(address miner) public override onlyMineshaft {
-        _mint(miner, 10**18);
+    function mint(address miner, uint256 count) public override onlyMineshaft {
+        _mint(miner, count * 10**18);
     }
 }
 
@@ -59,8 +59,8 @@ contract TinyDiamond is TinyERC20 {
         _;
     }
 
-    function mint(address miner) public override onlyMineshaft {
-        _mint(miner, 10**18);
+    function mint(address miner, uint256 count) public override onlyMineshaft {
+        _mint(miner, count * 10**18);
     }
 }
 
@@ -211,7 +211,7 @@ contract TinyMine is ITileContract {
             currentCachedTiles[msg.sender][seeder][newLoc.x][newLoc.y] = MazeTileType.EMPTY;
         } else {
             if (getMazeValue(newLoc.x, newLoc.y, seeder) == MazeTileType.RESOURCE) {
-                currentResource[msg.sender].mint(msg.sender);
+                currentResource[msg.sender].mint(msg.sender, 1);
                 currentCachedTiles[msg.sender][seeder][newLoc.x][newLoc.y] = MazeTileType.EMPTY;
             }
             currentLocation[msg.sender][seeder] = newLoc;

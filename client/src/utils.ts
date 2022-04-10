@@ -146,3 +146,19 @@ export const prettifyAddress = async (address: EthAddress) => {
 export const distance = (a: WorldCoords, b: WorldCoords) => {
   return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 };
+
+export const promiseWithTimeout = function <T>(
+  promise: Promise<T>,
+  ms: number,
+  timeoutError = new Error('Promise timed out')
+): Promise<T> {
+  // create a promise that rejects in milliseconds
+  const timeout = new Promise<never>((_, reject) => {
+    setTimeout(() => {
+      reject(timeoutError);
+    }, ms);
+  });
+
+  // returns a race between timeout and the passed promise
+  return Promise.race<T>([promise, timeout]);
+};

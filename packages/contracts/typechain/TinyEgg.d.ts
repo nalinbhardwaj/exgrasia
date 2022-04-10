@@ -20,7 +20,7 @@ import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface TinyDiamondInterface extends ethers.utils.Interface {
+interface TinyEggInterface extends ethers.utils.Interface {
   functions: {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
@@ -146,7 +146,7 @@ interface TinyDiamondInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
-export class TinyDiamond extends Contract {
+export class TinyEgg extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -157,7 +157,7 @@ export class TinyDiamond extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: TinyDiamondInterface;
+  interface: TinyEggInterface;
 
   functions: {
     allowance(
@@ -267,13 +267,13 @@ export class TinyDiamond extends Contract {
     ): Promise<ContractTransaction>;
 
     mint(
-      miner: string,
+      farmer: string,
       count: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "mint(address,uint256)"(
-      miner: string,
+      farmer: string,
       count: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -477,13 +477,13 @@ export class TinyDiamond extends Contract {
   ): Promise<ContractTransaction>;
 
   mint(
-    miner: string,
+    farmer: string,
     count: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "mint(address,uint256)"(
-    miner: string,
+    farmer: string,
     count: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -653,13 +653,13 @@ export class TinyDiamond extends Contract {
     ): Promise<boolean>;
 
     mint(
-      miner: string,
+      farmer: string,
       count: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "mint(address,uint256)"(
-      miner: string,
+      farmer: string,
       count: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -840,13 +840,13 @@ export class TinyDiamond extends Contract {
     ): Promise<BigNumber>;
 
     mint(
-      miner: string,
+      farmer: string,
       count: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "mint(address,uint256)"(
-      miner: string,
+      farmer: string,
       count: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -1026,13 +1026,13 @@ export class TinyDiamond extends Contract {
     ): Promise<PopulatedTransaction>;
 
     mint(
-      miner: string,
+      farmer: string,
       count: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "mint(address,uint256)"(
-      miner: string,
+      farmer: string,
       count: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

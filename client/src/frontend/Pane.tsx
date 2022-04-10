@@ -435,12 +435,14 @@ function ContractBody(props: { coords: WorldCoords; gm: GameManager; contractTil
       {[...Array(expanders)].map((_, i) => {
         return (
           <div key={i}>
-            <ContractInstance
-              key={i}
-              coords={props.coords}
-              gm={props.gm}
-              contractTile={props.contractTile}
-            />
+            {props.contractTile.smartContractMetaData.extendedAbi.length > 0 && (
+              <ContractInstance
+                key={i}
+                coords={props.coords}
+                gm={props.gm}
+                contractTile={props.contractTile}
+              />
+            )}
             {i < expanders - 1 ? <Spacer></Spacer> : null}
           </div>
         );
