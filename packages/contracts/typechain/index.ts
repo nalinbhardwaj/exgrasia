@@ -29,6 +29,8 @@ export { TinyWheatFactory } from "./TinyWheatFactory";
 export type { TinyWheat } from "./TinyWheat";
 export { TinyFishFactory } from "./TinyFishFactory";
 export type { TinyFish } from "./TinyFish";
+export { TinyOpenSeaFactory } from "./TinyOpenSeaFactory";
+export type { TinyOpenSea } from "./TinyOpenSea";
 export { TinyDiamondFactory } from "./TinyDiamondFactory";
 export type { TinyDiamond } from "./TinyDiamond";
 export { TinyGoldFactory } from "./TinyGoldFactory";

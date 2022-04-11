@@ -17,6 +17,21 @@ abstract contract TinyERC20 is ERC20Burnable, ITileContract {
         connectedWorld = _connectedWorld;
     }
 
+    function isContract(address addr) internal view returns (bool) {
+        return addr.code.length > 0;
+    }
+
+    function getAddressOrContractLocations(address addr) internal view returns (Coords[] memory) {
+        if (isContract(addr)) {
+            return connectedWorld.getContractLocations(addr);
+        } else {
+            require(connectedWorld.playerInited(addr), "addr is not an exgrasia player");
+            Coords[] memory ret = new Coords[](1);
+            ret[0] = connectedWorld.getPlayerLocation(addr);
+            return ret;
+        }
+    }
+
     function _beforeTokenTransfer(
         address from,
         address to,
@@ -24,15 +39,19 @@ abstract contract TinyERC20 is ERC20Burnable, ITileContract {
     ) internal override {
         super._beforeTokenTransfer(from, to, amount);
         if (from == address(0) || to == address(0)) return;
-        require(connectedWorld.playerInited(from), "from is not an exgrasia player");
-        require(connectedWorld.playerInited(to), "to is not an exgrasia player");
-        require(
-            connectedWorld.dist(
-                connectedWorld.getPlayerLocation(from),
-                connectedWorld.getPlayerLocation(to)
-            ) <= 1,
-            "Players are too far"
-        );
+        Coords[] memory fromLocations = getAddressOrContractLocations(from);
+        Coords[] memory toLocations = getAddressOrContractLocations(to);
+        bool satisfactory = false;
+        for (uint256 i = 0; i < fromLocations.length; i++) {
+            for (uint256 j = 0; j < toLocations.length; j++) {
+                if (connectedWorld.dist(fromLocations[i], toLocations[j]) <= 1) {
+                    satisfactory = true;
+                    break;
+                }
+            }
+            if (satisfactory) break;
+        }
+        require(satisfactory, "Transfer is only allowed between adjacent tiles");
     }
 
     function mint(address to, uint256 count) public virtual;
@@ -80,21 +99,40 @@ abstract contract TinyERC721 is ERC721Enumerable {
         connectedWorld = _connectedWorld;
     }
 
+    function isContract(address addr) internal view returns (bool) {
+        return addr.code.length > 0;
+    }
+
+    function getAddressOrContractLocations(address addr) internal view returns (Coords[] memory) {
+        if (isContract(addr)) {
+            return connectedWorld.getContractLocations(addr);
+        } else {
+            require(connectedWorld.playerInited(addr), "addr is not an exgrasia player");
+            Coords[] memory ret = new Coords[](1);
+            ret[0] = connectedWorld.getPlayerLocation(addr);
+            return ret;
+        }
+    }
+
     function _beforeTokenTransfer(
         address from,
         address to,
-        uint256 tokenID
+        uint256 amount
     ) internal override {
-        super._beforeTokenTransfer(from, to, tokenID);
+        super._beforeTokenTransfer(from, to, amount);
         if (from == address(0) || to == address(0)) return;
-        require(connectedWorld.playerInited(from), "from is not an exgrasia player");
-        require(connectedWorld.playerInited(to), "to is not an exgrasia player");
-        require(
-            connectedWorld.dist(
-                connectedWorld.getPlayerLocation(from),
-                connectedWorld.getPlayerLocation(to)
-            ) <= 1,
-            "Players are too far"
-        );
+        Coords[] memory fromLocations = getAddressOrContractLocations(from);
+        Coords[] memory toLocations = getAddressOrContractLocations(to);
+        bool satisfactory = false;
+        for (uint256 i = 0; i < fromLocations.length; i++) {
+            for (uint256 j = 0; j < toLocations.length; j++) {
+                if (connectedWorld.dist(fromLocations[i], toLocations[j]) <= 1) {
+                    satisfactory = true;
+                    break;
+                }
+            }
+            if (satisfactory) break;
+        }
+        require(satisfactory, "Transfer is only allowed between adjacent tiles");
     }
 }

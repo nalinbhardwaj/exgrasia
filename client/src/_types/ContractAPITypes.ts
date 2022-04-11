@@ -1,4 +1,5 @@
 import { EthAddress, Tile, TileType, WorldCoords } from 'common-types';
+import { BigNumber } from 'ethers';
 
 export const enum ContractEvent {
   TileUpdated = 'TileUpdated',
@@ -72,6 +73,7 @@ export type UnconfirmedTileTx = TxIntent & {
   addr: EthAddress;
   abi: any[];
   args: any;
+  value: BigNumber | undefined;
 };
 
 export type SubmittedTileCall = UnconfirmedTileTx & SubmittedTx;

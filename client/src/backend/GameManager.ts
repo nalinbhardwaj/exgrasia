@@ -19,6 +19,8 @@ import {
   isUnconfirmedOwnTile,
   isUnconfirmedTileTx,
 } from '../_types/ContractAPITypes';
+import { hexValue } from 'ethers/lib/utils';
+import { BigNumber } from 'ethers';
 
 class GameManager extends EventEmitter {
   /**
@@ -372,7 +374,12 @@ class GameManager extends EventEmitter {
     return this;
   }
 
-  public async tileTx(coords: WorldCoords, methodName: string, args: any) {
+  public async tileTx(
+    coords: WorldCoords,
+    methodName: string,
+    args: any,
+    value: BigNumber | undefined
+  ) {
     if (!this.account) {
       throw new Error('no account set');
     }
@@ -380,10 +387,11 @@ class GameManager extends EventEmitter {
     const actionId = getRandomActionId();
     const txIntent: UnconfirmedTileTx = {
       actionId,
-      methodName: methodName,
+      methodName,
       addr: this.tiles[coords.x][coords.y].smartContract,
       abi: this.tiles[coords.x][coords.y].smartContractMetaData.extendedAbi,
-      args: args,
+      args,
+      value,
     };
     this.onTxIntent(txIntent);
     this.contractsAPI.tileTx(txIntent).catch((err) => {

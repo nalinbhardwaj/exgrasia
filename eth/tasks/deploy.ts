@@ -52,6 +52,7 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
     gettersAddress,
     testTileContractAddress: tileContracts.testTileContract.address,
     tinyFishContractAddress: tileContracts.tinyFishingContract.address,
+    tinyOpenSeaContractAddress: tileContracts.tinyOpenSeaContract.address,
     tinyFarmContractAddress: tileContracts.tinyFarmContract.address,
     tinyWheatContractAddress: tileContracts.tinyWheatContract.address,
     tinyCornContractAddress: tileContracts.tinyCornContract.address,
@@ -80,6 +81,7 @@ async function deploySave(
     registryAddress: string;
     testTileContractAddress: string;
     tinyFishContractAddress: string;
+    tinyOpenSeaContractAddress: string;
     tinyFarmContractAddress: string;
     tinyWheatContractAddress: string;
     tinyCornContractAddress: string;
@@ -149,6 +151,7 @@ async function deploySave(
    */
    export const TESTING_CONTRACT_ADDRESS = '${args.testTileContractAddress}';
    export const FISHING_CONTRACT_ADDRESS = '${args.tinyFishContractAddress}';
+   export const OPENSEA_MARKET_CONTRACT_ADDRESS = '${args.tinyOpenSeaContractAddress}';
    export const FARM_CONTRACT_ADDRESS = '${args.tinyFarmContractAddress}';
    export const WHEAT_CONTRACT_ADDRESS = '${args.tinyWheatContractAddress}';
    export const CORN_CONTRACT_ADDRESS = '${args.tinyCornContractAddress}';
@@ -269,6 +272,13 @@ async function deployTileContracts(
   const tinyFishingContract = await TinyFishingContractFactory.deploy(args.coreAddress);
   await tinyFishingContract.deployTransaction.wait();
 
+  const TinyOpenSeaContractFactory = await hre.ethers.getContractFactory('TinyOpenSea');
+  const tinyOpenSeaContract = await TinyOpenSeaContractFactory.deploy(
+    args.coreAddress,
+    tinyFishingContract.address
+  );
+  await tinyOpenSeaContract.deployTransaction.wait();
+
   const TinyFarmContractFactory = await hre.ethers.getContractFactory('TinyFarm');
   const tinyFarmContract = await TinyFarmContractFactory.deploy(args.coreAddress);
   await tinyFarmContract.deployTransaction.wait();
@@ -307,6 +317,7 @@ async function deployTileContracts(
   return {
     testTileContract: tileContract as StubTileContract,
     tinyFishingContract: tinyFishingContract as StubTileContract,
+    tinyOpenSeaContract: tinyOpenSeaContract as StubTileContract,
     tinyFarmContract: tinyFarmContract as StubTileContract,
     tinyWheatContract: farmCrops[0] as StubTileContract,
     tinyCornContract: farmCrops[1] as StubTileContract,

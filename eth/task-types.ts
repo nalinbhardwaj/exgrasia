@@ -22,6 +22,7 @@ export interface LibraryContracts {
 export interface TileContracts {
   testTileContract: StubTileContract;
   tinyFishingContract: StubTileContract;
+  tinyOpenSeaContract: StubTileContract;
   tinyFarmContract: StubTileContract;
   tinyWheatContract: StubTileContract;
   tinyCornContract: StubTileContract;

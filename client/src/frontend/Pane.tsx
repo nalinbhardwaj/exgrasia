@@ -75,6 +75,7 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
   const [result, setResult] = useState<any>(undefined);
   const [error, setError] = useState<any>(undefined);
   const [inputs, setInputs] = useState<Map<number, string>>(new Map());
+  const [value, setValue] = useState<string | undefined>(undefined);
   const [buttonState, setButtonState] = useState<'none' | 'loading' | 'success' | 'reverted'>(
     'none'
   );
@@ -84,6 +85,7 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
     selectedFunc.stateMutability === 'view' ||
     selectedFunc.stateMutability === 'pure' ||
     selectedFunc.constant;
+  const selectedFuncPayable = selectedFunc.stateMutability === 'payable';
 
   const extractDataDefault = (item: any) => {
     const ret: any = {};
@@ -159,7 +161,14 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
     if (selectedFuncLookupOnly) {
       setResult(await props.gm.tileCall(props.coords, selectedFunc.name, moddedInput));
     } else {
-      setActionId(await props.gm.tileTx(props.coords, selectedFunc.name, moddedInput));
+      setActionId(
+        await props.gm.tileTx(
+          props.coords,
+          selectedFunc.name,
+          moddedInput,
+          value !== undefined ? ethers.utils.parseEther(value) : undefined
+        )
+      );
     }
   };
 
@@ -389,6 +398,23 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
           )
         );
       })}
+      {selectedFuncPayable && (
+        <Row css={{ margin: '$4' }}>
+          <Input
+            size='sm'
+            label='Value'
+            placeholder='ETH'
+            value={value?.toString() || ''}
+            status='default'
+            onChange={(event) => {
+              setValue(event.target.value);
+            }}
+            css={{
+              $$inputPlaceholderColor: '$colors$foreground',
+            }}
+          />
+        </Row>
+      )}
       <Row css={{ margin: '$4' }}>
         <Button color='warning' flat auto rounded onClick={handleClick} css={{ width: '100%' }}>
           {selectedFuncLookupOnly ? 'call' : prettifyButtonState()}
@@ -519,7 +545,6 @@ function Body(props: BodyProps) {
   const handleChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setCurAddr(event.target.value);
   };
-  // Example contract addr: 0xA1cf9870677Bb213991DDdE342a5CE412c0f676D
   return (
     <>
       {!tooFar ? (

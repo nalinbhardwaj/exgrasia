@@ -375,12 +375,14 @@ export class ContractsAPI extends EventEmitter {
     }
 
     const tileContract = await this.getFullTileContract(action.addr, action.abi);
+    const overrides = action.value !== undefined ? { value: action.value } : undefined;
 
     const tx = this.txExecutor.queueTransaction(
       action.actionId,
       tileContract,
       action.methodName,
-      action.args
+      action.args,
+      overrides
     );
     const unminedTestCallTx: SubmittedTileCall = {
       ...action,

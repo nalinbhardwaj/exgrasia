@@ -25,6 +25,7 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     "canMoveSnow(address)": FunctionFragment;
     "canMoveWater(address)": FunctionFragment;
     "getCachedTile(tuple)": FunctionFragment;
+    "getContractLocations(address)": FunctionFragment;
     "getPlayerIds()": FunctionFragment;
     "getPlayerInfos()": FunctionFragment;
     "getPlayerLocation(address)": FunctionFragment;
@@ -56,6 +57,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getCachedTile",
     values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getContractLocations",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "getPlayerIds",
@@ -125,6 +130,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getCachedTile",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getContractLocations",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -313,6 +322,20 @@ export class TinyWorldStorage extends Contract {
         7: string;
         8: BigNumber;
       };
+    }>;
+
+    getContractLocations(
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
+    }>;
+
+    "getContractLocations(address)"(
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: { x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[];
     }>;
 
     getPlayerIds(overrides?: CallOverrides): Promise<{
@@ -672,6 +695,16 @@ export class TinyWorldStorage extends Contract {
     8: BigNumber;
   }>;
 
+  getContractLocations(
+    contractAddress: string,
+    overrides?: CallOverrides
+  ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
+
+  "getContractLocations(address)"(
+    contractAddress: string,
+    overrides?: CallOverrides
+  ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
+
   getPlayerIds(overrides?: CallOverrides): Promise<string[]>;
 
   "getPlayerIds()"(overrides?: CallOverrides): Promise<string[]>;
@@ -963,6 +996,16 @@ export class TinyWorldStorage extends Contract {
       8: BigNumber;
     }>;
 
+    getContractLocations(
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
+
+    "getContractLocations(address)"(
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<{ x: BigNumber; y: BigNumber; 0: BigNumber; 1: BigNumber }[]>;
+
     getPlayerIds(overrides?: CallOverrides): Promise<string[]>;
 
     "getPlayerIds()"(overrides?: CallOverrides): Promise<string[]>;
@@ -1188,6 +1231,16 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getContractLocations(
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getContractLocations(address)"(
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getPlayerIds(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getPlayerIds()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1341,6 +1394,16 @@ export class TinyWorldStorage extends Contract {
 
     "getCachedTile(tuple)"(
       coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getContractLocations(
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getContractLocations(address)"(
+      contractAddress: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

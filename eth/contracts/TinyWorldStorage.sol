@@ -67,4 +67,20 @@ contract TinyWorldStorage {
     function getPlayerLocation(address player) public view returns (Coords memory) {
         return playerLocation[player];
     }
+
+    function getContractLocations(address contractAddress) public view returns (Coords[] memory) {
+        uint256 locCount = 0;
+        for (uint256 i = 0; i < touchedCoords.length; i++) {
+            if (getCachedTile(touchedCoords[i]).smartContract == contractAddress) locCount++;
+        }
+        Coords[] memory ret = new Coords[](locCount);
+        uint256 locIndex = 0;
+        for (uint256 i = 0; i < touchedCoords.length; i++) {
+            if (getCachedTile(touchedCoords[i]).smartContract == contractAddress) {
+                ret[locIndex] = touchedCoords[i];
+                locIndex++;
+            }
+        }
+        return ret;
+    }
 }

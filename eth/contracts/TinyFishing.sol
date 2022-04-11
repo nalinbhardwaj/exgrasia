@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "base64-sol/base64.sol";
 import "./TileContract.sol";
 import "./TinyWorld.sol";
 import "./Types.sol";
+import "./TinyExtensions.sol";
 
-contract TinyFish is ERC721Enumerable, ReentrancyGuard, ITileContract {
+contract TinyFish is TinyERC721, ReentrancyGuard, ITileContract {
     using Counters for Counters.Counter;
 
     string[] private fishyNames = [
@@ -121,7 +121,6 @@ contract TinyFish is ERC721Enumerable, ReentrancyGuard, ITileContract {
     Counters.Counter private tokenCounter;
     uint256[] public currentPool;
     mapping(address => uint256) public previousCast;
-    TinyWorld public connectedWorld;
 
     function random(string memory input) internal pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(input)));
@@ -153,6 +152,25 @@ contract TinyFish is ERC721Enumerable, ReentrancyGuard, ITileContract {
         uint256 rand = random(string(abi.encodePacked(keyPrefix, toString(tokenId))));
         string memory output = sourceArray[rand % sourceArray.length];
         return output;
+    }
+
+    function getTokenHRI(uint256 tokenId) public view returns (string memory) {
+        return
+            string(
+                abi.encodePacked(
+                    "Fish #",
+                    toString(tokenId),
+                    ": A ",
+                    getAdjective(tokenId),
+                    " ",
+                    getName(tokenId),
+                    " that's ",
+                    getHeight(tokenId),
+                    " long and ",
+                    getWeight(tokenId),
+                    " heavy."
+                )
+            );
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
@@ -320,11 +338,144 @@ contract TinyFish is ERC721Enumerable, ReentrancyGuard, ITileContract {
 
     function tileABI(Coords memory coords) external view virtual override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/d09538a21e918ef2e629de05e025f4e16f65ec39/TinyFishing.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/6791025d33ac73ae1de5235dba8bd7d844895f3b/TinyFishing.json";
     }
 
-    constructor(TinyWorld _connectedWorld) ERC721("TinyFish", "TINYFISH") {
+    constructor(TinyWorld _connectedWorld) TinyERC721("TinyFish", "TINYFISH", _connectedWorld) {
         connectedWorld = _connectedWorld;
         setApprovalForAll(address(this), true);
+    }
+}
+
+contract TinyOpenSea is ITileContract {
+    TinyWorld public connectedWorld;
+    TinyFish public tinyFish;
+
+    function toString(uint256 value) internal pure returns (string memory) {
+        // Inspired by OraclizeAPI's implementation - MIT license
+        // https://github.com/oraclize/ethereum-api/blob/b42146b063c7d6ee1358846c198246239e9360e8/oraclizeAPI_0.4.25.sol
+
+        if (value == 0) {
+            return "0";
+        }
+        uint256 temp = value;
+        uint256 digits;
+        while (temp != 0) {
+            digits++;
+            temp /= 10;
+        }
+        bytes memory buffer = new bytes(digits);
+        while (value != 0) {
+            digits -= 1;
+            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
+            value /= 10;
+        }
+        return string(buffer);
+    }
+
+    constructor(TinyWorld _connectedWorld, TinyFish _tinyFish) {
+        connectedWorld = _connectedWorld;
+        tinyFish = _tinyFish;
+    }
+
+    function tileEmoji(Coords memory coords) external view override returns (string memory) {
+        return unicode"🎏";
+    }
+
+    function tileName(Coords memory coords) external view override returns (string memory) {
+        return "Tiny OpenSea Fish Market";
+    }
+
+    function tileDescription(Coords memory coords) external view override returns (string memory) {
+        return
+            "This is a fish market. You can either sell your fish here or buy fishes from other players.";
+    }
+
+    function tileABI(Coords memory coords) external view virtual override returns (string memory) {
+        return
+            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/0a35c8cdd47b7a7cdd6ed10e001c38bb2e1373aa/TinyOpenSea.json";
+    }
+
+    struct Listing {
+        uint256 fishID;
+        uint256 price;
+        uint256 timestamp;
+        address seller;
+        bool fulfilled;
+    }
+
+    Listing[] allListings;
+    uint256 activeCount;
+
+    modifier onlyWakingHours() {
+        uint256 sinceMidnight = block.timestamp - 1649462400;
+        uint256 hourOfDay = (sinceMidnight / 60 / 60) % 24;
+        require(
+            hourOfDay >= 0 && hourOfDay <= 24, // TODO
+            "Shopkeeper Tom Nook is taking a nap right now. Come back in a few hours."
+        );
+        _;
+    }
+
+    function getActiveListing() internal view returns (Listing[] memory) {
+        Listing[] memory activeListings = new Listing[](activeCount);
+        uint256 idx = 0;
+        for (uint256 i = 0; i < allListings.length; i++) {
+            if (allListings[i].fulfilled == false) {
+                activeListings[idx] = allListings[i];
+                idx += 1;
+            }
+        }
+        return activeListings;
+    }
+
+    function viewShop() public view returns (string[] memory) {
+        Listing[] memory activeListings = getActiveListing();
+        string[] memory shop = new string[](activeListings.length);
+        for (uint256 i = 0; i < activeListings.length; i++) {
+            string memory fishHRI = tinyFish.getTokenHRI(activeListings[i].fishID);
+            shop[i] = string(
+                abi.encodePacked(fishHRI, " for a price of ", toString(activeListings[i].price))
+            );
+        }
+        return shop;
+    }
+
+    function createListing(uint256 fishID, uint256 price) public onlyWakingHours {
+        require(
+            tinyFish.isApprovedForAll(msg.sender, address(this)),
+            "You must approve this contract to access all your fish to create a listing"
+        );
+        tinyFish.transferFrom(msg.sender, address(this), fishID);
+        allListings.push(Listing(fishID, price, block.timestamp, msg.sender, false));
+        activeCount += 1;
+    }
+
+    function deleteListing(uint256 fishID) public onlyWakingHours {
+        for (uint256 i = 0; i < allListings.length; i++) {
+            if (allListings[i].fishID == fishID && allListings[i].fulfilled == false) {
+                allListings[i].fulfilled = true;
+                require(
+                    allListings[i].seller == msg.sender,
+                    "You can only delete your own listings"
+                );
+                tinyFish.transferFrom(address(this), msg.sender, fishID);
+                activeCount -= 1;
+            }
+        }
+    }
+
+    function buyListing(uint256 fishID) public payable onlyWakingHours {
+        for (uint256 i = 0; i < allListings.length; i++) {
+            if (allListings[i].fishID == fishID && allListings[i].fulfilled == false) {
+                allListings[i].fulfilled = true;
+                tinyFish.transferFrom(address(this), msg.sender, fishID);
+                (bool success, ) = allListings[i].seller.call{value: allListings[i].price}(
+                    new bytes(0)
+                );
+                require(success, "ETH transfer failed");
+                activeCount -= 1;
+            }
+        }
     }
 }
