@@ -1,20 +1,6 @@
 [
   { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
   {
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "realAddresses",
-        "type": "address[]"
-      },
-      { "internalType": "address", "name": "proxyAddress", "type": "address" }
-    ],
-    "name": "dummySetProxyAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "getPlayerInfos",
     "outputs": [
