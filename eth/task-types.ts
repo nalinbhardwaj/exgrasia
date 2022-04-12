@@ -6,9 +6,18 @@ import type {
   StubTileContract,
   TinyFarm,
   Perlin,
+  TinyQuestMaster,
 } from 'common-contracts/typechain';
 
-export { TinyWorld, TinyWorldGetters, StubTileContract, TinyWorldRegistry, Perlin, TinyFarm };
+export {
+  TinyWorld,
+  TinyWorldGetters,
+  StubTileContract,
+  TinyWorldRegistry,
+  Perlin,
+  TinyFarm,
+  TinyQuestMaster,
+};
 export interface TinyWorldCoreReturn {
   blockNumber: number;
   contract: TinyWorld;
@@ -31,4 +40,7 @@ export interface TileContracts {
   tinyMilkContract: StubTileContract;
   tinyEggContract: StubTileContract;
   tinyMineContract: StubTileContract;
+  tinyIronContract: StubTileContract;
+  tinyGoldContract: StubTileContract;
+  tinyDiamondContract: StubTileContract;
 }

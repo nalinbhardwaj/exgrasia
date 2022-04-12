@@ -39,6 +39,8 @@ export { TinyIronFactory } from "./TinyIronFactory";
 export type { TinyIron } from "./TinyIron";
 export { TinyMineFactory } from "./TinyMineFactory";
 export type { TinyMine } from "./TinyMine";
+export { TinyQuestMasterFactory } from "./TinyQuestMasterFactory";
+export type { TinyQuestMaster } from "./TinyQuestMaster";
 export { TinyWorldFactory } from "./TinyWorldFactory";
 export type { TinyWorld } from "./TinyWorld";
 export { TinyWorldGettersFactory } from "./TinyWorldGettersFactory";

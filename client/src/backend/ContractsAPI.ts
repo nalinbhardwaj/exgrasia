@@ -207,6 +207,7 @@ export class ContractsAPI extends EventEmitter {
       1: string[];
       2: boolean[];
       3: boolean[];
+      4: boolean[];
     }>(this.coreContract.getPlayerInfos);
     const playerIds = await this.makeCall<string[]>(this.coreContract.getPlayerIds);
 
@@ -228,6 +229,7 @@ export class ContractsAPI extends EventEmitter {
         realAddress: address(proxyToRealMap.get(address(playerIds[i])) || playerIds[i]),
         canMoveWater: playerInfos[2][i],
         canMoveSnow: playerInfos[3][i],
+        canPutAnything: playerInfos[4][i],
       });
     }
     return playerMap;
@@ -259,6 +261,7 @@ export class ContractsAPI extends EventEmitter {
     const emoji = await this.makeCall<string>(this.coreContract.playerEmoji, [addr]);
     const canMoveWater = await this.makeCall<boolean>(this.coreContract.canMoveWater, [addr]);
     const canMoveSnow = await this.makeCall<boolean>(this.coreContract.canMoveSnow, [addr]);
+    const canPutAnything = await this.makeCall<boolean>(this.coreContract.canPutAnything, [addr]);
     const realAddress = await this.makeCall<string>(this.registryContract.getRealAddress, [addr]);
     return {
       coords: decodeCoords(rawCoords),
@@ -267,6 +270,7 @@ export class ContractsAPI extends EventEmitter {
       realAddress: address(realAddress),
       canMoveWater,
       canMoveSnow,
+      canPutAnything,
     };
   }
 

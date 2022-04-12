@@ -22,6 +22,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface TinyRanchInterface extends ethers.utils.Interface {
   functions: {
+    "currentPopulation(tuple)": FunctionFragment;
     "egg(tuple)": FunctionFragment;
     "feed(tuple)": FunctionFragment;
     "getProduce()": FunctionFragment;
@@ -33,6 +34,10 @@ interface TinyRanchInterface extends ethers.utils.Interface {
     "tileName(tuple)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "currentPopulation",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
   encodeFunctionData(
     functionFragment: "egg",
     values: [{ x: BigNumberish; y: BigNumberish }]
@@ -70,6 +75,10 @@ interface TinyRanchInterface extends ethers.utils.Interface {
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "currentPopulation",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "egg", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "feed", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getProduce", data: BytesLike): Result;
@@ -100,6 +109,20 @@ export class TinyRanch extends Contract {
   interface: TinyRanchInterface;
 
   functions: {
+    currentPopulation(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "currentPopulation(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     egg(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
@@ -209,6 +232,16 @@ export class TinyRanch extends Contract {
     }>;
   };
 
+  currentPopulation(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "currentPopulation(tuple)"(
+    coords: { x: BigNumberish; y: BigNumberish },
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   egg(
     selfCoords: { x: BigNumberish; y: BigNumberish },
     overrides?: Overrides
@@ -302,6 +335,16 @@ export class TinyRanch extends Contract {
   ): Promise<string>;
 
   callStatic: {
+    currentPopulation(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "currentPopulation(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     egg(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -398,6 +441,16 @@ export class TinyRanch extends Contract {
   filters: {};
 
   estimateGas: {
+    currentPopulation(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "currentPopulation(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     egg(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
@@ -486,6 +539,16 @@ export class TinyRanch extends Contract {
   };
 
   populateTransaction: {
+    currentPopulation(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "currentPopulation(tuple)"(
+      coords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     egg(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides

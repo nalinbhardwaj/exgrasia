@@ -11,6 +11,7 @@ contract TinyWorldStorage {
     int16 public vecsDenom;
     uint16 public perlinMax;
     address[] public playerIds;
+    address[] public whitelistedContracts;
     address questMaster;
 
     mapping(uint256 => mapping(uint256 => Tile)) public cachedTiles;
@@ -22,6 +23,7 @@ contract TinyWorldStorage {
     mapping(address => bool) public isAdmin;
     mapping(address => bool) public canMoveWater;
     mapping(address => bool) public canMoveSnow;
+    mapping(address => bool) public canPutAnything;
 
     mapping(string => string) public validPlayerEmoji;
 
@@ -48,6 +50,7 @@ contract TinyWorldStorage {
             Coords[] memory,
             string[] memory,
             bool[] memory,
+            bool[] memory,
             bool[] memory
         )
     {
@@ -55,13 +58,15 @@ contract TinyWorldStorage {
         string[] memory retEmoji = new string[](playerIds.length);
         bool[] memory retCanMoveWater = new bool[](playerIds.length);
         bool[] memory retCanMoveSnow = new bool[](playerIds.length);
+        bool[] memory retCanPutAnything = new bool[](playerIds.length);
         for (uint256 i = 0; i < playerIds.length; i++) {
             retLoc[i] = playerLocation[playerIds[i]];
             retEmoji[i] = playerEmoji[playerIds[i]];
             retCanMoveWater[i] = canMoveWater[playerIds[i]];
             retCanMoveSnow[i] = canMoveSnow[playerIds[i]];
+            retCanPutAnything[i] = canPutAnything[playerIds[i]];
         }
-        return (retLoc, retEmoji, retCanMoveWater, retCanMoveSnow);
+        return (retLoc, retEmoji, retCanMoveWater, retCanMoveSnow, retCanPutAnything);
     }
 
     function getPlayerLocation(address player) public view returns (Coords memory) {

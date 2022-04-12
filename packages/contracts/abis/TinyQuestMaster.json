@@ -7,6 +7,16 @@
         "type": "address"
       },
       {
+        "internalType": "contract TinyFish",
+        "name": "_fish",
+        "type": "address"
+      },
+      {
+        "internalType": "contract TinyOpenSea",
+        "name": "_openSea",
+        "type": "address"
+      },
+      {
         "internalType": "contract TinyWheat",
         "name": "_wheat",
         "type": "address"
@@ -20,103 +30,68 @@
         "internalType": "contract TinyCactus",
         "name": "_cactus",
         "type": "address"
+      },
+      {
+        "internalType": "contract TinyRanch",
+        "name": "_ranch",
+        "type": "address"
+      },
+      {
+        "internalType": "contract TinyMilk",
+        "name": "_milk",
+        "type": "address"
+      },
+      { "internalType": "contract TinyEgg", "name": "_egg", "type": "address" },
+      {
+        "internalType": "contract TinyIron",
+        "name": "_iron",
+        "type": "address"
+      },
+      {
+        "internalType": "contract TinyGold",
+        "name": "_gold",
+        "type": "address"
+      },
+      {
+        "internalType": "contract TinyDiamond",
+        "name": "_diamond",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
   {
-    "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "coords",
-        "type": "tuple"
-      }
-    ],
-    "name": "currentPopulation",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "selfCoords",
-        "type": "tuple"
-      }
-    ],
-    "name": "egg",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "selfCoords",
-        "type": "tuple"
-      }
-    ],
-    "name": "feed",
+    "inputs": [],
+    "name": "farmingLevel0",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "getProduce",
-    "outputs": [
-      { "internalType": "contract TinyMilk", "name": "", "type": "address" },
-      { "internalType": "contract TinyEgg", "name": "", "type": "address" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "selfCoords",
-        "type": "tuple"
-      }
-    ],
-    "name": "milk",
+    "name": "farmingLevel1",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "string", "name": "ranchType", "type": "string" },
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "selfCoords",
-        "type": "tuple"
-      }
-    ],
-    "name": "startRanch",
+    "inputs": [],
+    "name": "fishingLevel0",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "fishingLevel1",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "miningLevel0",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -135,7 +110,7 @@
     ],
     "name": "tileABI",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "pure",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -187,6 +162,27 @@
     "name": "tileName",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "viewQuests",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "levelDescription",
+            "type": "string"
+          },
+          { "internalType": "string[]", "name": "quests", "type": "string[]" }
+        ],
+        "internalType": "struct TinyQuestMaster.LevelQuests[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "pure",
     "type": "function"
   }
 ]

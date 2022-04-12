@@ -232,6 +232,21 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         }
     }
 
+    function addWhitelistedContracts(address[] memory smartContracts) public {
+        require(isAdmin[msg.sender], "Not admin");
+        for (uint256 i = 0; i < smartContracts.length; i++) {
+            checkInterface(smartContracts[i]);
+            whitelistedContracts.push(smartContracts[i]);
+        }
+    }
+
+    function isWhitelisted(address smartContract) internal view returns (bool) {
+        for (uint256 i = 0; i < whitelistedContracts.length; i++) {
+            if (whitelistedContracts[i] == smartContract) return true;
+        }
+        return false;
+    }
+
     function ownTile(Coords memory coords, address smartContract)
         public
         isClose(coords)
@@ -239,8 +254,12 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     {
         Tile memory tile = getTile(coords);
         require(
-            block.timestamp - tile.lastPurchased > 3 hours || tile.owner == msg.sender,
+            block.timestamp - tile.lastPurchased > 3 days || tile.owner == msg.sender,
             "Tile already owned"
+        );
+        require(
+            isWhitelisted(smartContract) || canPutAnything[msg.sender],
+            "Not whitelisted to put anything"
         );
         checkInterface(smartContract);
         tile.smartContract = smartContract;
@@ -279,15 +298,25 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
 
     function setCanMoveWater(address player, bool canMove) public {
         require(playerInited[player], "Player not inited");
-        require(isAdmin[msg.sender], "Not quest master");
+        require(msg.sender == questMaster, "Not quest master");
         canMoveWater[player] = canMove;
         emit PlayerUpdated(player, playerLocation[player]);
     }
 
     function setCanMoveSnow(address player, bool canMove) public {
         require(playerInited[player], "Player not inited");
-        require(isAdmin[msg.sender], "Not quest master");
+        require(msg.sender == questMaster, "Not quest master");
         canMoveSnow[player] = canMove;
+        emit PlayerUpdated(player, playerLocation[player]);
+    }
+
+    function setCanPutAnything(address player, bool canPut) public {
+        require(playerInited[player], "Player not inited");
+        require(msg.sender == questMaster, "Not quest master");
+        canPutAnything[player] = canPut;
+        console.log("canPut", canPut);
+        console.log("player", player);
+        console.log("val", canPutAnything[player]);
         emit PlayerUpdated(player, playerLocation[player]);
     }
 }

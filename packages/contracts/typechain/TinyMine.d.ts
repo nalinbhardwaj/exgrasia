@@ -22,6 +22,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface TinyMineInterface extends ethers.utils.Interface {
   functions: {
+    "getOres()": FunctionFragment;
     "mine(tuple)": FunctionFragment;
     "moveDown(tuple)": FunctionFragment;
     "moveLeft(tuple)": FunctionFragment;
@@ -35,6 +36,7 @@ interface TinyMineInterface extends ethers.utils.Interface {
     "tileName(tuple)": FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: "getOres", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "mine",
     values: [{ x: BigNumberish; y: BigNumberish }]
@@ -80,6 +82,7 @@ interface TinyMineInterface extends ethers.utils.Interface {
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
 
+  decodeFunctionResult(functionFragment: "getOres", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mine", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "moveDown", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "moveLeft", data: BytesLike): Result;
@@ -115,6 +118,18 @@ export class TinyMine extends Contract {
   interface: TinyMineInterface;
 
   functions: {
+    getOres(overrides?: CallOverrides): Promise<{
+      0: string;
+      1: string;
+      2: string;
+    }>;
+
+    "getOres()"(overrides?: CallOverrides): Promise<{
+      0: string;
+      1: string;
+      2: string;
+    }>;
+
     mine(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -248,6 +263,18 @@ export class TinyMine extends Contract {
     }>;
   };
 
+  getOres(overrides?: CallOverrides): Promise<{
+    0: string;
+    1: string;
+    2: string;
+  }>;
+
+  "getOres()"(overrides?: CallOverrides): Promise<{
+    0: string;
+    1: string;
+    2: string;
+  }>;
+
   mine(
     selfCoords: { x: BigNumberish; y: BigNumberish },
     overrides?: CallOverrides
@@ -361,6 +388,18 @@ export class TinyMine extends Contract {
   ): Promise<string>;
 
   callStatic: {
+    getOres(overrides?: CallOverrides): Promise<{
+      0: string;
+      1: string;
+      2: string;
+    }>;
+
+    "getOres()"(overrides?: CallOverrides): Promise<{
+      0: string;
+      1: string;
+      2: string;
+    }>;
+
     mine(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -477,6 +516,10 @@ export class TinyMine extends Contract {
   filters: {};
 
   estimateGas: {
+    getOres(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getOres()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     mine(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -591,6 +634,10 @@ export class TinyMine extends Contract {
   };
 
   populateTransaction: {
+    getOres(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getOres()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     mine(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides

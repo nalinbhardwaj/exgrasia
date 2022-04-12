@@ -83,6 +83,7 @@ export type PlayerInfo = {
   emoji: string;
   canMoveWater: boolean;
   canMoveSnow: boolean;
+  canPutAnything: boolean;
 };
 
 /**

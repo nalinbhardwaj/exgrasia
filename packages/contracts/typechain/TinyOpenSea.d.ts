@@ -27,6 +27,7 @@ interface TinyOpenSeaInterface extends ethers.utils.Interface {
     "connectedWorld()": FunctionFragment;
     "createListing(uint256,uint256)": FunctionFragment;
     "deleteListing(uint256)": FunctionFragment;
+    "getAllListings()": FunctionFragment;
     "tileABI(tuple)": FunctionFragment;
     "tileDescription(tuple)": FunctionFragment;
     "tileEmoji(tuple)": FunctionFragment;
@@ -50,6 +51,10 @@ interface TinyOpenSeaInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "deleteListing",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAllListings",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "tileABI",
@@ -81,6 +86,10 @@ interface TinyOpenSeaInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "deleteListing",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAllListings",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "tileABI", data: BytesLike): Result;
@@ -149,6 +158,36 @@ export class TinyOpenSea extends Contract {
       fishID: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    getAllListings(overrides?: CallOverrides): Promise<{
+      0: {
+        fishID: BigNumber;
+        price: BigNumber;
+        timestamp: BigNumber;
+        seller: string;
+        fulfilled: boolean;
+        0: BigNumber;
+        1: BigNumber;
+        2: BigNumber;
+        3: string;
+        4: boolean;
+      }[];
+    }>;
+
+    "getAllListings()"(overrides?: CallOverrides): Promise<{
+      0: {
+        fishID: BigNumber;
+        price: BigNumber;
+        timestamp: BigNumber;
+        seller: string;
+        fulfilled: boolean;
+        0: BigNumber;
+        1: BigNumber;
+        2: BigNumber;
+        3: string;
+        4: boolean;
+      }[];
+    }>;
 
     tileABI(
       coords: { x: BigNumberish; y: BigNumberish },
@@ -259,6 +298,40 @@ export class TinyOpenSea extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  getAllListings(
+    overrides?: CallOverrides
+  ): Promise<
+    {
+      fishID: BigNumber;
+      price: BigNumber;
+      timestamp: BigNumber;
+      seller: string;
+      fulfilled: boolean;
+      0: BigNumber;
+      1: BigNumber;
+      2: BigNumber;
+      3: string;
+      4: boolean;
+    }[]
+  >;
+
+  "getAllListings()"(
+    overrides?: CallOverrides
+  ): Promise<
+    {
+      fishID: BigNumber;
+      price: BigNumber;
+      timestamp: BigNumber;
+      seller: string;
+      fulfilled: boolean;
+      0: BigNumber;
+      1: BigNumber;
+      2: BigNumber;
+      3: string;
+      4: boolean;
+    }[]
+  >;
+
   tileABI(
     coords: { x: BigNumberish; y: BigNumberish },
     overrides?: CallOverrides
@@ -340,6 +413,40 @@ export class TinyOpenSea extends Contract {
       fishID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    getAllListings(
+      overrides?: CallOverrides
+    ): Promise<
+      {
+        fishID: BigNumber;
+        price: BigNumber;
+        timestamp: BigNumber;
+        seller: string;
+        fulfilled: boolean;
+        0: BigNumber;
+        1: BigNumber;
+        2: BigNumber;
+        3: string;
+        4: boolean;
+      }[]
+    >;
+
+    "getAllListings()"(
+      overrides?: CallOverrides
+    ): Promise<
+      {
+        fishID: BigNumber;
+        price: BigNumber;
+        timestamp: BigNumber;
+        seller: string;
+        fulfilled: boolean;
+        0: BigNumber;
+        1: BigNumber;
+        2: BigNumber;
+        3: string;
+        4: boolean;
+      }[]
+    >;
 
     tileABI(
       coords: { x: BigNumberish; y: BigNumberish },
@@ -429,6 +536,10 @@ export class TinyOpenSea extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    getAllListings(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getAllListings()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     tileABI(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -515,6 +626,12 @@ export class TinyOpenSea extends Contract {
     "deleteListing(uint256)"(
       fishID: BigNumberish,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    getAllListings(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getAllListings()"(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     tileABI(

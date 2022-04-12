@@ -22,9 +22,11 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface TinyWorldInterface extends ethers.utils.Interface {
   functions: {
+    "addWhitelistedContracts(address[])": FunctionFragment;
     "cachedTiles(uint256,uint256)": FunctionFragment;
     "canMoveSnow(address)": FunctionFragment;
     "canMoveWater(address)": FunctionFragment;
+    "canPutAnything(address)": FunctionFragment;
     "dist(tuple,tuple)": FunctionFragment;
     "forceTileUpdate(tuple)": FunctionFragment;
     "getCachedTile(tuple)": FunctionFragment;
@@ -50,6 +52,7 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "seed()": FunctionFragment;
     "setCanMoveSnow(address,bool)": FunctionFragment;
     "setCanMoveWater(address,bool)": FunctionFragment;
+    "setCanPutAnything(address,bool)": FunctionFragment;
     "setQuestMaster(address)": FunctionFragment;
     "touchedCoords(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -57,10 +60,15 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "validPlayerEmoji(string)": FunctionFragment;
     "vecs(uint256,uint256)": FunctionFragment;
     "vecsDenom()": FunctionFragment;
+    "whitelistedContracts(uint256)": FunctionFragment;
     "worldScale()": FunctionFragment;
     "worldWidth()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "addWhitelistedContracts",
+    values: [string[]]
+  ): string;
   encodeFunctionData(
     functionFragment: "cachedTiles",
     values: [BigNumberish, BigNumberish]
@@ -68,6 +76,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "canMoveSnow", values: [string]): string;
   encodeFunctionData(
     functionFragment: "canMoveWater",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "canPutAnything",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -156,6 +168,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(
+    functionFragment: "setCanPutAnything",
+    values: [string, boolean]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setQuestMaster",
     values: [string]
   ): string;
@@ -181,6 +197,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "vecsDenom", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "whitelistedContracts",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "worldScale",
     values?: undefined
   ): string;
@@ -189,6 +209,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "addWhitelistedContracts",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "cachedTiles",
     data: BytesLike
@@ -199,6 +223,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "canMoveWater",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "canPutAnything",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "dist", data: BytesLike): Result;
@@ -269,6 +297,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setCanPutAnything",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setQuestMaster",
     data: BytesLike
   ): Result;
@@ -290,6 +322,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "vecs", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "vecsDenom", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "whitelistedContracts",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "worldScale", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "worldWidth", data: BytesLike): Result;
 
@@ -318,6 +354,16 @@ export class TinyWorld extends Contract {
   interface: TinyWorldInterface;
 
   functions: {
+    addWhitelistedContracts(
+      smartContracts: string[],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "addWhitelistedContracts(address[])"(
+      smartContracts: string[],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     cachedTiles(
       arg0: BigNumberish,
       arg1: BigNumberish,
@@ -386,6 +432,20 @@ export class TinyWorld extends Contract {
     }>;
 
     "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    canPutAnything(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "canPutAnything(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -497,6 +557,7 @@ export class TinyWorld extends Contract {
       1: string[];
       2: boolean[];
       3: boolean[];
+      4: boolean[];
     }>;
 
     "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
@@ -504,6 +565,7 @@ export class TinyWorld extends Contract {
       1: string[];
       2: boolean[];
       3: boolean[];
+      4: boolean[];
     }>;
 
     getPlayerLocation(
@@ -762,6 +824,18 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    setCanPutAnything(
+      player: string,
+      canPut: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setCanPutAnything(address,bool)"(
+      player: string,
+      canPut: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     setQuestMaster(
       master: string,
       overrides?: Overrides
@@ -852,6 +926,20 @@ export class TinyWorld extends Contract {
       0: number;
     }>;
 
+    whitelistedContracts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "whitelistedContracts(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     worldScale(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
@@ -868,6 +956,16 @@ export class TinyWorld extends Contract {
       0: BigNumber;
     }>;
   };
+
+  addWhitelistedContracts(
+    smartContracts: string[],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "addWhitelistedContracts(address[])"(
+    smartContracts: string[],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   cachedTiles(
     arg0: BigNumberish,
@@ -925,6 +1023,13 @@ export class TinyWorld extends Contract {
   canMoveWater(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
   "canMoveWater(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  canPutAnything(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "canPutAnything(address)"(
     arg0: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -1018,6 +1123,7 @@ export class TinyWorld extends Contract {
     1: string[];
     2: boolean[];
     3: boolean[];
+    4: boolean[];
   }>;
 
   "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
@@ -1025,6 +1131,7 @@ export class TinyWorld extends Contract {
     1: string[];
     2: boolean[];
     3: boolean[];
+    4: boolean[];
   }>;
 
   getPlayerLocation(
@@ -1236,6 +1343,18 @@ export class TinyWorld extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  setCanPutAnything(
+    player: string,
+    canPut: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setCanPutAnything(address,bool)"(
+    player: string,
+    canPut: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   setQuestMaster(
     master: string,
     overrides?: Overrides
@@ -1311,6 +1430,16 @@ export class TinyWorld extends Contract {
 
   "vecsDenom()"(overrides?: CallOverrides): Promise<number>;
 
+  whitelistedContracts(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "whitelistedContracts(uint256)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
   "worldScale()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1320,6 +1449,16 @@ export class TinyWorld extends Contract {
   "worldWidth()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
+    addWhitelistedContracts(
+      smartContracts: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "addWhitelistedContracts(address[])"(
+      smartContracts: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     cachedTiles(
       arg0: BigNumberish,
       arg1: BigNumberish,
@@ -1376,6 +1515,13 @@ export class TinyWorld extends Contract {
     canMoveWater(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
     "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    canPutAnything(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "canPutAnything(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -1469,6 +1615,7 @@ export class TinyWorld extends Contract {
       1: string[];
       2: boolean[];
       3: boolean[];
+      4: boolean[];
     }>;
 
     "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
@@ -1476,6 +1623,7 @@ export class TinyWorld extends Contract {
       1: string[];
       2: boolean[];
       3: boolean[];
+      4: boolean[];
     }>;
 
     getPlayerLocation(
@@ -1725,6 +1873,18 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setCanPutAnything(
+      player: string,
+      canPut: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setCanPutAnything(address,bool)"(
+      player: string,
+      canPut: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setQuestMaster(master: string, overrides?: CallOverrides): Promise<void>;
 
     "setQuestMaster(address)"(
@@ -1797,6 +1957,16 @@ export class TinyWorld extends Contract {
 
     "vecsDenom()"(overrides?: CallOverrides): Promise<number>;
 
+    whitelistedContracts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "whitelistedContracts(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
     "worldScale()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1818,6 +1988,16 @@ export class TinyWorld extends Contract {
   };
 
   estimateGas: {
+    addWhitelistedContracts(
+      smartContracts: string[],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "addWhitelistedContracts(address[])"(
+      smartContracts: string[],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     cachedTiles(
       arg0: BigNumberish,
       arg1: BigNumberish,
@@ -1840,6 +2020,13 @@ export class TinyWorld extends Contract {
     canMoveWater(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    canPutAnything(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "canPutAnything(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -2047,6 +2234,18 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    setCanPutAnything(
+      player: string,
+      canPut: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setCanPutAnything(address,bool)"(
+      player: string,
+      canPut: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     setQuestMaster(master: string, overrides?: Overrides): Promise<BigNumber>;
 
     "setQuestMaster(address)"(
@@ -2112,6 +2311,16 @@ export class TinyWorld extends Contract {
 
     "vecsDenom()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    whitelistedContracts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "whitelistedContracts(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
     "worldScale()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2122,6 +2331,16 @@ export class TinyWorld extends Contract {
   };
 
   populateTransaction: {
+    addWhitelistedContracts(
+      smartContracts: string[],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "addWhitelistedContracts(address[])"(
+      smartContracts: string[],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     cachedTiles(
       arg0: BigNumberish,
       arg1: BigNumberish,
@@ -2150,6 +2369,16 @@ export class TinyWorld extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    canPutAnything(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "canPutAnything(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -2376,6 +2605,18 @@ export class TinyWorld extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    setCanPutAnything(
+      player: string,
+      canPut: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setCanPutAnything(address,bool)"(
+      player: string,
+      canPut: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     setQuestMaster(
       master: string,
       overrides?: Overrides
@@ -2443,6 +2684,16 @@ export class TinyWorld extends Contract {
     vecsDenom(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "vecsDenom()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    whitelistedContracts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "whitelistedContracts(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     worldScale(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

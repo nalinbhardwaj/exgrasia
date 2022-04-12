@@ -11,6 +11,7 @@ import type {
   TinyWorldRegistry,
   TileContracts,
   Perlin,
+  TinyQuestMaster,
 } from '../task-types';
 import * as prettier from 'prettier';
 import { Signer, Contract } from 'ethers';
@@ -45,6 +46,23 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
 
   const gettersAddress = tinyWorldGetters.address;
 
+  const questMasterContract: TinyQuestMaster = await hre.run('deploy:questMaster', {
+    coreAddress,
+    tinyFishContractAddress: tileContracts.tinyFishingContract.address,
+    tinyOpenSeaContractAddress: tileContracts.tinyOpenSeaContract.address,
+    tinyFarmContractAddress: tileContracts.tinyFarmContract.address,
+    tinyWheatContractAddress: tileContracts.tinyWheatContract.address,
+    tinyCornContractAddress: tileContracts.tinyCornContract.address,
+    tinyCactusContractAddress: tileContracts.tinyCactusContract.address,
+    tinyRanchContractAddress: tileContracts.tinyRanchContract.address,
+    tinyMilkContractAddress: tileContracts.tinyMilkContract.address,
+    tinyEggContractAddress: tileContracts.tinyEggContract.address,
+    tinyMineContractAddress: tileContracts.tinyMineContract.address,
+    tinyIronContractAddress: tileContracts.tinyIronContract.address,
+    tinyGoldContractAddress: tileContracts.tinyGoldContract.address,
+    tinyDiamondContractAddress: tileContracts.tinyDiamondContract.address,
+  });
+
   await hre.run('deploy:save', {
     coreBlockNumber: tinyWorldCoreReturn.blockNumber,
     registryAddress: libraries.registry.address,
@@ -61,6 +79,10 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
     tinyMilkContractAddress: tileContracts.tinyMilkContract.address,
     tinyEggContractAddress: tileContracts.tinyEggContract.address,
     tinyMineContractAddress: tileContracts.tinyMineContract.address,
+    tinyIronContractAddress: tileContracts.tinyIronContract.address,
+    tinyGoldContractAddress: tileContracts.tinyGoldContract.address,
+    tinyDiamondContractAddress: tileContracts.tinyDiamondContract.address,
+    tinyquestMasterContractAddress: questMasterContract.address,
   });
 
   // give all contract administration over to an admin address if was provided
@@ -90,6 +112,10 @@ async function deploySave(
     tinyMilkContractAddress: string;
     tinyEggContractAddress: string;
     tinyMineContractAddress: string;
+    tinyIronContractAddress: string;
+    tinyGoldContractAddress: string;
+    tinyDiamondContractAddress: string;
+    tinyquestMasterContractAddress: string;
   },
   hre: HardhatRuntimeEnvironment
 ) {
@@ -160,6 +186,10 @@ async function deploySave(
    export const MILK_CONTRACT_ADDRESS = '${args.tinyMilkContractAddress}';
    export const EGG_CONTRACT_ADDRESS = '${args.tinyEggContractAddress}';
    export const MINE_CONTRACT_ADDRESS = '${args.tinyMineContractAddress}';
+   export const IRON_CONTRACT_ADDRESS = '${args.tinyIronContractAddress}';
+   export const GOLD_CONTRACT_ADDRESS = '${args.tinyGoldContractAddress}';
+   export const DIAMOND_CONTRACT_ADDRESS = '${args.tinyDiamondContractAddress}';
+   export const QUEST_MASTER_CONTRACT_ADDRESS = '${args.tinyquestMasterContractAddress}';
    `,
     { ...options, parser: 'babel-ts' }
   );
@@ -212,6 +242,7 @@ async function deployCore(
         '0xF05b5f04B7a77Ca549C0dE06beaF257f40C66FDB', // nibnalin.eth
         '0x62b1273bd0e441980f951e16bf558fbd13e9de25', // nibnalin.eth's proxy
         '0xB6510c1b362728b334AA92e64DFcAb4f3e04054b', // exgrasia deployer
+        '0x3097403B64fe672467345bf159F4C9C5464bD89e', // delete later
       ],
     ],
     // Linking external libraries like `Perlin` is not yet supported, or
@@ -314,6 +345,13 @@ async function deployTileContracts(
   const tinyMineContract = await TinyMineContractFactory.deploy(args.coreAddress);
   await tinyMineContract.deployTransaction.wait();
 
+  const mineContract = await hre.ethers.getContractAt('TinyMine', tinyMineContract.address);
+  const mineOres: Contract[] = await Promise.all(
+    (
+      await mineContract.getOres()
+    ).map(async (addr: string) => await hre.ethers.getContractAt('TinyERC20', addr))
+  );
+
   return {
     testTileContract: tileContract as StubTileContract,
     tinyFishingContract: tinyFishingContract as StubTileContract,
@@ -326,7 +364,50 @@ async function deployTileContracts(
     tinyMilkContract: ranchProduce[0] as StubTileContract,
     tinyEggContract: ranchProduce[1] as StubTileContract,
     tinyMineContract: tinyMineContract as StubTileContract,
+    tinyIronContract: mineOres[0] as StubTileContract,
+    tinyGoldContract: mineOres[1] as StubTileContract,
+    tinyDiamondContract: mineOres[2] as StubTileContract,
   };
+}
+
+subtask('deploy:questMaster', 'deploy and return the quest master').setAction(deployQuestMaster);
+
+async function deployQuestMaster(
+  args: {
+    coreAddress: string;
+    tinyFishContractAddress: string;
+    tinyOpenSeaContractAddress: string;
+    tinyFarmContractAddress: string;
+    tinyWheatContractAddress: string;
+    tinyCornContractAddress: string;
+    tinyCactusContractAddress: string;
+    tinyRanchContractAddress: string;
+    tinyMilkContractAddress: string;
+    tinyEggContractAddress: string;
+    tinyMineContractAddress: string;
+    tinyIronContractAddress: string;
+    tinyGoldContractAddress: string;
+    tinyDiamondContractAddress: string;
+  },
+  hre: HardhatRuntimeEnvironment
+): Promise<TinyQuestMaster> {
+  const TinyQuestMasterContractFactory = await hre.ethers.getContractFactory('TinyQuestMaster');
+  const tinyQuestMasterContract = await TinyQuestMasterContractFactory.deploy(
+    args.coreAddress,
+    args.tinyFishContractAddress,
+    args.tinyOpenSeaContractAddress,
+    args.tinyWheatContractAddress,
+    args.tinyCornContractAddress,
+    args.tinyCactusContractAddress,
+    args.tinyRanchContractAddress,
+    args.tinyMilkContractAddress,
+    args.tinyEggContractAddress,
+    args.tinyIronContractAddress,
+    args.tinyGoldContractAddress,
+    args.tinyDiamondContractAddress
+  );
+  await tinyQuestMasterContract.deployTransaction.wait();
+  return tinyQuestMasterContract as TinyQuestMaster;
 }
 
 async function deployProxyWithRetry<C extends Contract>({

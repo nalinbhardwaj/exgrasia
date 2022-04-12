@@ -286,7 +286,7 @@ contract TinyRanch is ITileContract {
         _;
     }
 
-    function currentPopulation(Coords memory coords) internal view returns (uint256) {
+    function currentPopulation(Coords memory coords) public view returns (uint256) {
         int256 hoursSinceFeeding = (int256(block.timestamp) -
             int256(lastFeeding[coords.x][coords.y])) / (60 * 60);
         int256 res = int256(ranchSize[coords.x][coords.y]) - hoursSinceFeeding;
@@ -335,7 +335,7 @@ contract TinyRanch is ITileContract {
 
     function tileABI(Coords memory coords) public pure virtual override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/6c3870fc031dfaa6e4c0c1f3a05bf72d08c211dd/TinyRanch.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/a066ede9deaff126395da589479516e0ca8b3375/TinyRanch.json";
     }
 
     function toString(uint256 value) internal pure returns (string memory) {

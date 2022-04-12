@@ -11,6 +11,17 @@
     "type": "constructor"
   },
   {
+    "inputs": [],
+    "name": "getOres",
+    "outputs": [
+      { "internalType": "contract TinyIron", "name": "", "type": "address" },
+      { "internalType": "contract TinyGold", "name": "", "type": "address" },
+      { "internalType": "contract TinyDiamond", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "components": [

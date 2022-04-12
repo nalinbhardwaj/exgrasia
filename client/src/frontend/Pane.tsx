@@ -4,7 +4,7 @@ import React, { Component, Fragment, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import styled from 'styled-components';
 import GameManager from '../backend/GameManager';
-import { distance, getRandomActionId, prettifyAddress } from '../utils';
+import { distance, getRandomActionId, prettifyAddress, whitelistedContracts } from '../utils';
 import { BN } from 'ethereumjs-util';
 import { PluginManager } from '../backend/PluginManager';
 import { useEmitterValue } from './Utils/EmitterHooks';
@@ -529,12 +529,15 @@ function Body(props: BodyProps) {
   }
 
   // Owning pane
-  const [curAddr, setCurAddr] = useState<string>('');
+  const [curAddr, setCurAddr] = useState<string>(whitelistedContracts()['Tiny Fishing Stand']);
   const [tooFar, setTooFar] = useState<boolean>(false);
+  const [canPutAnything, setCanPutAnything] = useState<boolean>(false);
+  const [selectedAddress, setSelectedAddress] = useState<string>('Tiny Fishing Stand');
 
   useEffect(() => {
     props.gm.getSelfInfo().then((info) => {
       setTooFar(distance(info.coords, props.coords) > 1);
+      setCanPutAnything(info.canPutAnything);
     });
   }, [props]);
 
@@ -555,16 +558,77 @@ function Body(props: BodyProps) {
 
           <Grid.Container gap={2} justify='space-between' css={{ alignItems: 'center' }}>
             <Grid xs>
-              <Input
-                fullWidth
-                size='sm'
-                labelPlaceholder='Contract Address'
-                status='default'
-                onChange={handleChange}
-                css={{
-                  $$inputPlaceholderColor: '$colors$foreground',
-                }}
-              />
+              {canPutAnything ? (
+                <Input
+                  fullWidth
+                  size='sm'
+                  labelPlaceholder='Contract Address'
+                  status='default'
+                  onChange={handleChange}
+                  css={{
+                    $$inputPlaceholderColor: '$colors$foreground',
+                  }}
+                />
+              ) : (
+                <Listbox
+                  value={selectedAddress}
+                  onChange={(selection) => {
+                    setSelectedAddress(selection);
+                    setCurAddr(whitelistedContracts()[selection]);
+                  }}
+                >
+                  <div className='relative mt-1 w-full'>
+                    <Listbox.Button className='relative w-full py-2 pl-3 pr-10 text-left bg-black rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm'>
+                      <span className='block truncate text-white'>{selectedAddress}</span>
+                      <span className='absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none'>
+                        <SelectorIcon className='w-5 h-5 text-white' aria-hidden='true' />
+                      </span>
+                    </Listbox.Button>
+                    <Transition
+                      as={Fragment}
+                      leave='transition ease-in duration-100'
+                      leaveFrom='opacity-100'
+                      leaveTo='opacity-0'
+                    >
+                      <Listbox.Options className='absolute w-full py-1 mt-1 overflow-auto text-base bg-black rounded-md shadow-lg max-h-28 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-max'>
+                        {Object.keys(whitelistedContracts()).map(
+                          (name, idx) =>
+                            name && (
+                              <Listbox.Option
+                                key={idx}
+                                className={({ active }) =>
+                                  `cursor-default select-none relative py-2 pl-10 pr-4 ${
+                                    active
+                                      ? 'text-warning-yellowtext bg-warning-yellowbg'
+                                      : 'text-white'
+                                  }`
+                                }
+                                value={name}
+                              >
+                                {({ selected }) => (
+                                  <>
+                                    <span
+                                      className={`block truncate ${
+                                        selected ? 'font-medium' : 'font-normal'
+                                      }`}
+                                    >
+                                      {name}
+                                    </span>
+                                    {selected ? (
+                                      <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-warning-yellowtext'>
+                                        <CheckIcon className='w-5 h-5' aria-hidden='true' />
+                                      </span>
+                                    ) : null}
+                                  </>
+                                )}
+                              </Listbox.Option>
+                            )
+                        )}
+                      </Listbox.Options>
+                    </Transition>
+                  </div>
+                </Listbox>
+              )}
             </Grid>
             <Grid xs>
               <Button
@@ -583,7 +647,9 @@ function Body(props: BodyProps) {
           <Grid.Container gap={2} justify='space-between' css={{ alignItems: 'center' }}>
             <Grid xs>
               <Text b css={{ verticalAlign: 'middle', alignItems: 'center' }}>
-                Code your own tile
+                {canPutAnything
+                  ? 'Code your own tile'
+                  : 'You cannot code your own tile yet. Complete more quests to access your own contracts!'}
               </Text>
             </Grid>
             <Grid xs>

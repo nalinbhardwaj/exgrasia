@@ -393,7 +393,7 @@ contract TinyOpenSea is ITileContract {
 
     function tileABI(Coords memory coords) external view virtual override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/0a35c8cdd47b7a7cdd6ed10e001c38bb2e1373aa/TinyOpenSea.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/a066ede9deaff126395da589479516e0ca8b3375/TinyOpenSea.json";
     }
 
     struct Listing {
@@ -415,6 +415,10 @@ contract TinyOpenSea is ITileContract {
             "Shopkeeper Tom Nook is taking a nap right now. Come back in a few hours."
         );
         _;
+    }
+
+    function getAllListings() public view returns (Listing[] memory) {
+        return allListings;
     }
 
     function getActiveListing() internal view returns (Listing[] memory) {

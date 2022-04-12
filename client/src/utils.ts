@@ -11,6 +11,23 @@ import {
 } from 'common-types';
 import { ethers } from 'ethers';
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils';
+import {
+  TESTING_CONTRACT_ADDRESS,
+  FISHING_CONTRACT_ADDRESS,
+  OPENSEA_MARKET_CONTRACT_ADDRESS,
+  FARM_CONTRACT_ADDRESS,
+  WHEAT_CONTRACT_ADDRESS,
+  CORN_CONTRACT_ADDRESS,
+  CACTUS_CONTRACT_ADDRESS,
+  RANCH_CONTRACT_ADDRESS,
+  MILK_CONTRACT_ADDRESS,
+  EGG_CONTRACT_ADDRESS,
+  MINE_CONTRACT_ADDRESS,
+  IRON_CONTRACT_ADDRESS,
+  GOLD_CONTRACT_ADDRESS,
+  DIAMOND_CONTRACT_ADDRESS,
+  QUEST_MASTER_CONTRACT_ADDRESS,
+} from 'common-contracts';
 
 export const tileTypeToColor = {
   [TileType.UNKNOWN]: 'grey',
@@ -161,4 +178,23 @@ export const promiseWithTimeout = function <T>(
 
   // returns a race between timeout and the passed promise
   return Promise.race<T>([promise, timeout]);
+};
+
+export const whitelistedContracts = (): { [key: string]: string } => {
+  return {
+    'Tiny Fishing Stand': FISHING_CONTRACT_ADDRESS,
+    'Tiny OpenSea Fish Market': OPENSEA_MARKET_CONTRACT_ADDRESS,
+    'Tiny Farm': FARM_CONTRACT_ADDRESS,
+    'Tiny Wheat': WHEAT_CONTRACT_ADDRESS,
+    'Tiny Corn': CORN_CONTRACT_ADDRESS,
+    'Tiny Cactus': CACTUS_CONTRACT_ADDRESS,
+    'Tiny Ranch': RANCH_CONTRACT_ADDRESS,
+    'Tiny Milk': MILK_CONTRACT_ADDRESS,
+    'Tiny Egg': EGG_CONTRACT_ADDRESS,
+    'Tiny Mine': MINE_CONTRACT_ADDRESS,
+    'Tiny Iron': IRON_CONTRACT_ADDRESS,
+    'Tiny Gold': GOLD_CONTRACT_ADDRESS,
+    'Tiny Diamond': DIAMOND_CONTRACT_ADDRESS,
+    'Tiny Quest Master': QUEST_MASTER_CONTRACT_ADDRESS,
+  };
 };

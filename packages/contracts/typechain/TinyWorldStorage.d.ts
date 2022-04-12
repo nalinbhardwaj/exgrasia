@@ -24,6 +24,7 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     "cachedTiles(uint256,uint256)": FunctionFragment;
     "canMoveSnow(address)": FunctionFragment;
     "canMoveWater(address)": FunctionFragment;
+    "canPutAnything(address)": FunctionFragment;
     "getCachedTile(tuple)": FunctionFragment;
     "getContractLocations(address)": FunctionFragment;
     "getPlayerIds()": FunctionFragment;
@@ -41,6 +42,7 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     "validPlayerEmoji(string)": FunctionFragment;
     "vecs(uint256,uint256)": FunctionFragment;
     "vecsDenom()": FunctionFragment;
+    "whitelistedContracts(uint256)": FunctionFragment;
     "worldScale()": FunctionFragment;
     "worldWidth()": FunctionFragment;
   };
@@ -52,6 +54,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "canMoveSnow", values: [string]): string;
   encodeFunctionData(
     functionFragment: "canMoveWater",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "canPutAnything",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -108,6 +114,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "vecsDenom", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "whitelistedContracts",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "worldScale",
     values?: undefined
   ): string;
@@ -126,6 +136,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "canMoveWater",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "canPutAnything",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -178,6 +192,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "vecs", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "vecsDenom", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "whitelistedContracts",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "worldScale", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "worldWidth", data: BytesLike): Result;
 
@@ -272,6 +290,20 @@ export class TinyWorldStorage extends Contract {
       0: boolean;
     }>;
 
+    canPutAnything(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "canPutAnything(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
     getCachedTile(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -351,6 +383,7 @@ export class TinyWorldStorage extends Contract {
       1: string[];
       2: boolean[];
       3: boolean[];
+      4: boolean[];
     }>;
 
     "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
@@ -358,6 +391,7 @@ export class TinyWorldStorage extends Contract {
       1: string[];
       2: boolean[];
       3: boolean[];
+      4: boolean[];
     }>;
 
     getPlayerLocation(
@@ -570,6 +604,20 @@ export class TinyWorldStorage extends Contract {
       0: number;
     }>;
 
+    whitelistedContracts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "whitelistedContracts(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     worldScale(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
@@ -647,6 +695,13 @@ export class TinyWorldStorage extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  canPutAnything(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "canPutAnything(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   getCachedTile(
     coords: { x: BigNumberish; y: BigNumberish },
     overrides?: CallOverrides
@@ -714,6 +769,7 @@ export class TinyWorldStorage extends Contract {
     1: string[];
     2: boolean[];
     3: boolean[];
+    4: boolean[];
   }>;
 
   "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
@@ -721,6 +777,7 @@ export class TinyWorldStorage extends Contract {
     1: string[];
     2: boolean[];
     3: boolean[];
+    4: boolean[];
   }>;
 
   getPlayerLocation(
@@ -879,6 +936,16 @@ export class TinyWorldStorage extends Contract {
 
   "vecsDenom()"(overrides?: CallOverrides): Promise<number>;
 
+  whitelistedContracts(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "whitelistedContracts(uint256)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
   "worldScale()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -944,6 +1011,13 @@ export class TinyWorldStorage extends Contract {
     canMoveWater(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
     "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    canPutAnything(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "canPutAnything(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -1015,6 +1089,7 @@ export class TinyWorldStorage extends Contract {
       1: string[];
       2: boolean[];
       3: boolean[];
+      4: boolean[];
     }>;
 
     "getPlayerInfos()"(overrides?: CallOverrides): Promise<{
@@ -1022,6 +1097,7 @@ export class TinyWorldStorage extends Contract {
       1: string[];
       2: boolean[];
       3: boolean[];
+      4: boolean[];
     }>;
 
     getPlayerLocation(
@@ -1183,6 +1259,16 @@ export class TinyWorldStorage extends Contract {
 
     "vecsDenom()"(overrides?: CallOverrides): Promise<number>;
 
+    whitelistedContracts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "whitelistedContracts(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
     "worldScale()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1217,6 +1303,13 @@ export class TinyWorldStorage extends Contract {
     canMoveWater(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    canPutAnything(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "canPutAnything(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1345,6 +1438,16 @@ export class TinyWorldStorage extends Contract {
 
     "vecsDenom()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    whitelistedContracts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "whitelistedContracts(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     worldScale(overrides?: CallOverrides): Promise<BigNumber>;
 
     "worldScale()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1383,6 +1486,16 @@ export class TinyWorldStorage extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "canMoveWater(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    canPutAnything(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "canPutAnything(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1526,6 +1639,16 @@ export class TinyWorldStorage extends Contract {
     vecsDenom(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "vecsDenom()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    whitelistedContracts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "whitelistedContracts(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     worldScale(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

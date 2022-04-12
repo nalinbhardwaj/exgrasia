@@ -86,7 +86,7 @@ contract TinyMine is ITileContract {
 
     function tileABI(Coords memory coords) external view override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/8c66c1fd614adf96529b82c8b104e19ac52fc423/TinyMine.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/a066ede9deaff126395da589479516e0ca8b3375/TinyMine.json";
     }
 
     modifier closeToMyself(Coords memory selfCoords) {
@@ -127,9 +127,21 @@ contract TinyMine is ITileContract {
         private currentCachedTiles;
     mapping(address => TinyERC20) private currentResource;
     TinyWorld connectedWorld;
-    TinyERC20 iron;
-    TinyERC20 gold;
-    TinyERC20 diamond;
+    TinyIron iron;
+    TinyGold gold;
+    TinyDiamond diamond;
+
+    function getOres()
+        public
+        view
+        returns (
+            TinyIron,
+            TinyGold,
+            TinyDiamond
+        )
+    {
+        return (iron, gold, diamond);
+    }
 
     function random(string memory input) internal pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(input)));

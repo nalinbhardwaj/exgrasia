@@ -185,7 +185,7 @@ class GameManager extends EventEmitter {
         if (!gameManager.account) {
           throw new Error('no account set');
         }
-        if (gameManager.selfInfo.coords.x === 0) {
+        if (gameManager.selfInfo.proxyAddress == moverAddr) {
           gameManager.selfInfo = await gameManager.getSelfInfoLive();
         }
         gameManager.playerUpdated$.publish();
