@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
@@ -154,7 +154,7 @@ contract TinyFish is TinyERC721, ReentrancyGuard, ITileContract {
         return output;
     }
 
-    function getTokenHRI(uint256 tokenId) public view returns (string memory) {
+    function getTokenDesc(uint256 tokenId) public view returns (string memory) {
         return
             string(
                 abi.encodePacked(
@@ -287,7 +287,7 @@ contract TinyFish is TinyERC721, ReentrancyGuard, ITileContract {
                 closeToWater = true;
             }
         }
-        require(closeToSelf, "You need to be next to the fishing tile to fish");
+        require(closeToSelf, "You need to be next to a fishing stand to fish");
         require(closeToWater, "You need to be next to a water tile to fish");
         _;
     }
@@ -333,12 +333,12 @@ contract TinyFish is TinyERC721, ReentrancyGuard, ITileContract {
 
     function tileDescription(Coords memory coords) external view override returns (string memory) {
         return
-            "This is a fishing stand.\nGet started by casting your rod into the nearby waters using castFishingRod.\nThen, you can reel in your fish using reelIn.\nFishes are NFTs so you can also use any ERC721 functions here.";
+            "This is a fishing stand.\nGet started by casting your rod into the nearby waters using castFishingRod.\nThen, you can reel in your fish using reelIn.\nFishes are NFTs so you can also access ERC721 management and authorisation functions at a fishing stand.";
     }
 
     function tileABI(Coords memory coords) external view virtual override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/6791025d33ac73ae1de5235dba8bd7d844895f3b/TinyFishing.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/ef20a647b07d1796cca88745d0d4bf95/raw/3beec6e4a3a3df3f839d1b651474359d0f0de27a/TinyFishing.json";
     }
 
     constructor(TinyWorld _connectedWorld) TinyERC721("TinyFish", "TINYFISH", _connectedWorld) {
@@ -393,7 +393,7 @@ contract TinyOpenSea is ITileContract {
 
     function tileABI(Coords memory coords) external view virtual override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/a066ede9deaff126395da589479516e0ca8b3375/TinyOpenSea.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/ef20a647b07d1796cca88745d0d4bf95/raw/7317d173b8e03e6bc712203c20faba91fbfd177b/TinyOpenSea.json";
     }
 
     struct Listing {
@@ -411,7 +411,7 @@ contract TinyOpenSea is ITileContract {
         uint256 sinceMidnight = block.timestamp - 1649462400;
         uint256 hourOfDay = (sinceMidnight / 60 / 60) % 24;
         require(
-            hourOfDay >= 0 && hourOfDay <= 24, // TODO
+            hourOfDay >= 8 && hourOfDay <= 20,
             "Shopkeeper Tom Nook is taking a nap right now. Come back in a few hours."
         );
         _;
@@ -433,13 +433,41 @@ contract TinyOpenSea is ITileContract {
         return activeListings;
     }
 
+    function random(string memory input) internal pure returns (uint256) {
+        return uint256(keccak256(abi.encodePacked(input)));
+    }
+
+    function getPriceAdjective(uint256 tokenID) internal view returns (string memory) {
+        uint256 rng = random(
+            string(abi.encodePacked("fishAdj", toString(tokenID), uint256(block.timestamp)))
+        );
+        if (rng % 5 == 0) {
+            return "measly";
+        } else if (rng % 5 == 1) {
+            return "bare";
+        } else if (rng % 5 == 2) {
+            return "great";
+        } else if (rng % 5 == 3) {
+            return "steal";
+        } else {
+            return "low low";
+        }
+    }
+
     function viewShop() public view returns (string[] memory) {
         Listing[] memory activeListings = getActiveListing();
         string[] memory shop = new string[](activeListings.length);
         for (uint256 i = 0; i < activeListings.length; i++) {
-            string memory fishHRI = tinyFish.getTokenHRI(activeListings[i].fishID);
+            string memory fishHRI = tinyFish.getTokenDesc(activeListings[i].fishID);
             shop[i] = string(
-                abi.encodePacked(fishHRI, " for a price of ", toString(activeListings[i].price))
+                abi.encodePacked(
+                    fishHRI,
+                    " Available for a ",
+                    getPriceAdjective(activeListings[i].fishID),
+                    " price of ",
+                    toString(activeListings[i].price),
+                    "wei."
+                )
             );
         }
         return shop;

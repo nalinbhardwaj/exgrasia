@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "./TileContract.sol";
@@ -24,12 +24,12 @@ contract TinyQuestMaster is ITileContract {
         returns (string memory)
     {
         return
-            "This is the overlord of this world. Please him to obtain a boat and coding rights for the world.";
+            "This is the overlord of this world. Please him to gain access to the codex of this world and a boat to sail the oceans.";
     }
 
     function tileABI(Coords memory coords) external view override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/a066ede9deaff126395da589479516e0ca8b3375/TinyQuestMaster.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/ef20a647b07d1796cca88745d0d4bf95/raw/5c4cf4840febeffedbfa81a7d4052bfe6ec40721/TinyQuestMaster.json";
     }
 
     struct LevelQuests {

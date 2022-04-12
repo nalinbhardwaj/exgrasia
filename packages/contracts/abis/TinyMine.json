@@ -11,6 +11,23 @@
     "type": "constructor"
   },
   {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "x", "type": "uint256" },
+          { "internalType": "uint256", "name": "y", "type": "uint256" }
+        ],
+        "internalType": "struct Coords",
+        "name": "selfCoords",
+        "type": "tuple"
+      }
+    ],
+    "name": "exploreMine",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getOres",
     "outputs": [
@@ -33,7 +50,7 @@
         "type": "tuple"
       }
     ],
-    "name": "mine",
+    "name": "mineMap",
     "outputs": [
       { "internalType": "string[5]", "name": "", "type": "string[5]" }
     ],
@@ -104,23 +121,6 @@
       }
     ],
     "name": "moveUp",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "x", "type": "uint256" },
-          { "internalType": "uint256", "name": "y", "type": "uint256" }
-        ],
-        "internalType": "struct Coords",
-        "name": "selfCoords",
-        "type": "tuple"
-      }
-    ],
-    "name": "rollMine",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

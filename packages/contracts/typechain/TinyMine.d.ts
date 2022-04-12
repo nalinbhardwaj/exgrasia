@@ -22,13 +22,13 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface TinyMineInterface extends ethers.utils.Interface {
   functions: {
+    "exploreMine(tuple)": FunctionFragment;
     "getOres()": FunctionFragment;
-    "mine(tuple)": FunctionFragment;
+    "mineMap(tuple)": FunctionFragment;
     "moveDown(tuple)": FunctionFragment;
     "moveLeft(tuple)": FunctionFragment;
     "moveRight(tuple)": FunctionFragment;
     "moveUp(tuple)": FunctionFragment;
-    "rollMine(tuple)": FunctionFragment;
     "selectResource(tuple,string)": FunctionFragment;
     "tileABI(tuple)": FunctionFragment;
     "tileDescription(tuple)": FunctionFragment;
@@ -36,9 +36,13 @@ interface TinyMineInterface extends ethers.utils.Interface {
     "tileName(tuple)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "exploreMine",
+    values: [{ x: BigNumberish; y: BigNumberish }]
+  ): string;
   encodeFunctionData(functionFragment: "getOres", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "mine",
+    functionFragment: "mineMap",
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(
@@ -55,10 +59,6 @@ interface TinyMineInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "moveUp",
-    values: [{ x: BigNumberish; y: BigNumberish }]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "rollMine",
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
   encodeFunctionData(
@@ -82,13 +82,16 @@ interface TinyMineInterface extends ethers.utils.Interface {
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "exploreMine",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getOres", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "mine", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "mineMap", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "moveDown", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "moveLeft", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "moveRight", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "moveUp", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "rollMine", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "selectResource",
     data: BytesLike
@@ -118,6 +121,16 @@ export class TinyMine extends Contract {
   interface: TinyMineInterface;
 
   functions: {
+    exploreMine(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "exploreMine(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     getOres(overrides?: CallOverrides): Promise<{
       0: string;
       1: string;
@@ -130,14 +143,14 @@ export class TinyMine extends Contract {
       2: string;
     }>;
 
-    mine(
+    mineMap(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<{
       0: [string, string, string, string, string];
     }>;
 
-    "mine(tuple)"(
+    "mineMap(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<{
@@ -180,16 +193,6 @@ export class TinyMine extends Contract {
     ): Promise<ContractTransaction>;
 
     "moveUp(tuple)"(
-      selfCoords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    rollMine(
-      selfCoords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "rollMine(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -263,6 +266,16 @@ export class TinyMine extends Contract {
     }>;
   };
 
+  exploreMine(
+    selfCoords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "exploreMine(tuple)"(
+    selfCoords: { x: BigNumberish; y: BigNumberish },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   getOres(overrides?: CallOverrides): Promise<{
     0: string;
     1: string;
@@ -275,12 +288,12 @@ export class TinyMine extends Contract {
     2: string;
   }>;
 
-  mine(
+  mineMap(
     selfCoords: { x: BigNumberish; y: BigNumberish },
     overrides?: CallOverrides
   ): Promise<[string, string, string, string, string]>;
 
-  "mine(tuple)"(
+  "mineMap(tuple)"(
     selfCoords: { x: BigNumberish; y: BigNumberish },
     overrides?: CallOverrides
   ): Promise<[string, string, string, string, string]>;
@@ -321,16 +334,6 @@ export class TinyMine extends Contract {
   ): Promise<ContractTransaction>;
 
   "moveUp(tuple)"(
-    selfCoords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  rollMine(
-    selfCoords: { x: BigNumberish; y: BigNumberish },
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "rollMine(tuple)"(
     selfCoords: { x: BigNumberish; y: BigNumberish },
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -388,6 +391,16 @@ export class TinyMine extends Contract {
   ): Promise<string>;
 
   callStatic: {
+    exploreMine(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "exploreMine(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     getOres(overrides?: CallOverrides): Promise<{
       0: string;
       1: string;
@@ -400,12 +413,12 @@ export class TinyMine extends Contract {
       2: string;
     }>;
 
-    mine(
+    mineMap(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<[string, string, string, string, string]>;
 
-    "mine(tuple)"(
+    "mineMap(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<[string, string, string, string, string]>;
@@ -446,16 +459,6 @@ export class TinyMine extends Contract {
     ): Promise<void>;
 
     "moveUp(tuple)"(
-      selfCoords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    rollMine(
-      selfCoords: { x: BigNumberish; y: BigNumberish },
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "rollMine(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<void>;
@@ -516,16 +519,26 @@ export class TinyMine extends Contract {
   filters: {};
 
   estimateGas: {
+    exploreMine(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "exploreMine(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     getOres(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getOres()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    mine(
+    mineMap(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "mine(tuple)"(
+    "mineMap(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -566,16 +579,6 @@ export class TinyMine extends Contract {
     ): Promise<BigNumber>;
 
     "moveUp(tuple)"(
-      selfCoords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    rollMine(
-      selfCoords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "rollMine(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -634,16 +637,26 @@ export class TinyMine extends Contract {
   };
 
   populateTransaction: {
+    exploreMine(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "exploreMine(tuple)"(
+      selfCoords: { x: BigNumberish; y: BigNumberish },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     getOres(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getOres()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    mine(
+    mineMap(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "mine(tuple)"(
+    "mineMap(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -684,16 +697,6 @@ export class TinyMine extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "moveUp(tuple)"(
-      selfCoords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    rollMine(
-      selfCoords: { x: BigNumberish; y: BigNumberish },
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "rollMine(tuple)"(
       selfCoords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

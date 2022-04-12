@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
 import "./TinyWorld.sol";
@@ -81,12 +81,12 @@ contract TinyMine is ITileContract {
         returns (string memory)
     {
         return
-            "This is a mine shaft. You can mine precious metals here. To get started, use rollMine to open the door to a mine. You can then view the map using the mine function and move around to the resource cells using the move functions. You can reroll when you are done, or select a new resource to mine using selectResource.";
+            "This is a mine shaft. You can mine precious metals here. To get started, use exploreMine to find a fresh mine. You can then view the map using the mineMap function and move around to the resource cells using the move functions. You can explore other mines when you are done, or select a new resource to mine using selectResource.";
     }
 
     function tileABI(Coords memory coords) external view override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/a066ede9deaff126395da589479516e0ca8b3375/TinyMine.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/ef20a647b07d1796cca88745d0d4bf95/raw/3beec6e4a3a3df3f839d1b651474359d0f0de27a/TinyMine.json";
     }
 
     modifier closeToMyself(Coords memory selfCoords) {
@@ -246,10 +246,10 @@ contract TinyMine is ITileContract {
         move(selfCoords, 0, 1);
     }
 
-    function rollMine(Coords memory selfCoords) public closeToMyself(selfCoords) {
+    function exploreMine(Coords memory selfCoords) public closeToMyself(selfCoords) {
         require(
             connectedWorld.getTile(selfCoords).tileType == TileType.STONE,
-            "A mineshaft can only be mined on stone"
+            "A mineshaft can only be mined on a stone tile"
         );
         uint256 seeder = random(
             string(abi.encodePacked(selfCoords.x, selfCoords.y, block.timestamp, msg.sender))
@@ -283,10 +283,10 @@ contract TinyMine is ITileContract {
         }
     }
 
-    function mine(Coords memory selfCoords) public view returns (string[HEIGHT] memory) {
+    function mineMap(Coords memory selfCoords) public view returns (string[HEIGHT] memory) {
         require(
             currentSeeder[msg.sender][selfCoords.x][selfCoords.y] != 0,
-            "rollMine before entering"
+            "exploreMine before entering"
         );
         uint32 seeder = currentSeeder[msg.sender][selfCoords.x][selfCoords.y];
 

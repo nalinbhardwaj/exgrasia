@@ -66,7 +66,9 @@ function getTitle(props: PaneProps): string {
 }
 
 function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contractTile: Tile }) {
-  const abi = props.contractTile.smartContractMetaData.extendedAbi;
+  const abi = props.contractTile.smartContractMetaData.extendedAbi.filter(
+    (item) => item.type === 'function'
+  );
   const [selectedFuncName, setSelectedFuncName] = useState<string>(
     abi.find((f) => f.name !== undefined)!.name
   );
@@ -390,6 +392,33 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
                 >
                   <Text color='warning'>
                     <span style={{ fontFamily: 'monospace' }}>→</span> *= 10^18
+                  </Text>
+                </Button>
+              )}
+
+              {input.type === 'address' && (
+                <Button
+                  flat
+                  auto
+                  rounded
+                  size='sm'
+                  color='warning'
+                  onClick={() => {
+                    const newInputs = new Map(inputs);
+                    console.log('inp', inputs.get(inputIdx));
+                    newInputs.set(inputIdx, props.gm.selfInfo.proxyAddress);
+                    console.log('new', newInputs.get(inputIdx));
+                    setInputs(newInputs);
+                  }}
+                  css={{
+                    marginRight: '0px',
+                    marginLeft: 'auto',
+                    marginBottom: '0px',
+                    marginTop: 'auto',
+                  }}
+                >
+                  <Text color='warning'>
+                    <span style={{ fontFamily: 'monospace' }}>→</span> = your address
                   </Text>
                 </Button>
               )}

@@ -131,7 +131,7 @@
     "inputs": [
       { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
     ],
-    "name": "getTokenHRI",
+    "name": "getTokenDesc",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
     "type": "function"

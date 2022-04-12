@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
 import "./TinyWorld.sol";
@@ -65,8 +65,7 @@ abstract contract TinyERC20 is ERC20Burnable, ITileContract {
     }
 
     function tileName(Coords memory coords) external view override returns (string memory) {
-        return
-            string(abi.encodePacked("Stack of Coins: ", ERC20.name(), " (", ERC20.symbol(), ")"));
+        return string(abi.encodePacked("Stack of ", ERC20.name(), " (", ERC20.symbol(), ")"));
     }
 
     function tileDescription(Coords memory coords) external view override returns (string memory) {
@@ -77,14 +76,14 @@ abstract contract TinyERC20 is ERC20Burnable, ITileContract {
                     ERC20.name(),
                     " (",
                     ERC20.symbol(),
-                    "). You can use this to manage and authorise access for different contracts."
+                    "). You can use this to manage and authorise access to your tokens for different contracts."
                 )
             );
     }
 
     function tileABI(Coords memory coords) external view virtual override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/6c3870fc031dfaa6e4c0c1f3a05bf72d08c211dd/TinyERC20.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/ef20a647b07d1796cca88745d0d4bf95/raw/ea69052ba9c70f6574ba5d19c29193b1fa183c61/TinyERC20.json";
     }
 }
 

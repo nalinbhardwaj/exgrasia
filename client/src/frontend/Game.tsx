@@ -21,7 +21,6 @@ import { useLocation, useParams } from 'react-router-dom';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { Tooltip, Text, Loading, Grid, Card } from '@nextui-org/react';
 import Draggable from 'react-draggable';
-import './Pane.css';
 import { Pane, SettingsPane } from './Pane';
 import { PluginManager } from '../backend/PluginManager';
 import { SubTitle, Title } from './StyledComps';
@@ -48,12 +47,9 @@ export default function Game() {
   const tiles = useTiles(gameManager);
   const playerInfos = useInfo(gameManager);
   const initted = useInitted(gameManager);
-  const { privKeyIdx } = useParams<{ privKeyIdx?: string }>();
   const passedPrivateKey = location.state?.proxyPrivKey;
   const nuxCharacter: string = location.state?.character;
-  const privateKey = passedPrivateKey
-    ? passedPrivateKey
-    : DEV_TEST_PRIVATE_KEY[privKeyIdx ? parseInt(privKeyIdx) : 0];
+  const privateKey = passedPrivateKey;
   const [openPanes, setOpenPanes] = useState<WorldCoords[]>([]);
   const [prettifiedAddresses, setPrettifiedAddresses] = useState<Map<EthAddress, string>>(
     new Map()
@@ -166,7 +162,7 @@ export default function Game() {
   }, [playerInfos]);
 
   useEffect(() => {
-    if (gameManager && nuxCharacter) {
+    if (gameManager && nuxCharacter && !initted.value) {
       gameManager.initPlayerLocation(nuxCharacter);
     }
     if (gameManager) {
@@ -215,11 +211,11 @@ export default function Game() {
           <>
             <FullScreen>
               <TransformWrapper
-                initialScale={2}
-                minScale={1}
+                initialScale={1.5}
+                minScale={1.5}
                 maxScale={5}
-                initialPositionX={gameManager.selfInfo.coords.y * -38} // meticulously measured
-                initialPositionY={gameManager.selfInfo.coords.x * -40}
+                initialPositionX={gameManager.selfInfo.coords.y * -15} // meticulously measured
+                initialPositionY={Math.max(gameManager.selfInfo.coords.x * -28, -2500)}
               >
                 <TransformComponent
                   wrapperStyle={{

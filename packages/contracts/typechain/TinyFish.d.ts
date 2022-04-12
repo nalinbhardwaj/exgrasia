@@ -27,7 +27,7 @@ interface TinyFishInterface extends ethers.utils.Interface {
     "castFishingRod()": FunctionFragment;
     "currentPool(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getTokenHRI(uint256)": FunctionFragment;
+    "getTokenDesc(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -66,7 +66,7 @@ interface TinyFishInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getTokenHRI",
+    functionFragment: "getTokenDesc",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -148,7 +148,7 @@ interface TinyFishInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getTokenHRI",
+    functionFragment: "getTokenDesc",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -283,14 +283,14 @@ export class TinyFish extends Contract {
       0: string;
     }>;
 
-    getTokenHRI(
+    getTokenDesc(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "getTokenHRI(uint256)"(
+    "getTokenDesc(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
@@ -568,12 +568,12 @@ export class TinyFish extends Contract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getTokenHRI(
+  getTokenDesc(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
-  "getTokenHRI(uint256)"(
+  "getTokenDesc(uint256)"(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
@@ -784,12 +784,12 @@ export class TinyFish extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getTokenHRI(
+    getTokenDesc(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "getTokenHRI(uint256)"(
+    "getTokenDesc(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
@@ -1021,12 +1021,12 @@ export class TinyFish extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getTokenHRI(
+    getTokenDesc(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getTokenHRI(uint256)"(
+    "getTokenDesc(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1247,12 +1247,12 @@ export class TinyFish extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getTokenHRI(
+    getTokenDesc(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getTokenHRI(uint256)"(
+    "getTokenDesc(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

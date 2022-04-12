@@ -135,7 +135,7 @@
     ],
     "name": "tileABI",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "pure",
+    "stateMutability": "view",
     "type": "function"
   },
   {

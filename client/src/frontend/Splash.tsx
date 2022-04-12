@@ -32,8 +32,8 @@ import { makeContractsAPI } from '../backend/ContractsAPI';
 import { TinyWorldRegistry, TinyWorldRegistryFactory } from 'common-contracts/typechain';
 import registryContractAbi from 'common-contracts/abis/TinyWorldRegistry.json';
 import { Contract } from '@ethersproject/contracts';
-import { ethers } from 'ethers';
-import { Tooltip, useTheme, Text, Button } from '@nextui-org/react';
+import { BigNumber, ethers } from 'ethers';
+import { Tooltip, useTheme, Text, Button, Link } from '@nextui-org/react';
 import { SubTitle, Title } from './StyledComps';
 import Web3Modal from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider';
@@ -66,6 +66,7 @@ export default function Splash() {
   const [nuxDone, setNuxDone] = useState(false);
   const [nuxStepOneDone, setNuxStepOneDone] = useState(false);
   const [character, setCharacter] = useState('');
+  const userBalance = useEtherBalance(account);
   const characterMapping = {
     monkey: '🐵',
     bear: '🐻',
@@ -258,6 +259,13 @@ export default function Splash() {
                   connect wallet
                 </Text>
               </Button>
+            )}
+            {account && userBalance !== undefined && userBalance.eq(0) && (
+              <Text h3 color='primary' size={42}>
+                <Link color='text' icon href={'https://faucet.paradigm.xyz'} target='_blank'>
+                  faucet your wallet
+                </Link>
+              </Text>
             )}
             {account && (
               <Text h3 color='primary' size={42}>

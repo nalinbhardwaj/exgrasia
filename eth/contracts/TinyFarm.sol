@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
 import "./TinyWorld.sol";
@@ -152,7 +152,7 @@ contract TinyFarm is ITileContract {
 
     function tileABI(Coords memory coords) public pure virtual override returns (string memory) {
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/6c3870fc031dfaa6e4c0c1f3a05bf72d08c211dd/TinyFarm.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/ef20a647b07d1796cca88745d0d4bf95/raw/7391acb0e0970097a6f87a8857d0659bd95e2687/TinyFarm.json";
     }
 
     modifier closeToMyself(Coords memory selfCoords) {
@@ -330,12 +330,19 @@ contract TinyRanch is ITileContract {
                 );
         }
         return
-            "Start your ranch here. Begin by approving the Ranch contract to use your crops from a Tiny Farm. Then, use the start function to start your ranch. You can then use the milk/egg function to obtain produce. Remember to feed your animals regularly or they will die. :(";
+            "Start your ranch. Begin by approving the Ranch contract to use your tiny farm crops using setApprovalForAll. Then, use the start function to start your ranch. You can then use the milk/egg function to obtain produce. Remember to feed your animals regularly or they will die. :(";
     }
 
-    function tileABI(Coords memory coords) public pure virtual override returns (string memory) {
+    function tileABI(Coords memory coords) public view virtual override returns (string memory) {
+        if (ranch[coords.x][coords.y] == RanchType.COW) {
+            return
+                "https://gist.githubusercontent.com/nalinbhardwaj/ef20a647b07d1796cca88745d0d4bf95/raw/f9b3a0f46ec7e09d84a8d01d5a90d8b53a592450/TinyRanch-cow.json";
+        } else if (ranch[coords.x][coords.y] == RanchType.CHICKEN) {
+            return
+                "https://gist.githubusercontent.com/nalinbhardwaj/ef20a647b07d1796cca88745d0d4bf95/raw/f9b3a0f46ec7e09d84a8d01d5a90d8b53a592450/TinyRanch-chicken.json";
+        }
         return
-            "https://gist.githubusercontent.com/nalinbhardwaj/e63a4183e9ab5bc875f4df6664366f6f/raw/a066ede9deaff126395da589479516e0ca8b3375/TinyRanch.json";
+            "https://gist.githubusercontent.com/nalinbhardwaj/ef20a647b07d1796cca88745d0d4bf95/raw/86118340defe03f14e992a2912173982d3117684/TinyRanch-nothing.json";
     }
 
     function toString(uint256 value) internal pure returns (string memory) {
@@ -426,7 +433,7 @@ contract TinyRanch is ITileContract {
     function harvest(Coords memory selfCoords) internal {
         require(
             block.timestamp - lastHarvest[selfCoords.x][selfCoords.y] >= 5 minutes,
-            "Cannot harvest so soon"
+            "Cannot produce so soon"
         );
         if (ranch[selfCoords.x][selfCoords.y] == RanchType.COW) {
             milkContract.mint(msg.sender, currentPopulation(selfCoords));
