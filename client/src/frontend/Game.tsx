@@ -253,14 +253,21 @@ export default function Game() {
                                         content={
                                           <>
                                             {prettifiedAddresses.get(addr) || addr}
-                                            <span style={{ color: '#666666' }}>
-                                              <i>{motionMessage[1]}</i>
-                                            </span>
+                                            {playerInfo.proxyAddress ==
+                                              gameManager.selfInfo.proxyAddress && (
+                                              <span style={{ color: '#666666' }}>
+                                                <i>{motionMessage[1]}</i>
+                                              </span>
+                                            )}
                                           </>
                                         }
                                         key={100 * i + j}
                                         placement='top'
-                                        visible={motionMessage[1] !== ''}
+                                        visible={
+                                          playerInfo.proxyAddress ==
+                                            gameManager.selfInfo.proxyAddress &&
+                                          motionMessage[1] !== ''
+                                        }
                                       >
                                         <span
                                           key={100 * i + j}
