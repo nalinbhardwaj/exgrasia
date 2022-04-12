@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import { Wrapper } from '../../Backend/Utils/Wrapper';
-import GameManager from '../../Backend/GameManager';
+import { Wrapper } from '../../backend/Utils/Wrapper';
+import GameManager from '../../backend/GameManager';
 import { useEmitterSubscribe, useWrappedEmitter } from './EmitterHooks';
 import { EthAddress, PlayerInfo, Tile, TileType, WorldCoords } from 'common-types';
 import { createDefinedContext } from './createDefinedContext';

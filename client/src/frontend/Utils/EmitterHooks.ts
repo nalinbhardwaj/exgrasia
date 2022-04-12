@@ -1,6 +1,6 @@
 import { Callback, Monomitter } from '@darkforest_eth/events';
 import { useEffect, useState } from 'react';
-import { Wrapper } from '../../Backend/Utils/Wrapper';
+import { Wrapper } from '../../backend/Utils/Wrapper';
 
 /**
  * Execute something on emitter callback

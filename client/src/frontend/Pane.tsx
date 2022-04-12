@@ -5,7 +5,6 @@ import Draggable from 'react-draggable';
 import styled from 'styled-components';
 import GameManager from '../backend/GameManager';
 import { distance, getRandomActionId, prettifyAddress, whitelistedContracts } from '../utils';
-import { BN } from 'ethereumjs-util';
 import { PluginManager } from '../backend/PluginManager';
 import { useEmitterValue } from './Utils/EmitterHooks';
 import {
@@ -739,9 +738,18 @@ export function Footer(props: BodyProps) {
   for (const [addr, playerInfo] of props.playerInfos) {
     if (props.coords.x === playerInfo.coords.x && props.coords.y === playerInfo.coords.y) {
       return (
-        <Link color='text' href={EXPLORER_BASE_URL + playerInfo.realAddress} target='_blank'>
-          🔗 Address {shortenAddress(playerInfo.realAddress)}
-        </Link>
+        <Grid.Container>
+          <Row>
+            <Link color='text' href={EXPLORER_BASE_URL + playerInfo.realAddress} target='_blank'>
+              🔗 Real Address {shortenAddress(playerInfo.realAddress)}
+            </Link>
+          </Row>
+          <Row>
+            <Link color='text' href={EXPLORER_BASE_URL + playerInfo.proxyAddress} target='_blank'>
+              🔗 Proxy Address {shortenAddress(playerInfo.proxyAddress)}
+            </Link>
+          </Row>
+        </Grid.Container>
       );
     }
   }
