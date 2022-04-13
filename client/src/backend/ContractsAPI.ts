@@ -119,7 +119,7 @@ export class ContractsAPI extends EventEmitter {
     super();
     this.contractCaller = new ContractCaller();
     this.ethConnection = ethConnection;
-    this.txExecutor = new TxExecutor(ethConnection, () => '1');
+    this.txExecutor = new TxExecutor(ethConnection);
 
     this.setupEventListeners();
   }

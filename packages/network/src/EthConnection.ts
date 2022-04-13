@@ -71,7 +71,11 @@ export class EthConnection {
    * Represents the gas price one would pay to achieve the corresponding transaction confirmation
    * speed.
    */
-  private gasPrices: GasPrices = DEFAULT_GAS_PRICES;
+  private gasPrices: GasPrices = {
+    slow: 0.001,
+    average: 0.003,
+    fast: 0.01,
+  };
 
   /**
    * Store this so we can cancel the interval.
@@ -189,15 +193,6 @@ export class EthConnection {
   }
 
   /**
-   * Loads gas prices from xDai.
-   */
-  private async refreshGasPrices() {
-    this.gasPrices = await getAutoGasPrices();
-    this.gasPrices$.publish(this.gasPrices);
-    this.diagnosticsUpdater?.updateDiagnostics((d) => (d.gasPrices = this.gasPrices));
-  }
-
-  /**
    * Gets a copy of the latest gas prices.
    */
   public getAutoGasPrices(): GasPrices {
@@ -208,26 +203,7 @@ export class EthConnection {
    * Get the gas price, measured in Gwei, that we should send given the current prices for
    * transaction speeds, and given the user's gas price setting.
    */
-  public getAutoGasPriceGwei(
-    gasPrices: GasPrices,
-    gasPriceSetting: AutoGasSetting | string // either auto or the gas price measured in gwei
-  ): number {
-    // if the gas price setting represents an 'auto' choice, return that choice's current price
-    const autoPrice = getGasSettingGwei(gasPriceSetting as AutoGasSetting, gasPrices);
-
-    if (autoPrice !== undefined) {
-      return autoPrice;
-    }
-
-    // if the gas price setting is not an auto choice, it is a string representing the user's
-    // preferred gas price, measured in gwei.
-    const parsedSetting = parseFloat(gasPriceSetting);
-
-    if (!isNaN(parsedSetting)) {
-      return parsedSetting;
-    }
-
-    // if the setting has become corrupted, just return an average gas price
+  public getAutoGasPriceGwei(gasPrices: GasPrices): number {
     return gasPrices.average;
   }
 
@@ -458,11 +434,9 @@ export class EthConnection {
   }
 
   /**
-   * Kicks off an interval that regularly reloads the gas prices from xDai.
+   * Kicks off an interval that regularly reloads the balance
    */
   private startPolling() {
-    this.refreshGasPrices();
-    this.gasPricesInterval = setInterval(this.refreshGasPrices.bind(this), GAS_PRICES_INTERVAL_MS);
     this.refreshBalance();
     this.balanceInterval = setInterval(this.refreshBalance.bind(this), 1000 * 10);
   }

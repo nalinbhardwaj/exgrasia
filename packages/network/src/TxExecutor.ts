@@ -121,12 +121,6 @@ export class TxExecutor {
   private readonly ethConnection: EthConnection;
 
   /**
-   * Communicates to the {@link TxExecutor} the gas price we should be paying for each transaction,
-   * if there is not a manual gas price specified for that transaction.
-   */
-  private readonly gasSettingProvider: GasPriceSettingProvider;
-
-  /**
    * If present, called before every transaction, to give the user of {@link TxExecutor} the
    * opportunity to cancel the event by throwing an exception. Useful for interstitials.
    */
@@ -170,7 +164,6 @@ export class TxExecutor {
 
   constructor(
     ethConnection: EthConnection,
-    gasSettingProvider: GasPriceSettingProvider,
     beforeTransaction?: BeforeTransaction,
     afterTransaction?: AfterTransaction,
     queueConfiguration?: ConcurrentQueueConfiguration
@@ -184,7 +177,6 @@ export class TxExecutor {
     );
     this.lastTransactionTimestamp = Date.now();
     this.ethConnection = ethConnection;
-    this.gasSettingProvider = gasSettingProvider;
     this.beforeTransaction = beforeTransaction;
     this.afterTransaction = afterTransaction;
   }
@@ -230,15 +222,9 @@ export class TxExecutor {
       onTransactionReceipt: txReceipt,
     };
 
-    const autoGasPriceSetting = this.gasSettingProvider(txRequest);
-    txRequest.autoGasPriceSetting = autoGasPriceSetting;
-
     if (overrides.gasPrice === undefined) {
       txRequest.overrides.gasPrice = gweiToWei(
-        this.ethConnection.getAutoGasPriceGwei(
-          this.ethConnection.getAutoGasPrices(),
-          autoGasPriceSetting
-        )
+        this.ethConnection.getAutoGasPriceGwei(this.ethConnection.getAutoGasPrices())
       );
     }
 
