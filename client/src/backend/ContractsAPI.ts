@@ -300,7 +300,7 @@ export class ContractsAPI extends EventEmitter {
     let description = 'This tile has an air of mystery to it';
     let extendedAbi: any[] = [];
     try {
-      const result = await promiseWithTimeout(this.makeStubCalls(tileContract, coords), 5000);
+      const result = await promiseWithTimeout(this.makeStubCalls(tileContract, coords), 10000);
       emoji = result.emoji;
       name = result.name;
       description = result.description;
