@@ -52,16 +52,17 @@ async function whitelistEnable(args: { filePath: string }, hre: HardhatRuntimeEn
   }
 }
 
-task('whitelist:questMaster', 'set QuestMaster as Admin')
-  .addPositionalParam('address', 'address of quest master contract', undefined, types.string)
-  .setAction(whitelistQuestMaster);
+task('whitelist:questMaster', 'set QuestMaster as Admin').setAction(whitelistQuestMaster);
 
-async function whitelistQuestMaster(args: { address: string }, hre: HardhatRuntimeEnvironment) {
+async function whitelistQuestMaster(args: {}, hre: HardhatRuntimeEnvironment) {
   await hre.run('utils:assertChainId');
   const contract = await hre.ethers.getContractAt('TinyWorld', hre.contracts.CORE_CONTRACT_ADDRESS);
-  const dkReceipt = await contract.setQuestMaster(hre.ethers.utils.getAddress(args.address), {
-    gasPrice: '5000000000',
-  }); // 3gwei
+  const dkReceipt = await contract.setQuestMaster(
+    hre.ethers.utils.getAddress(QUEST_MASTER_CONTRACT_ADDRESS),
+    {
+      gasPrice: '5000000000',
+    }
+  ); // 3gwei
   await dkReceipt.wait();
   console.log('dkReceipt', dkReceipt);
 }

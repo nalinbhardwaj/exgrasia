@@ -480,7 +480,13 @@ function ContractInstance(props: { coords: WorldCoords; gm: GameManager; contrac
   );
 }
 
-function ContractBody(props: { coords: WorldCoords; gm: GameManager; contractTile: Tile }) {
+function ContractBody(props: {
+  coords: WorldCoords;
+  gm: GameManager;
+  contractTile: Tile;
+  prettifiedAddresses: Map<EthAddress, string>;
+  forceOpenOwningPane: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [expanders, setExpanders] = useState<number>(1);
 
   return (
@@ -520,6 +526,30 @@ function ContractBody(props: { coords: WorldCoords; gm: GameManager; contractTil
       >
         <Text color='primary'>+</Text>
       </Button>
+      <Grid.Container justify='flex-end' style={{ verticalAlign: 'middle', alignItems: 'center' }}>
+        <Text css={{ textAlign: 'right', verticalAlign: 'middle', alignItems: 'center' }}>
+          Owned by{' '}
+          {props.prettifiedAddresses.get(props.contractTile.owner) || props.contractTile.owner}
+        </Text>
+        {props.contractTile.owner === props.gm.getSelfInfo().proxyAddress && (
+          <Button
+            size='sm'
+            flat
+            rounded
+            auto
+            color='secondary'
+            onClick={() => {
+              props.forceOpenOwningPane(true);
+            }}
+            css={{
+              width: '5%',
+              margin: '$4',
+            }}
+          >
+            <Text color='primary'>✏️</Text>
+          </Button>
+        )}
+      </Grid.Container>
     </div>
   );
 }
@@ -537,36 +567,23 @@ type BodyProps = {
   gm: GameManager;
   playerInfos: Map<EthAddress, PlayerInfo>;
   curTiles: Tile[][];
+  prettifiedAddresses: Map<EthAddress, string>;
 };
 
 function Body(props: BodyProps) {
   // Contract pane
+  const [forceOpenOwning, setForceOpenOwning] = useState<boolean>(false);
   const contractTile = props.curTiles[props.coords.x][props.coords.y];
-  if (contractTile.smartContractMetaData.emoji !== '') {
-    return <ContractBody coords={props.coords} gm={props.gm} contractTile={contractTile} />;
-  }
-  // Player pane
-  for (const [addr, playerInfo] of props.playerInfos) {
-    if (props.coords.x === playerInfo.coords.x && props.coords.y === playerInfo.coords.y) {
-      return (
-        <Text>
-          {playerInfo.emoji + ' is at (' + playerInfo.coords.x + ', ' + playerInfo.coords.y + ')'}
-        </Text>
-      );
-    }
-  }
 
-  // Owning pane
   const [curAddr, setCurAddr] = useState<string>(whitelistedContracts()['Tiny Fishing Stand']);
   const [tooFar, setTooFar] = useState<boolean>(false);
   const [canPutAnything, setCanPutAnything] = useState<boolean>(false);
   const [selectedAddress, setSelectedAddress] = useState<string>('Tiny Fishing Stand');
 
   useEffect(() => {
-    props.gm.getSelfInfo().then((info) => {
-      setTooFar(distance(info.coords, props.coords) > 1);
-      setCanPutAnything(info.canPutAnything);
-    });
+    const info = props.gm.getSelfInfo();
+    setTooFar(distance(info.coords, props.coords) > 1);
+    setCanPutAnything(info.canPutAnything);
   }, [props]);
 
   const onClick = async () => {
@@ -576,6 +593,34 @@ function Body(props: BodyProps) {
   const handleChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setCurAddr(event.target.value);
   };
+
+  if (contractTile.smartContractMetaData.emoji !== '' && !forceOpenOwning) {
+    return (
+      <ContractBody
+        coords={props.coords}
+        gm={props.gm}
+        contractTile={contractTile}
+        prettifiedAddresses={props.prettifiedAddresses}
+        forceOpenOwningPane={setForceOpenOwning}
+      />
+    );
+  }
+  // Player pane
+  for (const [addr, playerInfo] of props.playerInfos) {
+    if (
+      props.coords.x === playerInfo.coords.x &&
+      props.coords.y === playerInfo.coords.y &&
+      !forceOpenOwning
+    ) {
+      return (
+        <Text>
+          {playerInfo.emoji + ' is at (' + playerInfo.coords.x + ', ' + playerInfo.coords.y + ')'}
+        </Text>
+      );
+    }
+  }
+
+  // Owning pane
   return (
     <>
       {!tooFar ? (
@@ -812,6 +857,7 @@ export function Pane(props: PaneProps) {
             gm={props.gm}
             playerInfos={props.playerInfos}
             curTiles={props.curTiles}
+            prettifiedAddresses={props.prettifiedAddresses}
           />
           <Plugins coords={props.coords} gm={props.gm} pm={props.pm} />
         </Card.Body>
@@ -823,6 +869,7 @@ export function Pane(props: PaneProps) {
               gm={props.gm}
               playerInfos={props.playerInfos}
               curTiles={props.curTiles}
+              prettifiedAddresses={props.prettifiedAddresses}
             ></Footer>
             <Button
               flat

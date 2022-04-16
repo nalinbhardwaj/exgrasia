@@ -312,7 +312,7 @@ class GameManager extends EventEmitter {
     return actionId;
   }
 
-  public async getSelfInfo() {
+  public getSelfInfo() {
     return this.selfInfo;
   }
 

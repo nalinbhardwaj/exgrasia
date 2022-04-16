@@ -113,11 +113,13 @@ export default function Game() {
   };
 
   const canMove = (coords: WorldCoords, selfInfo: PlayerInfo) => {
-    if (!gameManager) return false;
+    if (!gameManager) return '';
     const tile = tiles.value[coords.x][coords.y];
-    if (tile.tileType == TileType.WATER) return selfInfo.canMoveWater;
-    if (tile.tileType == TileType.SNOW) return selfInfo.canMoveSnow;
-    return true;
+    if (tile.tileType == TileType.WATER)
+      return !selfInfo.canMoveWater ? ' does not have a boat' : '';
+    if (tile.tileType == TileType.SNOW)
+      return !selfInfo.canMoveSnow ? ' does not have snow boots' : '';
+    return '';
   };
 
   useEffect(() => {
@@ -136,8 +138,9 @@ export default function Game() {
         };
         console.log('coords', coords);
 
-        if (!canMove(coords, selfInfo)) {
-          setMotionMessage([selfInfo.coords, ' does not have a boat']);
+        const motionConditionMessage = canMove(coords, selfInfo);
+        if (motionConditionMessage !== '') {
+          setMotionMessage([selfInfo.coords, motionConditionMessage]);
         } else {
           setMotionMessage([selfInfo.coords, getRandomMotionMessage()]);
           const moveId = await gameManager.movePlayer(coords);
