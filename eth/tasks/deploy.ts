@@ -83,6 +83,7 @@ async function deploy(_args: {}, hre: HardhatRuntimeEnvironment) {
     tinyGoldContractAddress: tileContracts.tinyGoldContract.address,
     tinyDiamondContractAddress: tileContracts.tinyDiamondContract.address,
     tinyquestMasterContractAddress: questMasterContract.address,
+    tinyCampfireContractAddress: tileContracts.tinyCampfireContract.address,
   });
 
   // give all contract administration over to an admin address if was provided
@@ -116,6 +117,7 @@ async function deploySave(
     tinyGoldContractAddress: string;
     tinyDiamondContractAddress: string;
     tinyquestMasterContractAddress: string;
+    tinyCampfireContractAddress: string;
   },
   hre: HardhatRuntimeEnvironment
 ) {
@@ -190,6 +192,7 @@ async function deploySave(
    export const GOLD_CONTRACT_ADDRESS = '${args.tinyGoldContractAddress}';
    export const DIAMOND_CONTRACT_ADDRESS = '${args.tinyDiamondContractAddress}';
    export const QUEST_MASTER_CONTRACT_ADDRESS = '${args.tinyquestMasterContractAddress}';
+   export const CAMPFIRE_CONTRACT_ADDRESS = '${args.tinyCampfireContractAddress}';
    `,
     { ...options, parser: 'babel-ts' }
   );
@@ -351,6 +354,10 @@ async function deployTileContracts(
     ).map(async (addr: string) => await hre.ethers.getContractAt('TinyERC20', addr))
   );
 
+  const TinyCampfireContractFactory = await hre.ethers.getContractFactory('TinyCampfire');
+  const tinyCampfireContract = await TinyCampfireContractFactory.deploy(args.coreAddress);
+  await tinyCampfireContract.deployTransaction.wait();
+
   return {
     testTileContract: tileContract as StubTileContract,
     tinyFishingContract: tinyFishingContract as StubTileContract,
@@ -366,6 +373,7 @@ async function deployTileContracts(
     tinyIronContract: mineOres[0] as StubTileContract,
     tinyGoldContract: mineOres[1] as StubTileContract,
     tinyDiamondContract: mineOres[2] as StubTileContract,
+    tinyCampfireContract: tinyCampfireContract as StubTileContract,
   };
 }
 

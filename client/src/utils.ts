@@ -27,6 +27,7 @@ import {
   GOLD_CONTRACT_ADDRESS,
   DIAMOND_CONTRACT_ADDRESS,
   QUEST_MASTER_CONTRACT_ADDRESS,
+  CAMPFIRE_CONTRACT_ADDRESS,
 } from 'common-contracts';
 
 export const tileTypeToColor = {
@@ -196,5 +197,6 @@ export const whitelistedContracts = (): { [key: string]: string } => {
     'Tiny Gold': GOLD_CONTRACT_ADDRESS,
     'Tiny Diamond': DIAMOND_CONTRACT_ADDRESS,
     'Tiny Quest Master': QUEST_MASTER_CONTRACT_ADDRESS,
+    'Tiny Campfire': CAMPFIRE_CONTRACT_ADDRESS,
   };
 };

@@ -13,6 +13,8 @@ export { StubTileContractFactory } from "./StubTileContractFactory";
 export type { StubTileContract } from "./StubTileContract";
 export { TestTileContractFactory } from "./TestTileContractFactory";
 export type { TestTileContract } from "./TestTileContract";
+export { TinyCampfireFactory } from "./TinyCampfireFactory";
+export type { TinyCampfire } from "./TinyCampfire";
 export { TinyCactusFactory } from "./TinyCactusFactory";
 export type { TinyCactus } from "./TinyCactus";
 export { TinyCornFactory } from "./TinyCornFactory";

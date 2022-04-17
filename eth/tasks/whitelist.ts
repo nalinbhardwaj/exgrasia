@@ -17,6 +17,7 @@ import {
   GOLD_CONTRACT_ADDRESS,
   DIAMOND_CONTRACT_ADDRESS,
   QUEST_MASTER_CONTRACT_ADDRESS,
+  CAMPFIRE_CONTRACT_ADDRESS,
 } from 'common-contracts';
 
 task('whitelist:enableKeys', 'enables keys stored in the given file path')
@@ -89,6 +90,7 @@ async function whitelistContracts(args: {}, hre: HardhatRuntimeEnvironment) {
       GOLD_CONTRACT_ADDRESS,
       DIAMOND_CONTRACT_ADDRESS,
       QUEST_MASTER_CONTRACT_ADDRESS,
+      CAMPFIRE_CONTRACT_ADDRESS,
     ],
     {
       gasPrice: '5000000000',

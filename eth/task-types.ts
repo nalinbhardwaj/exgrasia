@@ -43,4 +43,5 @@ export interface TileContracts {
   tinyIronContract: StubTileContract;
   tinyGoldContract: StubTileContract;
   tinyDiamondContract: StubTileContract;
+  tinyCampfireContract: StubTileContract;
 }

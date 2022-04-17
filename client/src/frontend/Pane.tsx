@@ -517,11 +517,11 @@ function ContractBody(props: {
           setExpanders(expanders + 1);
         }}
         css={{
-          width: '5%',
+          width: '10%',
           marginRight: '$4',
           marginLeft: 'auto',
           marginTop: '$4',
-          marginBottom: '0',
+          marginBottom: '$4',
         }}
       >
         <Text color='primary'>+</Text>
