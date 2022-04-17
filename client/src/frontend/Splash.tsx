@@ -91,11 +91,17 @@ export default function Splash() {
   }, []);
 
   useEffect(() => {
-    getEthConnection().then(async (ethConnection) => {
-      const contractsApi = await makeContractsAPI(ethConnection);
-      console.log('account', account);
-      if (account) setWhitelist(Whitelist.includes(account));
-    });
+    const fetcher = async () => {
+      const res = await fetch('https://exgrasia-rate-limiter.herokuapp.com/');
+      console.log('res', res.status);
+      setWhitelist(res.status === 200);
+    };
+
+    console.log('account', account);
+    if (account && Whitelist.includes(account)) setWhitelist(true);
+    else if (account) {
+      fetcher();
+    }
   }, [account]);
 
   useEffect(() => {
