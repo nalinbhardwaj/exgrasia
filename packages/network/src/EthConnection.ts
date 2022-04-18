@@ -72,9 +72,9 @@ export class EthConnection {
    * speed.
    */
   private gasPrices: GasPrices = {
-    slow: 0.001,
-    average: 0.003,
-    fast: 0.01,
+    slow: 1,
+    average: 3,
+    fast: 10,
   };
 
   /**
