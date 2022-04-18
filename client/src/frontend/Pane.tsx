@@ -1029,7 +1029,10 @@ export function SettingsPane(props: SettingsProps) {
         </Card.Body>
         <Divider />
         <Card.Footer>
-          <Row justify='flex-end'>
+          <Row justify='space-between' css={{ verticalAlign: 'middle', alignItems: 'center' }}>
+            <Link color='text' href='https://github.com/nalinbhardwaj/exgrasia' target='_blank'>
+              🔗 εxgrasia guide
+            </Link>
             <Button flat auto rounded size='sm' color='secondary' onClick={props.onClose}>
               <Text color='primary'>close</Text>
             </Button>
