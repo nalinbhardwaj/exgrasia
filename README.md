@@ -1,10 +1,7 @@
 # εxgrasia
 
-> A gathertown you can pry
->
-> A club penguin that shall never die
->
-> A minecraft that stretches outside
+<img width="1536" alt="Screenshot 2022-04-17 at 1 33 02 AM" src="https://user-images.githubusercontent.com/6984346/163969365-8130ed50-a6e5-4d9e-8b49-fbd7747b82b2.png">
+
 
 εxgrasia is a procedurally generated on-chain backdrop where every tile is a player-made contract. Imagine an infinitely extensible minecraft or DayZ, where modding is **the** way to play the game. εxgrasia is an exploration in this sandbox direction.
 
