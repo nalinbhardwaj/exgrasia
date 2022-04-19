@@ -73,6 +73,8 @@ A tiny campfire can be used to chat with other players! You can send messages to
 
 - Contract address: `0x7a0A41d987d4a09E86665Ebf990A6F876d3c1eC6`
 
+<img width="778" alt="image" src="https://user-images.githubusercontent.com/6984346/163969651-235dba49-42da-4737-8590-a02fb8018809.png">
+
 ### Tiny Farm
 
 The tiny farm allows you to grow corn or wheat on grass tiles or cactus on sand tiles. You can harvest the plant to obtain some wheat, corn or cactus. These are ERC-20 tokens that are only transferrable to adjacent tiles (like the aforementioned Fish NFTs).
