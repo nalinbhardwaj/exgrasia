@@ -91,6 +91,8 @@ export class ContractsAPI extends EventEmitter {
    */
   private ethConnection: EthConnection;
 
+  private abiCache: Map<string, any[]>;
+
   get coreContract() {
     return this.ethConnection.getContract<TinyWorld>(CORE_CONTRACT_ADDRESS);
   }
@@ -120,6 +122,7 @@ export class ContractsAPI extends EventEmitter {
     this.contractCaller = new ContractCaller();
     this.ethConnection = ethConnection;
     this.txExecutor = new TxExecutor(ethConnection);
+    this.abiCache = new Map();
 
     this.setupEventListeners();
   }
@@ -274,12 +277,20 @@ export class ContractsAPI extends EventEmitter {
     };
   }
 
+  async fetchABIURL(url: string) {
+    if (!this.abiCache.has(url)) {
+      const val = await fetch(url).then((res) => res.json());
+      this.abiCache.set(url, val);
+    }
+    return this.abiCache.get(url)!;
+  }
+
   async makeStubCalls(tileContract: Contract, coords: WorldCoords) {
     const emoji = await this.makeCall<string>(tileContract.tileEmoji, [coords]);
     const name = await this.makeCall<string>(tileContract.tileName, [coords]);
     const description = await this.makeCall<string>(tileContract.tileDescription, [coords]);
     const extendedAbiURL = await this.makeCall<string>(tileContract.tileABI, [coords]);
-    const extendedAbi = await fetch(extendedAbiURL).then((res) => res.json());
+    const extendedAbi = await this.fetchABIURL(extendedAbiURL);
     return { emoji, name, description, extendedAbi };
   }
 
@@ -300,7 +311,10 @@ export class ContractsAPI extends EventEmitter {
     let description = 'This tile has an air of mystery to it';
     let extendedAbi: any[] = [];
     try {
-      const result = await promiseWithTimeout(this.makeStubCalls(tileContract, coords), 10000);
+      const result = await promiseWithTimeout(this.makeStubCalls(tileContract, coords), 20000);
+      if (!/\p{Emoji}/gu.test(result.emoji)) {
+        throw new Error('bad emoji');
+      }
       emoji = result.emoji;
       name = result.name;
       description = result.description;

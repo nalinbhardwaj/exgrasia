@@ -242,7 +242,9 @@ export default function Game() {
                               }}
                               onContextMenu={(event) => onGridClick(event, { x: i, y: j })}
                             >
-                              {tile.smartContractMetaData.emoji === '' ? (
+                              {tile.smartContractMetaData.emoji === '' ||
+                              (i === gameManager.selfInfo.coords.x &&
+                                j === gameManager.selfInfo.coords.y) ? (
                                 [...playerInfos.value.keys()].map((addr) => {
                                   const playerInfo = playerInfos.value.get(addr);
                                   if (
@@ -264,7 +266,7 @@ export default function Game() {
                                             )}
                                           </>
                                         }
-                                        key={100 * i + j}
+                                        key={(100 * i + j).toString() + playerInfo.proxyAddress}
                                         placement='top'
                                         visible={
                                           playerInfo.proxyAddress ==
@@ -273,7 +275,7 @@ export default function Game() {
                                         }
                                       >
                                         <span
-                                          key={100 * i + j}
+                                          key={(100 * i + j).toString() + playerInfo.proxyAddress}
                                           style={{ fontSize: '15px', zIndex: 10 }}
                                         >
                                           {playerInfo.emoji}

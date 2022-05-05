@@ -48,7 +48,7 @@ export default function Splash() {
   const [liveMap, setLiveMap] = useState<TileType[][]>(SplashMap);
   const [ticks, setTicks] = useState(36);
   const [tickDirection, setTickDirection] = useState(true);
-  const { account, activate, deactivate } = useEthers();
+  const { chainId, account, activate, deactivate } = useEthers();
   const [whitelist, setWhitelist] = useState(false);
   const { library } = useEthers();
   const [proxyPrivKey, setProxyPrivKey] = useState('');
@@ -91,17 +91,8 @@ export default function Splash() {
   }, []);
 
   useEffect(() => {
-    const fetcher = async () => {
-      const res = await fetch('https://exgrasia-rate-limiter.herokuapp.com/');
-      console.log('res', res.status);
-      setWhitelist(res.status === 200);
-    };
-
     console.log('account', account);
-    if (account && Whitelist.includes(account)) setWhitelist(true);
-    else if (account) {
-      fetcher();
-    }
+    if (account && chainId == 69) setWhitelist(true);
   }, [account]);
 
   useEffect(() => {
@@ -273,11 +264,23 @@ export default function Splash() {
                 </Link>
               </Text>
             )}
-            {account && (
-              <Text h3 color='primary' size={42}>
-                {whitelist ? '✅ whitelisted' : '❌ not whitelisted'}
-              </Text>
-            )}
+            {account &&
+              (whitelist ? (
+                <Text h3 color='primary' size={42}>
+                  ✅ optimistic
+                </Text>
+              ) : (
+                <Text h3 color='primary' size={42}>
+                  <Link
+                    color='text'
+                    icon
+                    href={'https://chainid.link/?network=optimism-kovan'}
+                    target='_blank'
+                  >
+                    use optimism kovan
+                  </Link>
+                </Text>
+              ))}
             {whitelist && registryState && (
               <Text h3 color='primary' size={42}>{`Registration: ${getHumanisedStatus(
                 registryState.status
