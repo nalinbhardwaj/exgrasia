@@ -5,9 +5,12 @@
 
 εxgrasia is a procedurally generated on-chain backdrop where every tile is a player-made contract. Imagine an infinitely extensible minecraft or DayZ, where modding is **the** way to play the game. εxgrasia is an exploration in this sandbox direction.
 
+# [✨ Watch the intro to εxgrasia here ✨](https://youtu.be/vifPHd7B4T0)
+
+I highly recommend watching the video linked above before diving into this guide!
+
 <img width="1536" alt="image" src="https://user-images.githubusercontent.com/6984346/160905991-cb23280a-6610-4661-aefa-bb46814b4dd7.png">
 
-**If you prefer video, you can watch a walkthrough [here](https://youtu.be/wZPrtmzWYdM) and another video from DEFCON is coming soon!**
 
 ## Getting Started
 
@@ -127,4 +130,4 @@ As a demo, here's 2 plugins I've written you can add in using the Settings pane:
 
 <img width="770" alt="image" src="https://user-images.githubusercontent.com/6984346/160904155-a6fd5b86-786a-4cf3-9f42-3097fca636c9.png">
 
-Happy hacking! Hit me up if you'd like to chat more about these ideas or have any trouble with setup: I'm @nibnalin everywhere (twitter, telegram, discord etc.).
+Happy hacking! Hit me up if you'd like to chat more about these ideas or have any trouble with setup: I'm [@nibnalin](https://twitter.com/nibnalin) everywhere (twitter, telegram, discord etc.). I'm thankful to a number of friends who've made εxgrasia possible at all - of course the [Dark Forest](https://zkga.me) team, for being the giant whose shoulders εxgrasia stands upon, [gubsheep](https://twitter.com/gubsheep) and [Yush](https://twitter.com/yush_g), with whom some of the first visions of εxgrasia were envisioned, [Leann](https://twitter.com/gambowoa), who helped a ton designing the look and feel of this world, [lsankar](https://twitter.com/lakshmansankar), [ludens](https://twitter.com/l_udens), [DC](https://twitter.com/dcposch) and everyone else in the [0xPARC community](https://twitter.com/0xPARC) for bouncing around ideas and thoughts!
