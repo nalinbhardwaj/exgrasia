@@ -245,17 +245,24 @@ export default function Splash() {
                 connected
               </Text>
             ) : (
-              <Button
-                bordered
-                color='primary'
-                auto
-                onClick={() => activateProvider()}
-                css={{ padding: '$xl' }}
-              >
-                <Text h2 color='primary' size={48}>
-                  connect wallet
+              <>
+                <Button
+                  bordered
+                  color='primary'
+                  auto
+                  onClick={() => activateProvider()}
+                  css={{ padding: '$xl' }}
+                >
+                  <Text h2 color='primary' size={48}>
+                    connect wallet
+                  </Text>
+                </Button>
+                <Text h3 color='primary' size={42} style={{ marginTop: '12px' }}>
+                  <Link color='text' icon href={'https://youtu.be/vifPHd7B4T0'} target='_blank'>
+                    learn more
+                  </Link>
                 </Text>
-              </Button>
+              </>
             )}
             {account && userBalance !== undefined && userBalance.eq(0) && (
               <Text h3 color='primary' size={42}>
