@@ -311,7 +311,7 @@ export class ContractsAPI extends EventEmitter {
     let description = 'This tile has an air of mystery to it';
     let extendedAbi: any[] = [];
     try {
-      const result = await promiseWithTimeout(this.makeStubCalls(tileContract, coords), 20000);
+      const result = await promiseWithTimeout(this.makeStubCalls(tileContract, coords), 60000);
       if (!/\p{Emoji}/gu.test(result.emoji)) {
         throw new Error('bad emoji');
       }
