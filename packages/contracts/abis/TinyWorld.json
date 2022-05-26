@@ -150,21 +150,27 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "inputs": [
+      { "internalType": "address", "name": "player", "type": "address" }
+    ],
     "name": "canMoveSnow",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "inputs": [
+      { "internalType": "address", "name": "player", "type": "address" }
+    ],
     "name": "canMoveWater",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "inputs": [
+      { "internalType": "address", "name": "player", "type": "address" }
+    ],
     "name": "canPutAnything",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
@@ -510,8 +516,19 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "inputs": [
+      { "internalType": "address", "name": "player", "type": "address" }
+    ],
     "name": "isAdmin",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "player", "type": "address" }
+    ],
+    "name": "isPlayerInit",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
@@ -581,18 +598,18 @@
   },
   {
     "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "playerInited",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "name": "playerLocation",
     "outputs": [
       { "internalType": "uint256", "name": "x", "type": "uint256" },
       { "internalType": "uint256", "name": "y", "type": "uint256" }
     ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "playerPerm",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
