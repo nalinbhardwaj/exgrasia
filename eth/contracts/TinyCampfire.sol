@@ -74,7 +74,7 @@ contract TinyCampfire is ITileContract {
     }
 
     modifier closeToMyself(Coords memory selfCoords) {
-        require(connectedWorld.playerInited(msg.sender), "Not an exgrasia player");
+        require(connectedWorld.isPlayerInit(msg.sender), "Not an exgrasia player");
         Coords memory playerLoc = connectedWorld.getPlayerLocation(msg.sender);
         Coords[4] memory neighbors = [
             Coords(playerLoc.x - 1, playerLoc.y),

@@ -269,7 +269,7 @@ contract TinyFish is TinyERC721, ReentrancyGuard, ITileContract {
     }
 
     modifier closeToSelfAndWater() {
-        require(connectedWorld.playerInited(msg.sender), "Not an exgrasia player");
+        require(connectedWorld.isPlayerInit(msg.sender), "Not an exgrasia player");
         Coords memory playerLoc = connectedWorld.getPlayerLocation(msg.sender);
         Coords[4] memory neighbors = [
             Coords(playerLoc.x - 1, playerLoc.y),

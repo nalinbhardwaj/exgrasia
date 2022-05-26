@@ -35,7 +35,7 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
 
         registry = TinyWorldRegistry(address(_registryAddress));
         for (uint256 i = 0; i < _admins.length; i++) {
-            isAdmin[_admins[i]] = true;
+            playerPerm[_admins[i]] = (IS_PLAYER_INIT | IS_PLAYER_ADMIN);
         }
     }
 
@@ -174,30 +174,13 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         return abs(int256(a.x) - int256(b.x)) + abs(int256(a.y) - int256(b.y));
     }
 
-    modifier isClose(Coords memory loc) {
-        require(playerInited[msg.sender], "Player not inited");
-        require(
-            dist(playerLocation[msg.sender], loc) <= 1 || isAdmin[msg.sender],
-            "Location too far"
-        );
-        _;
-    }
-
-    modifier isInBounds(Coords memory loc) {
-        require(playerInited[msg.sender], "Player not inited");
-        require(loc.x >= 1 && loc.x < worldWidth, "X out of bounds");
-        require(loc.y >= 1 && loc.y < worldWidth, "Y out of bounds");
-        _;
-    }
-
     function initPlayerLocation(string memory repr) public {
         require(registry.getRealAddress(msg.sender) != address(0), "Player not registered");
-        require(playerInited[msg.sender] == false, "Already inited");
+        require((playerPerm[msg.sender] & IS_PLAYER_INIT == 0), "Already inited");
         require(bytes(validPlayerEmoji[repr]).length > 0, "Invalid emoji");
         Coords memory coords = getInitSeedCoords();
-
         playerLocation[msg.sender] = coords;
-        playerInited[msg.sender] = true;
+        playerPerm[msg.sender] = (playerPerm[msg.sender] | IS_PLAYER_INIT);
         playerEmoji[msg.sender] = validPlayerEmoji[repr];
         playerIds.push(msg.sender);
         emit PlayerUpdated(msg.sender, coords);
@@ -206,10 +189,10 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     function movePlayer(Coords memory coords) public isClose(coords) isInBounds(coords) {
         Tile memory tile = getTile(coords);
         require(
-            tile.tileType != TileType.WATER || canMoveWater[msg.sender],
+            tile.tileType != TileType.WATER || (playerPerm[msg.sender] & CAN_MOVE_WATER) > 0,
             "Cannot move to Water"
         );
-        require(tile.tileType != TileType.SNOW || canMoveSnow[msg.sender], "Cannot move to Snow");
+        require(tile.tileType != TileType.SNOW || (playerPerm[msg.sender] & CAN_MOVE_SNOW) > 0, "Cannot move to Snow");
         playerLocation[msg.sender] = coords;
         emit PlayerUpdated(msg.sender, coords);
     }
@@ -232,8 +215,7 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
         }
     }
 
-    function addWhitelistedContracts(address[] memory smartContracts) public {
-        require(isAdmin[msg.sender], "Not admin");
+    function addWhitelistedContracts(address[] memory smartContracts) public onlyAdmin(msg.sender) {
         for (uint256 i = 0; i < smartContracts.length; i++) {
             checkInterface(smartContracts[i]);
             whitelistedContracts.push(smartContracts[i]);
@@ -258,7 +240,7 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
             "Tile already owned"
         );
         require(
-            isWhitelisted(smartContract) || canPutAnything[msg.sender],
+            isWhitelisted(smartContract) || (playerPerm[msg.sender] & CAN_PUT_ANYTHING) > 0,
             "Not whitelisted to put anything"
         );
         checkInterface(smartContract);
@@ -291,32 +273,54 @@ contract TinyWorld is OwnableUpgradeable, TinyWorldStorage {
     }
 
     // Quest Master
-    function setQuestMaster(address master) public {
-        require(isAdmin[msg.sender], "Not admin");
+    function setQuestMaster(address master) public onlyAdmin(msg.sender) {
         questMaster = master;
     }
 
-    function setCanMoveWater(address player, bool canMove) public {
-        require(playerInited[player], "Player not inited");
+    function setCanMoveWater(address player, bool canMove) public onlyInitPlayers(player) {
         require(msg.sender == questMaster, "Not quest master");
-        canMoveWater[player] = canMove;
+        playerPerm[player] = canMove ? (playerPerm[player] | CAN_MOVE_WATER) : (playerPerm[player] & ~(CAN_MOVE_WATER));
         emit PlayerUpdated(player, playerLocation[player]);
     }
 
-    function setCanMoveSnow(address player, bool canMove) public {
-        require(playerInited[player], "Player not inited");
+    function setCanMoveSnow(address player, bool canMove) public onlyInitPlayers(player) {
         require(msg.sender == questMaster, "Not quest master");
-        canMoveSnow[player] = canMove;
+        playerPerm[player] = canMove ? (playerPerm[player] | CAN_MOVE_SNOW) : (playerPerm[player] & ~(CAN_MOVE_SNOW));
         emit PlayerUpdated(player, playerLocation[player]);
     }
 
-    function setCanPutAnything(address player, bool canPut) public {
-        require(playerInited[player], "Player not inited");
+    function setCanPutAnything(address player, bool canPut) public onlyInitPlayers(player) {
         require(msg.sender == questMaster, "Not quest master");
-        canPutAnything[player] = canPut;
+        playerPerm[player] = canPut ? (playerPerm[player] | CAN_PUT_ANYTHING) : (playerPerm[player] & ~(CAN_PUT_ANYTHING));
         console.log("canPut", canPut);
         console.log("player", player);
-        console.log("val", canPutAnything[player]);
+        console.log("val",  (playerPerm[msg.sender] & CAN_PUT_ANYTHING) > 0);
         emit PlayerUpdated(player, playerLocation[player]);
+    }
+
+    modifier isClose(Coords memory loc) {
+        require((playerPerm[msg.sender] & IS_PLAYER_INIT) > 0, "Player not inited");
+        require(
+            dist(playerLocation[msg.sender], loc) <= 1 || (playerPerm[msg.sender] & IS_PLAYER_ADMIN) > 0,
+            "Location too far"
+        );
+        _;
+    }
+
+    modifier isInBounds(Coords memory loc) {
+        require((playerPerm[msg.sender] & IS_PLAYER_INIT) > 0, "Player not inited");
+        require(loc.x >= 1 && loc.x < worldWidth, "X out of bounds");
+        require(loc.y >= 1 && loc.y < worldWidth, "Y out of bounds");
+        _;
+    }
+
+    modifier onlyAdmin(address player) {
+        require((playerPerm[msg.sender] & IS_PLAYER_ADMIN) > 0, "Not admin");
+        _;
+    }
+
+    modifier onlyInitPlayers(address player) {
+        require((playerPerm[player] & IS_PLAYER_INIT) > 0, "Player not inited");
+        _;
     }
 }

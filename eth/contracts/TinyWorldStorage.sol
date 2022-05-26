@@ -4,6 +4,13 @@ pragma solidity ^0.8.4;
 import "./Types.sol";
 
 contract TinyWorldStorage {
+    //player masks
+    uint256 constant internal IS_PLAYER_INIT = 1;
+    uint256 constant internal IS_PLAYER_ADMIN = 1 << 1;
+    uint256 constant internal CAN_MOVE_WATER = 1 << 2;
+    uint256 constant internal CAN_MOVE_SNOW = 1 << 3;
+    uint256 constant internal CAN_PUT_ANYTHING = 1 << 4;
+
     uint256 public seed;
     uint256 public worldWidth;
     uint256 public worldScale;
@@ -18,13 +25,8 @@ contract TinyWorldStorage {
     Coords[] public touchedCoords;
 
     mapping(address => Coords) public playerLocation;
-    mapping(address => bool) public playerInited;
     mapping(address => string) public playerEmoji;
-    mapping(address => bool) public isAdmin;
-    mapping(address => bool) public canMoveWater;
-    mapping(address => bool) public canMoveSnow;
-    mapping(address => bool) public canPutAnything;
-
+    mapping(address => uint256) public playerPerm;
     mapping(string => string) public validPlayerEmoji;
 
     function getCachedTile(Coords memory coords) public view returns (Tile memory) {
@@ -62,9 +64,9 @@ contract TinyWorldStorage {
         for (uint256 i = 0; i < playerIds.length; i++) {
             retLoc[i] = playerLocation[playerIds[i]];
             retEmoji[i] = playerEmoji[playerIds[i]];
-            retCanMoveWater[i] = canMoveWater[playerIds[i]];
-            retCanMoveSnow[i] = canMoveSnow[playerIds[i]];
-            retCanPutAnything[i] = canPutAnything[playerIds[i]];
+            retCanMoveWater[i] = (playerPerm[playerIds[i]] & CAN_MOVE_WATER) > 0;
+            retCanMoveSnow[i] = (playerPerm[playerIds[i]] & CAN_MOVE_SNOW) > 0;
+            retCanPutAnything[i] = (playerPerm[playerIds[i]] & CAN_PUT_ANYTHING) > 0;
         }
         return (retLoc, retEmoji, retCanMoveWater, retCanMoveSnow, retCanPutAnything);
     }
@@ -87,5 +89,25 @@ contract TinyWorldStorage {
             }
         }
         return ret;
+    }
+
+    function isPlayerInit(address player) public view returns(bool){
+        return (playerPerm[player] & IS_PLAYER_INIT) > 0;
+    }
+
+    function isAdmin(address player) public view returns(bool){
+        return (playerPerm[player] & IS_PLAYER_ADMIN) > 0;
+    }
+
+    function canMoveWater(address player) external view returns(bool) {
+        return (playerPerm[player] & CAN_MOVE_WATER) > 0;
+    }
+
+    function canMoveSnow(address player) external view returns(bool) {
+        return (playerPerm[player] & CAN_MOVE_SNOW) > 0;
+    }
+
+    function canPutAnything(address player) external view returns(bool) {
+        return (playerPerm[player] & CAN_PUT_ANYTHING) > 0;
     }
 }

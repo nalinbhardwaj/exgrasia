@@ -25,7 +25,7 @@ abstract contract TinyERC20 is ERC20Burnable, ITileContract {
         if (isContract(addr)) {
             return connectedWorld.getContractLocations(addr);
         } else {
-            require(connectedWorld.playerInited(addr), "addr is not an exgrasia player");
+            require(connectedWorld.isPlayerInit(addr), "addr is not an exgrasia player");
             Coords[] memory ret = new Coords[](1);
             ret[0] = connectedWorld.getPlayerLocation(addr);
             return ret;
@@ -106,7 +106,7 @@ abstract contract TinyERC721 is ERC721Enumerable {
         if (isContract(addr)) {
             return connectedWorld.getContractLocations(addr);
         } else {
-            require(connectedWorld.playerInited(addr), "addr is not an exgrasia player");
+            require(connectedWorld.isPlayerInit(addr), "addr is not an exgrasia player");
             Coords[] memory ret = new Coords[](1);
             ret[0] = connectedWorld.getPlayerLocation(addr);
             return ret;
