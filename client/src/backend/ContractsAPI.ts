@@ -241,9 +241,7 @@ export class ContractsAPI extends EventEmitter {
     }
 
     const addr = this.ethConnection.getAddress();
-
     const initted = await this.makeCall<boolean>(this.coreContract.playerInited, [addr]);
-    const initted = await this.makeCall<boolean>(this.coreContract.isPlayerInit, [addr]);
     return initted;
   }
 

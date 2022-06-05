@@ -39,13 +39,13 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     "initPlayerLocation(string)": FunctionFragment;
     "initialize(uint256,uint256,uint256,address,address[])": FunctionFragment;
     "isAdmin(address)": FunctionFragment;
-    "isPlayerInit(address)": FunctionFragment;
     "movePlayer(tuple)": FunctionFragment;
     "ownTile(tuple,address)": FunctionFragment;
     "owner()": FunctionFragment;
     "perlinMax()": FunctionFragment;
     "playerEmoji(address)": FunctionFragment;
     "playerIds(uint256)": FunctionFragment;
+    "playerInited(address)": FunctionFragment;
     "playerLocation(address)": FunctionFragment;
     "playerPerm(address)": FunctionFragment;
     "registry()": FunctionFragment;
@@ -132,10 +132,6 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "isAdmin", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "isPlayerInit",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "movePlayer",
     values: [{ x: BigNumberish; y: BigNumberish }]
   ): string;
@@ -149,6 +145,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "playerIds",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "playerInited",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "playerLocation",
@@ -267,10 +267,6 @@ interface TinyWorldInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isAdmin", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "isPlayerInit",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "movePlayer", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownTile", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -280,6 +276,10 @@ interface TinyWorldInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "playerIds", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "playerInited",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "playerLocation",
     data: BytesLike
@@ -683,20 +683,6 @@ export class TinyWorld extends Contract {
       0: boolean;
     }>;
 
-    isPlayerInit(
-      player: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
-    "isPlayerInit(address)"(
-      player: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
     movePlayer(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
@@ -761,6 +747,20 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: string;
+    }>;
+
+    playerInited(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "playerInited(address)"(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
     }>;
 
     playerLocation(
@@ -1256,13 +1256,6 @@ export class TinyWorld extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  isPlayerInit(player: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "isPlayerInit(address)"(
-    player: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   movePlayer(
     coords: { x: BigNumberish; y: BigNumberish },
     overrides?: Overrides
@@ -1306,6 +1299,13 @@ export class TinyWorld extends Contract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  playerInited(player: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "playerInited(address)"(
+    player: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   playerLocation(
     arg0: string,
@@ -1793,13 +1793,6 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    isPlayerInit(player: string, overrides?: CallOverrides): Promise<boolean>;
-
-    "isPlayerInit(address)"(
-      player: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     movePlayer(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: CallOverrides
@@ -1843,6 +1836,13 @@ export class TinyWorld extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    playerInited(player: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "playerInited(address)"(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     playerLocation(
       arg0: string,
@@ -2174,13 +2174,6 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isPlayerInit(player: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "isPlayerInit(address)"(
-      player: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     movePlayer(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
@@ -2225,6 +2218,13 @@ export class TinyWorld extends Contract {
 
     "playerIds(uint256)"(
       arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    playerInited(player: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "playerInited(address)"(
+      player: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2543,16 +2543,6 @@ export class TinyWorld extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    isPlayerInit(
-      player: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "isPlayerInit(address)"(
-      player: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     movePlayer(
       coords: { x: BigNumberish; y: BigNumberish },
       overrides?: Overrides
@@ -2600,6 +2590,16 @@ export class TinyWorld extends Contract {
 
     "playerIds(uint256)"(
       arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    playerInited(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "playerInited(address)"(
+      player: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

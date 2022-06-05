@@ -91,7 +91,7 @@ contract TinyWorldStorage {
         return ret;
     }
 
-    function isPlayerInit(address player) public view returns(bool){
+    function playerInited(address player) public view returns(bool){
         return (playerPerm[player] & IS_PLAYER_INIT) > 0;
     }
 

@@ -32,10 +32,10 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     "getPlayerLocation(address)": FunctionFragment;
     "getTouchedTiles()": FunctionFragment;
     "isAdmin(address)": FunctionFragment;
-    "isPlayerInit(address)": FunctionFragment;
     "perlinMax()": FunctionFragment;
     "playerEmoji(address)": FunctionFragment;
     "playerIds(uint256)": FunctionFragment;
+    "playerInited(address)": FunctionFragment;
     "playerLocation(address)": FunctionFragment;
     "playerPerm(address)": FunctionFragment;
     "seed()": FunctionFragment;
@@ -86,15 +86,15 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "isAdmin", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "isPlayerInit",
-    values: [string]
-  ): string;
   encodeFunctionData(functionFragment: "perlinMax", values?: undefined): string;
   encodeFunctionData(functionFragment: "playerEmoji", values: [string]): string;
   encodeFunctionData(
     functionFragment: "playerIds",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "playerInited",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "playerLocation",
@@ -169,16 +169,16 @@ interface TinyWorldStorageInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isAdmin", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "isPlayerInit",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "perlinMax", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "playerEmoji",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "playerIds", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "playerInited",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "playerLocation",
     data: BytesLike
@@ -471,20 +471,6 @@ export class TinyWorldStorage extends Contract {
       0: boolean;
     }>;
 
-    isPlayerInit(
-      player: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
-    "isPlayerInit(address)"(
-      player: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
     perlinMax(overrides?: CallOverrides): Promise<{
       0: number;
     }>;
@@ -519,6 +505,20 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: string;
+    }>;
+
+    playerInited(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "playerInited(address)"(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
     }>;
 
     playerLocation(
@@ -864,13 +864,6 @@ export class TinyWorldStorage extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  isPlayerInit(player: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "isPlayerInit(address)"(
-    player: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   perlinMax(overrides?: CallOverrides): Promise<number>;
 
   "perlinMax()"(overrides?: CallOverrides): Promise<number>;
@@ -888,6 +881,13 @@ export class TinyWorldStorage extends Contract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  playerInited(player: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "playerInited(address)"(
+    player: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   playerLocation(
     arg0: string,
@@ -1194,13 +1194,6 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    isPlayerInit(player: string, overrides?: CallOverrides): Promise<boolean>;
-
-    "isPlayerInit(address)"(
-      player: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     perlinMax(overrides?: CallOverrides): Promise<number>;
 
     "perlinMax()"(overrides?: CallOverrides): Promise<number>;
@@ -1218,6 +1211,13 @@ export class TinyWorldStorage extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    playerInited(player: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "playerInited(address)"(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     playerLocation(
       arg0: string,
@@ -1400,13 +1400,6 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isPlayerInit(player: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "isPlayerInit(address)"(
-      player: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     perlinMax(overrides?: CallOverrides): Promise<BigNumber>;
 
     "perlinMax()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1425,6 +1418,13 @@ export class TinyWorldStorage extends Contract {
 
     "playerIds(uint256)"(
       arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    playerInited(player: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "playerInited(address)"(
+      player: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1600,16 +1600,6 @@ export class TinyWorldStorage extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    isPlayerInit(
-      player: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "isPlayerInit(address)"(
-      player: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     perlinMax(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "perlinMax()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1631,6 +1621,16 @@ export class TinyWorldStorage extends Contract {
 
     "playerIds(uint256)"(
       arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    playerInited(
+      player: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "playerInited(address)"(
+      player: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

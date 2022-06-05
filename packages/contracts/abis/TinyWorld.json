@@ -526,15 +526,6 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "player", "type": "address" }
-    ],
-    "name": "isPlayerInit",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
       {
         "components": [
           { "internalType": "uint256", "name": "x", "type": "uint256" },
@@ -593,6 +584,15 @@
     "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "playerIds",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "player", "type": "address" }
+    ],
+    "name": "playerInited",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
