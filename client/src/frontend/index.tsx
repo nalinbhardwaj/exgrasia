@@ -21,9 +21,9 @@ const darkTheme = createTheme({
 });
 
 const config: Config = {
-  readOnlyChainId: 69,
+  readOnlyChainId: 420,
   readOnlyUrls: {
-    [69]: 'https://kovan.optimism.io',
+    [420]: 'https://goerli.optimism.io',
   },
 };
 
