@@ -61,10 +61,10 @@ const mainnet = {
   chainId: 1,
 };
 
-const optimismKovan = {
-  url: 'https://kovan.optimism.io',
+const optimismGoerli = {
+  url: 'https://goerli.optimism.io',
   accounts: [DEPLOYER_PK!],
-  chainId: 69,
+  chainId: 420,
 };
 
 const optimismXdai = {
@@ -81,7 +81,7 @@ const config: HardhatUserConfig = {
     // > Error HH100: Network xdai doesn't exist
     ...(DEPLOYER_MNEMONIC ? { xdai } : undefined),
     ...(DEPLOYER_MNEMONIC ? { mainnet } : undefined),
-    ...(DEPLOYER_PK ? { optimismKovan } : undefined),
+    ...(DEPLOYER_PK ? { optimismGoerli } : undefined),
     ...(DEPLOYER_PK ? { optimismXdai } : undefined),
     localhost: {
       url: 'http://localhost:8545/',
