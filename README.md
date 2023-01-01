@@ -2,7 +2,6 @@
 
 <img width="1536" alt="Screenshot 2022-04-17 at 1 33 02 AM" src="https://user-images.githubusercontent.com/6984346/163969365-8130ed50-a6e5-4d9e-8b49-fbd7747b82b2.png">
 
-
 εxgrasia is a procedurally generated on-chain backdrop where every tile is a player-made contract. Imagine an infinitely extensible minecraft or DayZ, where modding is **the** way to play the game. εxgrasia is an exploration in this sandbox direction.
 
 # [✨ Watch the intro to εxgrasia here ✨](https://youtu.be/vifPHd7B4T0)
@@ -11,12 +10,11 @@ I highly recommend watching the video linked above before diving into this guide
 
 <img width="1536" alt="image" src="https://user-images.githubusercontent.com/6984346/160905991-cb23280a-6610-4661-aefa-bb46814b4dd7.png">
 
-
 ## Getting Started
 
-Get started by setting up [Optimism Kovan](https://www.optimism.io) for your wallet.
+Get started by setting up [Optimism Goerli](https://www.optimism.io) for your wallet.
 
-1. You can add Optimism Kovan to your wallet by visiting [this link](https://chainid.link/?network=optimism-kovan).
+1. You can add Optimism Goerli to your wallet by visiting [this link](https://chainid.link/?network=optimism-goerli).
 2. Next, fund your wallet with some test ETH using a [Faucet](https://faucet.paradigm.xyz). Fund the wallet that's whitelisted to play εxgrasia, we'll fund your proxy address during the new user flow later.
 3. Next, follow through the new user flow on https://0xpark.exgrasia.xyz.
 

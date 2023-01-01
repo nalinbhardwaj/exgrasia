@@ -192,6 +192,7 @@ export class TxExecutor {
     overrides: providers.TransactionRequest = {
       gasPrice: undefined,
       gasLimit: 15000000,
+      maxPriorityFeePerGas: 100_000_000,
     }
   ): PendingTransaction {
     this.diagnosticsUpdater?.updateDiagnostics((d) => {
@@ -221,12 +222,6 @@ export class TxExecutor {
       onTransactionResponse: txResponse,
       onTransactionReceipt: txReceipt,
     };
-
-    if (overrides.gasPrice === undefined) {
-      txRequest.overrides.gasPrice = gweiToWei(
-        this.ethConnection.getAutoGasPriceGwei(this.ethConnection.getAutoGasPrices())
-      );
-    }
 
     this.queue.add(() => {
       this.diagnosticsUpdater?.updateDiagnostics((d) => {

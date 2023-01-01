@@ -32,6 +32,7 @@ import { makeContractsAPI } from '../backend/ContractsAPI';
 import { TinyWorldRegistry, TinyWorldRegistryFactory } from 'common-contracts/typechain';
 import registryContractAbi from 'common-contracts/abis/TinyWorldRegistry.json';
 import { Contract } from '@ethersproject/contracts';
+import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, ethers } from 'ethers';
 import { Tooltip, useTheme, Text, Button, Link } from '@nextui-org/react';
 import { SubTitle, Title } from './StyledComps';
@@ -92,16 +93,16 @@ export default function Splash() {
 
   useEffect(() => {
     console.log('account', account);
-    if (account && chainId == 69) setWhitelist(true);
+    if (account && chainId === 420) setWhitelist(true);
   }, [account]);
 
   useEffect(() => {
-    if (registryState.status != 'Success') return;
+    if (registryState.status !== 'Success') return;
     transferSend({ to: proxyPubKey, value: ethers.utils.parseEther('0.2') });
   }, [registryState.status]);
 
   useEffect(() => {
-    if (transferState.status != 'Success') return;
+    if (transferState.status !== 'Success') return;
     setNuxStepOneDone(true);
   }, [transferState.status]);
 
@@ -121,10 +122,10 @@ export default function Splash() {
   };
 
   const getHumanisedStatus = (status: string) => {
-    if (status == 'PendingSignature') return '⏳ Waiting';
-    if (status == 'Mining') return '⛏️ Mining';
-    if (status == 'Success') return '✅ Successful';
-    if (status == 'Fail') return '❌ Failed';
+    if (status === 'PendingSignature') return '⏳ Waiting';
+    if (status === 'Mining') return '⛏️ Mining';
+    if (status === 'Success') return '✅ Successful';
+    if (status === 'Fail') return '❌ Failed';
     else return '🤨 Unknown';
   };
 
@@ -159,7 +160,7 @@ export default function Splash() {
   };
 
   useEffect(() => {
-    if (!library || !account) return;
+    if (!library || !account || !(library instanceof Web3Provider)) return;
     const signer = library.getSigner();
     signer.signMessage(entropyMessage).then((sig) => {
       console.log('sig', sig);
@@ -174,9 +175,9 @@ export default function Splash() {
         console.log('account', account);
         const proxyAddress = await contractsApi.getProxyAddress(account);
         console.log('proxyAddress', proxyAddress);
-        if (proxyAddress == nullAddress) {
+        if (proxyAddress === nullAddress) {
           submitRegistry(pubKey);
-        } else if (proxyAddress.toLowerCase() != pubKey.toLowerCase()) {
+        } else if (proxyAddress.toLowerCase() !== pubKey.toLowerCase()) {
           console.log('fucked up', pubKey, proxyAddress);
         } else {
           ethConnection.setAccount(privKey);
@@ -281,10 +282,10 @@ export default function Splash() {
                   <Link
                     color='text'
                     icon
-                    href={'https://chainid.link/?network=optimism-kovan'}
+                    href={'https://chainid.link/?network=optimism-goerli'}
                     target='_blank'
                   >
-                    use optimism kovan
+                    use optimism goerli
                   </Link>
                 </Text>
               ))}
@@ -293,7 +294,7 @@ export default function Splash() {
                 registryState.status
               )}`}</Text>
             )}
-            {whitelist && registryState.status == 'Success' && transferState && (
+            {whitelist && registryState.status === 'Success' && transferState && (
               <Text h3 color='primary' size={42}>{`Funding: ${getHumanisedStatus(
                 transferState.status
               )}`}</Text>
@@ -306,6 +307,7 @@ export default function Splash() {
               href='https://twitter.com/exgrasia'
               target='_blank'
               style={{ textDecoration: 'none' }}
+              rel='noreferrer'
             >
               <span role='img' aria-label='bird'>
                 🐦
